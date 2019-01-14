@@ -8,6 +8,7 @@ import {
     Image,
     StatusBar,
 } from 'react-native'
+import * as Constants from '../utils/Constants.js'
 
 const { width, height } = Dimensions.get('window')
 
@@ -19,34 +20,47 @@ export default class SquareComponent extends React.Component {
 
     render() {
         const {collection} = this.props
-        const viewLength = (width / 2) - 50
+        //const viewLength = (width / 2) - 50
+        const viewLength = width * 0.8
         console.log("collection: " + JSON.stringify(collection))
 
         return (
             <View 
                 style={{
-                    // flex: 1,
-                    backgroundColor: '#fff',
                     width: viewLength,
-                    height: viewLength,
-                    borderColor: "#00cca3",
-                    borderWidth: 1,
-                    margin: 25,
-                    marginBottom: 0,
+                    height: viewLength + 100,
+                    // borderBottomWidth: 0.8,
+                    // borderBottomColor: Constants.COLORS.SYSTEM.PRIMARY,
+                    // borderTopWidth: 0.8,
+                    // borderTopColor: Constants.COLORS.SYSTEM.PRIMARY,
                     flexDirection: "column",
+                    paddingTop: 5,
                 }}
             >
                 <Image 
                     source={require("../../assets/pasta.jpg")}
                     // width={viewLength - 10} 
                     // height={viewLength - 10} 
-                    resizeMode="contain"
+                    resizeMode="cover"
                     style={{
                         // flex: 1,
-                        width: viewLength - 10,
-                        height: viewLength - 10,
+                        width: viewLength,
+                        height: viewLength,
                     }} 
                 />
+                <View style={{
+                    // flex: 1,
+                    flexDirection: "column",
+                }}>
+                    <Text style={{fontSize: 12, color: "#888", margin: 10,}}>{collection.item.category}</Text>
+                    <Text style={{fontSize: 14, color: "#444", marginLeft: 10, marginBottom: 10, marginRight: 10,}}>{collection.item.name}</Text>
+                </View>
+                <View style={{
+                    flexDirection: "row",
+                }}>
+                    <Text style={{fontSize: 12, color: "#888", marginLeft: 10,}}>{collection.item.totalTime}.</Text>
+                    <Text style={{fontSize: 12, color: "#888", marginLeft: 5, }}>Serves {collection.item.serves}</Text>
+                </View>
             </View>
         )
     }

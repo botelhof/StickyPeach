@@ -63,7 +63,7 @@ export default class HomeScreen extends React.Component {
         let arr = new Array()
 
         for (let i = 1; i <= totalEntries; i++) {
-            arr.push({"id": i, "name": "title " + i, "description" : "desc " + i})
+            arr.push({"id": i, "name": "Sweet French toast with marmalade sauce. Some more test to break the line... " + i, "description" : "desc " + i, "category": "Breakfast and Brunch", "totalTime" : "20 min", "serves": "4", "vegan" : true,})
         }
 
         return arr
