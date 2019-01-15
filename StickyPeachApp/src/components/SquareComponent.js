@@ -7,6 +7,7 @@ import {
     RefreshControl,
     Image,
     StatusBar,
+    TouchableOpacity,
 } from 'react-native'
 import * as Constants from '../utils/Constants.js'
 
@@ -20,9 +21,12 @@ export default class SquareComponent extends React.Component {
 
     render() {
         const {collection} = this.props
+        const {navigateTo} = this.props
+
         //const viewLength = (width / 2) - 50
         const viewLength = width * 0.8
         console.log("collection: " + JSON.stringify(collection))
+        // console.log("this.props.navigation: " + JSON.stringify(this.props.nav))
 
         return (
             <View 
@@ -37,23 +41,27 @@ export default class SquareComponent extends React.Component {
                     paddingTop: 5,
                 }}
             >
-                <Image 
-                    source={require("../../assets/pasta.jpg")}
-                    // width={viewLength - 10} 
-                    // height={viewLength - 10} 
-                    resizeMode="cover"
-                    style={{
-                        // flex: 1,
-                        width: viewLength,
-                        height: viewLength,
-                    }} 
-                />
+                <TouchableOpacity onPress={() => {
+                    this.props.nav.navigate(navigateTo, {collection: collection})
+                }}>
+                    <Image 
+                        source={require("../../assets/pasta.jpg")}
+                        // width={viewLength - 10} 
+                        // height={viewLength - 10} 
+                        resizeMode="cover"
+                        style={{
+                            // flex: 1,
+                            width: viewLength,
+                            height: viewLength,
+                        }} 
+                    />
+                </TouchableOpacity>
                 <View style={{
                     // flex: 1,
                     flexDirection: "column",
                 }}>
                     <Text style={{fontSize: 12, color: "#888", margin: 10,}}>{collection.item.category}</Text>
-                    <Text style={{fontSize: 14, color: "#444", marginLeft: 10, marginBottom: 10, marginRight: 10,}}>{collection.item.name}</Text>
+                    <Text style={{fontSize: 14, color: "#444", marginLeft: 10, marginBottom: 10, marginRight: 10,}}>{collection.item.description}</Text>
                 </View>
                 <View style={{
                     flexDirection: "row",

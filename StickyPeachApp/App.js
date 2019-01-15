@@ -5,15 +5,17 @@ import {
   createStackNavigator,
   createAppContainer,
 } from 'react-navigation'
-import HomeScreen from './src/components/HomeScreen'
+import CategoriesScreen from './src/components/CategoriesScreen'
+import CategoryScreen from './src/components/CategoryScreen'
 
-const HomeStack = createStackNavigator({
-  Home: HomeScreen,
+const CategoriesStack = createStackNavigator({
+  Categories: CategoriesScreen,
+  Category: CategoryScreen
 })
 
 export default createAppContainer(createBottomTabNavigator(
   {
-    Home: HomeStack,
+    Categories: CategoriesStack,
   },
   {
     /* Other configuration remains unchanged */

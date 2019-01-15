@@ -25,7 +25,7 @@ const IMG_HEIGHT = height / 1.5
 const MIN_HEIGHT = Header.HEIGHT + 200
 const MAX_HEIGHT = IMG_HEIGHT
 
-export default class HomeScreen extends React.Component {
+export default class CategoriesScreen extends React.Component {
 
     static navigationOptions = {
         header: null,
@@ -59,42 +59,19 @@ export default class HomeScreen extends React.Component {
     }
 
     _getDummyArray = () => {
-        const totalEntries = 21
+        const totalEntries = 9
         let arr = new Array()
 
         for (let i = 1; i <= totalEntries; i++) {
-            arr.push({"id": i, "name": "Sweet French toast with marmalade sauce. Some more test to break the line... " + i, "description" : "desc " + i, "category": "Breakfast and Brunch", "totalTime" : "20 min", "serves": "4", "vegan" : true,})
+            arr.push({"id": i, "description": "Sweet French toast with marmalade sauce. Some more text to break the line... " + i, "category": "Breakfast and Brunch", "totalTime" : "20 min", "serves": "4", "vegan" : true,})
         }
 
         return arr
     }
 
     render() {
-        // console.log("entrou")
+        const moduleDescription = "Categories"
         return (
-            // <View style={styles.container}>
-            //     <HeaderImageScrollView
-            //         maxHeight={height - 200}
-            //         minHeight={MIN_HEIGHT}
-            //         minOverlayOpacity={0.4}
-            //         renderHeader={() => <Image source={require('../../assets/noimage.jpg')} style={styles.image} />}
-            //         refreshControl={
-            //         <RefreshControl
-            //             refreshing={this.state.refreshing}
-            //             onRefresh={this._onRefresh.bind(this)}
-            //             tintColor="white"
-            //         />
-            //         }
-            //         renderTouchableFixedForeground={() => (
-            //             <View style={{ height: MAX_HEIGHT, justifyContent: 'center', alignItems: 'center' }}>
-            //                 <Text>AAA</Text>
-            //             </View>
-            //         )}
-            //         scrollViewBackgroundColor="#ddddff"
-            //     >
-            //         <View style={{ height: 1000 }} />
-            //     </HeaderImageScrollView>
-            // </View>
             <View style={{ flex: 1 }}>
                 <StatusBar barStyle="light-content" />
                 <HeaderImageScrollView
@@ -111,36 +88,18 @@ export default class HomeScreen extends React.Component {
                                 this.navTitleView = navTitleView;
                             }}
                         >
-                            {/* <Text style={styles.navTitle}>
-                                {tvShowContent.title}, ({tvShowContent.year})
-                            </Text> */}
                             <Text style={styles.navTitle}>
-                                AAAAAA
+                                {moduleDescription}
                             </Text>
                         </Animatable.View>
                     )}
                     renderForeground={() => (
                         <View style={styles.titleContainer}>
-                            {/* <Text style={styles.imageTitle}>{tvShowContent.title}</Text> */}
-                            <Text style={styles.imageTitle}>SALADAS</Text>
+                            <Text style={styles.imageTitle}>{moduleDescription}</Text>
                         </View>
                     )}
                     >
-                    <TriggeringView
-                        style={styles.section}
-                        onHide={() => this.navTitleView.fadeInUp(200)}
-                        onDisplay={() => this.navTitleView.fadeOut(100)}
-                    >
-                        <Text style={styles.title}>
-                            <Text style={styles.name}>UUU</Text>
-                        </Text>
-                    </TriggeringView>
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Overview</Text>
-                        <Text style={styles.sectionContent}>CCCC</Text> 
-                    </View>
-
-                    <GalleryComponent collections={this._getDummyArray()} />
+                    <GalleryComponent collections={this._getDummyArray()} navigateTo="Category" nav={this.props.navigation} />
                 </HeaderImageScrollView>
             </View>
         )
@@ -197,6 +156,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         marginLeft: 20,
         marginBottom: 20,
+        marginRight: 10,
     },
     imageTitle: {
         color: Constants.COLORS.SYSTEM.SECONDARY,

@@ -49,6 +49,9 @@ export default class GalleryComponent extends React.Component {
 
     render() {
         const {collections} = this.props
+        const nav = this.props.nav
+
+        console.log("navigation: " + JSON.stringify(nav))
 
         return (
             <View 
@@ -60,7 +63,7 @@ export default class GalleryComponent extends React.Component {
                 <FlatList
                     data={ collections }
                     renderItem={ (collection) =>
-                        <SquareComponent collection={collection} />
+                        <SquareComponent collection={collection} nav={nav} navigateTo={this.props.navigateTo} />
                     }
                     keyExtractor={(item, index) => index.toString()}
                     numColumns={1}
