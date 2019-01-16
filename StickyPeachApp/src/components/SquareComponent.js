@@ -60,14 +60,14 @@ export default class SquareComponent extends React.Component {
                     // flex: 1,
                     flexDirection: "column",
                 }}>
-                    <Text style={{fontSize: 12, color: "#888", margin: 10,}}>{collection.item.category}</Text>
-                    <Text style={{fontSize: 14, color: "#444", marginLeft: 10, marginBottom: 10, marginRight: 10,}}>{collection.item.description}</Text>
+                    <Text style={{fontSize: 12, color: "#888", margin: 10,}}>{collection.item.headDescription}</Text>
+                    <Text style={{fontSize: 14, color: "#444", marginLeft: 10, marginBottom: 10, marginRight: 10,}}>{collection.item.mainDescription}</Text>
                 </View>
                 <View style={{
                     flexDirection: "row",
                 }}>
-                    <Text style={{fontSize: 12, color: "#888", marginLeft: 10,}}>{collection.item.totalTime}.</Text>
-                    <Text style={{fontSize: 12, color: "#888", marginLeft: 5, }}>Serves {collection.item.serves}</Text>
+                    <Text style={{fontSize: 12, color: "#888", marginLeft: 10,}}>{collection.item.subtitleOne}.</Text>
+                    <Text style={{fontSize: 12, color: "#888", marginLeft: 5, }}>Serves {collection.item.subtitleTwo}</Text>
                 </View>
             </View>
         )

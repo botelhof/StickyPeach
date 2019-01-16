@@ -63,7 +63,7 @@ export default class CategoriesScreen extends React.Component {
         let arr = new Array()
 
         for (let i = 1; i <= totalEntries; i++) {
-            arr.push({"id": i, "description": "Sweet French toast with marmalade sauce. Some more text to break the line... " + i, "category": "Breakfast and Brunch", "totalTime" : "20 min", "serves": "4", "vegan" : true,})
+            arr.push({"id": i, "mainDescription": "Italian " + i, "headDescription": "Italian", "subtitleOne" : "20 min", "subtitleTwo": "4", "vegan" : true,})
         }
 
         return arr
@@ -99,6 +99,13 @@ export default class CategoriesScreen extends React.Component {
                         </View>
                     )}
                     >
+                    <TriggeringView
+                        style={styles.section}
+                        onHide={() => this.navTitleView.fadeInUp(200)}
+                        onDisplay={() => this.navTitleView.fadeOut(100)}
+                    >
+                        <Text>{moduleDescription}</Text>
+                    </TriggeringView>
                     <GalleryComponent collections={this._getDummyArray()} navigateTo="Category" nav={this.props.navigation} />
                 </HeaderImageScrollView>
             </View>
@@ -181,4 +188,3 @@ const styles = StyleSheet.create({
         height: 600,
     },
 })
-  

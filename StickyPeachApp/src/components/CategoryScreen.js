@@ -8,6 +8,9 @@ import {
     Image,
     StatusBar,
 } from 'react-native'
+import {
+    Button,
+} from 'react-native-elements'
 import { 
     Header,
 } from 'react-navigation'
@@ -63,7 +66,7 @@ export default class CategoryScreen extends React.Component {
         let arr = new Array()
 
         for (let i = 1; i <= totalEntries; i++) {
-            arr.push({"id": i, "description": "Some pasta yeee. " + i, "category": "Italia", "totalTime" : "20 min", "serves": "4", "vegan" : false,})
+            arr.push({"id": i, "mainDescription": "Some pasta " + i, "headDescription": "Italian", "subtitleOne" : "20 min", "subtitleTwo": "4", "vegan" : false,})
         }
 
         return arr
@@ -89,17 +92,47 @@ export default class CategoryScreen extends React.Component {
                                 this.navTitleView = navTitleView;
                             }}
                         >
+                            <Button 
+                                icon={{name: "arrow-back", color: "#fff", size: 12,}} 
+                                title={"Go back"} 
+                                titleStyle={{color: "#fff", fontSize: 12, }}
+                                buttonStyle={{
+                                    backgroundColor: "transparent",
+                                }}
+                                containerStyle={{alignSelf: "flex-start", }}
+                                onPress={() => {
+                                    this.props.navigation.goBack()
+                                }}
+                            />
                             <Text style={styles.navTitle}>
-                                {collection.item.description}
+                                {collection.item.mainDescription}
                             </Text>
                         </Animatable.View>
                     )}
                     renderForeground={() => (
                         <View style={styles.titleContainer}>
-                            <Text style={styles.imageTitle}>{collection.item.description}</Text>
+                            <Button 
+                                icon={{name: "arrow-back", color: Constants.COLORS.SYSTEM.PRIMARY, size: 12,}} 
+                                title={"Go back"} 
+                                titleStyle={{color: Constants.COLORS.SYSTEM.PRIMARY, fontSize: 12, }}
+                                buttonStyle={{
+                                    backgroundColor: Constants.COLORS.SYSTEM.SECONDARY,
+                                }}
+                                onPress={() => {
+                                    this.props.navigation.goBack()
+                                }}
+                            />
+                            <Text style={styles.imageTitle}>{collection.item.mainDescription}</Text>
                         </View>
                     )}
                     >
+                    <TriggeringView
+                        style={styles.section}
+                        onHide={() => this.navTitleView.fadeInUp(200)}
+                        onDisplay={() => this.navTitleView.fadeOut(100)}
+                    >
+                        <Text>{collection.item.mainDescription}</Text>
+                    </TriggeringView>
                     <GalleryComponent collections={this._getDummyArray()} />
                 </HeaderImageScrollView>
             </View>
