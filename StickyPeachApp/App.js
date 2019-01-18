@@ -13,9 +13,15 @@ const CategoriesStack = createStackNavigator({
   Category: CategoryScreen
 })
 
+const SettingsStack = createStackNavigator({
+  Categories: CategoriesScreen,
+  Category: CategoryScreen
+})
+
 export default createAppContainer(createBottomTabNavigator(
   {
     Categories: CategoriesStack,
+    Settings: SettingsStack,
   },
   {
     /* Other configuration remains unchanged */

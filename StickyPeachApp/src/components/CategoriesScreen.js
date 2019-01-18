@@ -7,13 +7,18 @@ import {
     RefreshControl,
     Image,
     StatusBar,
+    ScrollView,
+    TouchableOpacity,
 } from 'react-native'
 import { 
     Header,
 } from 'react-navigation'
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view'
+import SideMenu from 'react-native-side-menu'
 
 import GalleryComponent from './GalleryComponent'
+import MenuSideView from './MenuSideView'
+import MenuButtonComponent from './MenuButtonComponent'
 
 import * as Animatable from 'react-native-animatable'
 import * as whiskDB from '../database/db.js'
@@ -36,7 +41,8 @@ export default class CategoriesScreen extends React.Component {
         super()
         this.state = {
             refreshing: false,
-            showNavTitle: false
+            showNavTitle: false,
+            isOpen: false,
         }
     }
 
@@ -70,45 +76,57 @@ export default class CategoriesScreen extends React.Component {
     }
 
     render() {
+        const menu = <MenuSideView navigator={this.props.navigation}/>
         const moduleDescription = "Categories"
         return (
-            <View style={{ flex: 1 }}>
-                <StatusBar barStyle="light-content" />
-                <HeaderImageScrollView
-                    maxHeight={MAX_HEIGHT}
-                    minHeight={MIN_HEIGHT}
-                    maxOverlayOpacity={0.5}
-                    minOverlayOpacity={0.1}
-                    fadeOutForeground
-                    renderHeader={() => <Image source={require('../../assets/salads.jpg')} style={styles.image} />}
-                    renderFixedForeground={() => (
-                        <Animatable.View
-                            style={styles.navTitleView}
-                            ref={navTitleView => {
-                                this.navTitleView = navTitleView;
-                            }}
+            <SideMenu 
+                menu={menu}
+                isOpen={this.state.isOpen}
+                menuPosition="right"
+            >
+                <View style={{ flex: 1 }}>
+                    <MenuButtonComponent callbackOnPress={() => {
+                        this.setState({
+                            isOpen: true,
+                        })
+                    }} />
+                    <StatusBar barStyle="light-content" />
+                    <HeaderImageScrollView
+                        maxHeight={MAX_HEIGHT}
+                        minHeight={MIN_HEIGHT}
+                        maxOverlayOpacity={0.5}
+                        minOverlayOpacity={0.1}
+                        fadeOutForeground
+                        renderHeader={() => <Image source={require('../../assets/salads.jpg')} style={styles.image} />}
+                        renderFixedForeground={() => (
+                            <Animatable.View
+                                style={styles.navTitleView}
+                                ref={navTitleView => {
+                                    this.navTitleView = navTitleView;
+                                }}
+                            >
+                                <Text style={styles.navTitle}>
+                                    {moduleDescription}
+                                </Text>
+                            </Animatable.View>
+                        )}
+                        renderForeground={() => (
+                            <View style={styles.titleContainer}>
+                                <Text style={styles.imageTitle}>{moduleDescription}</Text>
+                            </View>
+                        )}
                         >
-                            <Text style={styles.navTitle}>
-                                {moduleDescription}
-                            </Text>
-                        </Animatable.View>
-                    )}
-                    renderForeground={() => (
-                        <View style={styles.titleContainer}>
-                            <Text style={styles.imageTitle}>{moduleDescription}</Text>
-                        </View>
-                    )}
-                    >
-                    <TriggeringView
-                        style={styles.section}
-                        onHide={() => this.navTitleView.fadeInUp(200)}
-                        onDisplay={() => this.navTitleView.fadeOut(100)}
-                    >
-                        <Text>{moduleDescription}</Text>
-                    </TriggeringView>
-                    <GalleryComponent collections={this._getDummyArray()} navigateTo="Category" nav={this.props.navigation} />
-                </HeaderImageScrollView>
-            </View>
+                        <TriggeringView
+                            style={styles.section}
+                            onHide={() => this.navTitleView.fadeInUp(200)}
+                            onDisplay={() => this.navTitleView.fadeOut(100)}
+                        >
+                            <Text>{moduleDescription}</Text>
+                        </TriggeringView>
+                        <GalleryComponent collections={this._getDummyArray()} navigateTo="Category" nav={this.props.navigation} />
+                    </HeaderImageScrollView>
+                </View>
+            </SideMenu>
         )
     }
 }
