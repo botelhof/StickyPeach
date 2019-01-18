@@ -18,11 +18,13 @@ export default class MenuSideView extends React.Component {
                 <ScrollView style={{flex: 1,}}>
                     <View style={{flex: 1, marginTop: 100, marginLeft: 20,}}>
                         <TouchableOpacity onPress={() => {
+                            this.props.callbackOnPressLink
                             this.props.navigator.navigate("Categories")
                         }}>
                             <Text>Collections</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
+                            this.props.callbackOnPressLink
                             this.props.navigator.navigate("Settings")
                         }}>
                             <Text>Settings</Text>

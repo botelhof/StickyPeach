@@ -7,6 +7,7 @@ import {
 } from 'react-navigation'
 import CategoriesScreen from './src/components/CategoriesScreen'
 import CategoryScreen from './src/components/CategoryScreen'
+import SettingsScreen from './src/components/SettingsScreen'
 
 const CategoriesStack = createStackNavigator({
   Categories: CategoriesScreen,
@@ -14,7 +15,7 @@ const CategoriesStack = createStackNavigator({
 })
 
 const SettingsStack = createStackNavigator({
-  Categories: CategoriesScreen,
+  Settings: SettingsScreen,
   Category: CategoryScreen
 })
 

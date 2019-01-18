@@ -86,11 +86,13 @@ export default class CategoryScreen extends React.Component {
                 menuPosition="right"
             >
                 <View style={{ flex: 1 }}>
-                    <MenuButtonComponent callbackOnPress={() => {
-                        this.setState({
-                            isOpen: true,
-                        })
-                    }} />
+                    <MenuButtonComponent 
+                        callbackOnPress={() => {
+                            this.setState({
+                                isOpen: true,
+                            })
+                        }}
+                    />
                     <StatusBar barStyle="light-content" />
                     <HeaderImageScrollView
                         maxHeight={MAX_HEIGHT}
