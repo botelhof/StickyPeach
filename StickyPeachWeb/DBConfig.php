@@ -4,7 +4,7 @@
     $HostName = "whisk.000webhostapp.com";
     
     //Define your database name here.
-    $DatabaseName = "id8381067_whiskdb";
+    $DatabaseName = "id8381067_stickyPeachDB";
     
     //Define your database username here.
     $HostUser = "id8381067_whiskuser1";
