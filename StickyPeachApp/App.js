@@ -7,11 +7,18 @@ import {
 } from 'react-navigation'
 import CategoriesScreen from './src/components/CategoriesScreen'
 import CategoryScreen from './src/components/CategoryScreen'
+import CollectionsScreen from './src/components/CollectionsScreen'
+import CollectionScreen from './src/components/CollectionScreen'
 import SettingsScreen from './src/components/SettingsScreen'
 
 const CategoriesStack = createStackNavigator({
   Categories: CategoriesScreen,
   Category: CategoryScreen
+})
+
+const CollectionsStack = createStackNavigator({
+  Collections: CollectionsScreen,
+  Collection: CollectionScreen
 })
 
 const SettingsStack = createStackNavigator({
@@ -21,6 +28,7 @@ const SettingsStack = createStackNavigator({
 
 export default createAppContainer(createBottomTabNavigator(
   {
+    Collections: CollectionsStack,
     Categories: CategoriesStack,
     Settings: SettingsStack,
   },

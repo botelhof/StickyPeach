@@ -25,7 +25,7 @@ export default class SquareComponent extends React.Component {
 
         //const viewLength = (width / 2) - 50
         const viewLength = width * 0.8
-        console.log("collection: " + JSON.stringify(collection))
+        // console.log("collection: " + JSON.stringify(collection))
         // console.log("this.props.navigation: " + JSON.stringify(this.props.nav))
 
         return (

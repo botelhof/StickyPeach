@@ -7,15 +7,17 @@ import {
     RefreshControl,
     Image,
     StatusBar,
+    ScrollView,
+    TouchableOpacity,
 } from 'react-native'
-import {
-    Button,
-} from 'react-native-elements'
 import { 
     Header,
 } from 'react-navigation'
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view'
 import SideMenu from 'react-native-side-menu'
+import {
+    Icon,
+} from 'react-native-elements'
 
 import GalleryComponent from './GalleryComponent'
 import MenuSideView from './MenuSideView'
@@ -31,7 +33,7 @@ const IMG_HEIGHT = height / 1.5
 const MIN_HEIGHT = Header.HEIGHT + 200
 const MAX_HEIGHT = IMG_HEIGHT
 
-export default class CategoryScreen extends React.Component {
+export default class CollectionsScreen extends React.Component {
 
     static navigationOptions = {
         header: null,
@@ -42,14 +44,27 @@ export default class CategoryScreen extends React.Component {
         super()
         this.state = {
             refreshing: false,
-            showNavTitle: false
+            showNavTitle: false,
+            isOpen: false,
         }
     }
 
     componentDidMount() {
-        stickyPeachDB.initDatabase()
+        // stickyPeachDB.initDatabase()
+        
         // stickyPeachDB.insertRandomUser()
-        stickyPeachDB.selectAllUsers()
+        // stickyPeachDB.insertRecipe({
+        //     name: "aaaaa", 
+        //     time_preparation: 10, 
+        //     time_cook: 40, 
+        //     serves: 2, 
+        //     description: "some description aaaaa", 
+        //     vegan: false, 
+        // }, 1)
+
+        // stickyPeachDB.selectAllUsers()
+        // stickyPeachDB.selectAllRecipes()
+        // stickyPeachDB.selectAllSteps()
     }
 
     _onRefresh() {
@@ -69,7 +84,7 @@ export default class CategoryScreen extends React.Component {
         let arr = new Array()
 
         for (let i = 1; i <= totalEntries; i++) {
-            arr.push({"id": i, "mainDescription": "Some pasta " + i, "headDescription": "Italian", "subtitleOne" : "20 min", "subtitleTwo": "4", "vegan" : false,})
+            arr.push({"id": i, "mainDescription": "Italian " + i, "headDescription": "Italian", "subtitleOne" : "20 min", "subtitleTwo": "4", "vegan" : true,})
         }
 
         return arr
@@ -77,8 +92,7 @@ export default class CategoryScreen extends React.Component {
 
     render() {
         const menu = <MenuSideView navigator={this.props.navigation}/>
-        const collection = this.props.navigation.state.params.collection
-        console.log("collection categoryScreen: " + JSON.stringify(this.props))
+        const moduleDescription = "Collections"
         return (
             <SideMenu 
                 menu={menu}
@@ -86,6 +100,19 @@ export default class CategoryScreen extends React.Component {
                 menuPosition="right"
             >
                 <View style={{ flex: 1 }}>
+                    <Icon 
+                        name="add"
+                        raised
+                        reverse
+                        reverseColor={Constants.COLORS.SYSTEM.SECONDARY}
+                        color={Constants.COLORS.SYSTEM.PRIMARY}
+                        containerStyle={{
+                            position: "absolute",
+                            bottom: 0,
+                            right: 0, 
+                            zIndex: 102,
+                        }}
+                    />
                     <MenuButtonComponent 
                         callbackOnPress={() => {
                             this.setState({
@@ -100,7 +127,7 @@ export default class CategoryScreen extends React.Component {
                         maxOverlayOpacity={0.5}
                         minOverlayOpacity={0.1}
                         fadeOutForeground
-                        renderHeader={() => <Image source={require('../../assets/pasta.jpg')} style={styles.image} />}
+                        renderHeader={() => <Image source={require('../../assets/salads.jpg')} style={styles.image} />}
                         renderFixedForeground={() => (
                             <Animatable.View
                                 style={styles.navTitleView}
@@ -108,37 +135,14 @@ export default class CategoryScreen extends React.Component {
                                     this.navTitleView = navTitleView;
                                 }}
                             >
-                                <Button 
-                                    icon={{name: "arrow-back", color: "#fff", size: 12,}} 
-                                    title={"Go back"} 
-                                    titleStyle={{color: "#fff", fontSize: 12, }}
-                                    buttonStyle={{
-                                        backgroundColor: "transparent",
-                                    }}
-                                    containerStyle={{alignSelf: "flex-start", }}
-                                    onPress={() => {
-                                        this.props.navigation.goBack()
-                                    }}
-                                />
                                 <Text style={styles.navTitle}>
-                                    {collection.item.mainDescription}
+                                    {moduleDescription}
                                 </Text>
                             </Animatable.View>
                         )}
                         renderForeground={() => (
                             <View style={styles.titleContainer}>
-                                <Button 
-                                    icon={{name: "arrow-back", color: Constants.COLORS.SYSTEM.PRIMARY, size: 12,}} 
-                                    title={"Go back"} 
-                                    titleStyle={{color: Constants.COLORS.SYSTEM.PRIMARY, fontSize: 12, }}
-                                    buttonStyle={{
-                                        backgroundColor: Constants.COLORS.SYSTEM.SECONDARY,
-                                    }}
-                                    onPress={() => {
-                                        this.props.navigation.goBack()
-                                    }}
-                                />
-                                <Text style={styles.imageTitle}>{collection.item.mainDescription}</Text>
+                                <Text style={styles.imageTitle}>{moduleDescription}</Text>
                             </View>
                         )}
                         >
@@ -147,9 +151,9 @@ export default class CategoryScreen extends React.Component {
                             onHide={() => this.navTitleView.fadeInUp(200)}
                             onDisplay={() => this.navTitleView.fadeOut(100)}
                         >
-                            <Text>{collection.item.mainDescription}</Text>
+                            <Text>{moduleDescription}</Text>
                         </TriggeringView>
-                        <GalleryComponent collections={this._getDummyArray()} />
+                        <GalleryComponent collections={this._getDummyArray()} navigateTo="Collection" nav={this.props.navigation} />
                     </HeaderImageScrollView>
                 </View>
             </SideMenu>
@@ -232,4 +236,3 @@ const styles = StyleSheet.create({
         height: 600,
     },
 })
-  

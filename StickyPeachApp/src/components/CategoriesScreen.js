@@ -21,7 +21,7 @@ import MenuSideView from './MenuSideView'
 import MenuButtonComponent from './MenuButtonComponent'
 
 import * as Animatable from 'react-native-animatable'
-import * as whiskDB from '../database/db.js'
+import * as stickyPeachDB from '../database/db.js'
 import * as Constants from '../utils/Constants.js'
 
 const { width, height } = Dimensions.get('window')
@@ -47,9 +47,9 @@ export default class CategoriesScreen extends React.Component {
     }
 
     componentDidMount() {
-        whiskDB.initDatabase()
-        // whiskDB.insertRandomUser()
-        whiskDB.selectAllUsers()
+        // stickyPeachDB.initDatabase()
+        // stickyPeachDB.insertRandomUser()
+        // stickyPeachDB.selectAllUsers()
     }
 
     _onRefresh() {

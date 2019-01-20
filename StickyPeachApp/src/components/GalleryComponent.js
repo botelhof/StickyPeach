@@ -51,7 +51,7 @@ export default class GalleryComponent extends React.Component {
         const {collections} = this.props
         const nav = this.props.nav
 
-        console.log("navigation: " + JSON.stringify(nav))
+        // console.log("navigation: " + JSON.stringify(nav))
 
         return (
             <View 
