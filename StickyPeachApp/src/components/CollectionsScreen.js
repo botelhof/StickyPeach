@@ -50,7 +50,7 @@ export default class CollectionsScreen extends React.Component {
     }
 
     componentDidMount() {
-        // stickyPeachDB.initDatabase()
+        stickyPeachDB.initDatabase()
         
         // stickyPeachDB.insertRandomUser()
         // stickyPeachDB.insertRecipe({
@@ -65,6 +65,7 @@ export default class CollectionsScreen extends React.Component {
         // stickyPeachDB.selectAllUsers()
         // stickyPeachDB.selectAllRecipes()
         // stickyPeachDB.selectAllSteps()
+        // stickyPeachDB.selectAllDefaultSettings()
     }
 
     _onRefresh() {
@@ -111,6 +112,9 @@ export default class CollectionsScreen extends React.Component {
                             bottom: 0,
                             right: 0, 
                             zIndex: 102,
+                        }}
+                        onPress={() => {
+                            this.props.navigation.navigate("CollectionNew")
                         }}
                     />
                     <MenuButtonComponent 

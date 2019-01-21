@@ -11,13 +11,14 @@ import {
     TouchableOpacity,
 } from 'react-native'
 
+import * as Constants from '../utils/Constants.js'
 export default class MenuSideView extends React.Component {
     componentWillMount() {
     }
     render() {
         return (
-            <View style={{flex: 1, backgroundColor: "#fff"}}>
-                <ScrollView style={{flex: 1,}}>
+            <View style={{flex: 1, backgroundColor: Constants.COLORS.SYSTEM.SECONDARY, paddingLeft: 10,}}>
+                <ScrollView style={{flex: 1, backgroundColor: Constants.COLORS.SYSTEM.PRIMARY}}>
                     <View style={{flex: 1, marginTop: 100, marginLeft: 20,}}>
                         <TouchableOpacity onPress={() => {
                             this.props.callbackOnPressLink

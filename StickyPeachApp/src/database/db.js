@@ -4,6 +4,14 @@ const db = SQLite.openDatabase('StickyPeach.db')
 
 export function initDatabase() {
     db.transaction(tx => {
+
+        // tx.executeSql(
+        //     'drop table default_settings;'
+        // )
+        tx.executeSql(
+            'create table if not exists default_settings (id integer primary key not null, name text not null, val_text text, val_int int, val_timestamp timestamp, val_boolean boolean, val_blob blob);'
+        )
+
         // tx.executeSql(
         //     'drop table user;'
         // )
@@ -84,6 +92,22 @@ export function selectAllSteps() {
     )
 }
 
+export function selectAllDefaultSettings() {
+    db.transaction(
+        tx => {
+            tx.executeSql('select * from default_settings', [], (_, { rows }) =>
+                console.log("select default_settings: " + JSON.stringify(rows))
+            )
+        },
+        (success) => {
+            console.log("success selectAllDefaultSettings: " + success)
+        },
+        (error) => {
+            console.log("error selectAllDefaultSettings: " + error)
+        }
+    )
+}
+
 export function selectRecipeById(recipe_id) {
     db.transaction(
         tx => {
@@ -124,6 +148,20 @@ export function insertRecipe(recipe, user_id) {
         },
         (error) => {
             console.log("error insertRecipe: " + error)
+        }
+    )
+}
+
+export function insertDefaultSettingsBlob(name, val_blob) {
+    db.transaction(
+        tx => {
+            tx.executeSql('insert into default_settings (name, val_blob) values (?, ?)', [name, val_blob]);
+        },
+        (success) => {
+            console.log("success insertDefaultSettingsBlob: " + success)
+        },
+        (error) => {
+            console.log("error insertDefaultSettingsBlob: " + error)
         }
     )
 }

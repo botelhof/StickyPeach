@@ -53,7 +53,7 @@ export default class SettingsScreen extends React.Component {
         const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
         if (status === 'granted') {
             let result = await ImagePicker.launchImageLibraryAsync({
-                allowsEditing: true,
+                // allowsEditing: true,
                 base64: true,
                 // aspect: [4, 3],
             })
@@ -68,9 +68,10 @@ export default class SettingsScreen extends React.Component {
                 // }, 1)
 
 
-                this.setState({ image: result.base64 })
+                // this.setState({ image: result.base64 })
 
                 // console.log("result: " + JSON.stringify(result.base64))
+                // stickyPeachDB.insertDefaultSettingsBlob("defaultImage", result.base64)
             }
         }
     }

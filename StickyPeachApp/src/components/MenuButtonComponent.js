@@ -30,7 +30,8 @@ export default class MenuButtonComponent extends React.Component {
                 }}
                 containerStyle={{
                     backgroundColor: Constants.COLORS.SYSTEM.SECONDARY,
-                    paddingRight: 10,
+                    padding: 5,
+                    paddingRight: 15,
                     top: 50,
                     right: 0,
                     zIndex: 100,
