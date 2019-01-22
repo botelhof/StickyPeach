@@ -23,7 +23,7 @@ class FloatingLabel extends Component {
 
     this.state = {
       paddingAnim: new Animated.Value(initialPadding),
-      opacityAnim: new Animated.Value(initialOpacity)
+      opacityAnim: new Animated.Value(initialOpacity),
     }
   }
 
@@ -98,6 +98,7 @@ class FloatLabelTextField extends Component {
   }
 
   render() {
+    // console.log("wwwwwwwww: " + JSON.stringify(this.props))
     return (
       <View style={styles.container}>
         <View style={styles.viewContainer}>
@@ -110,14 +111,19 @@ class FloatLabelTextField extends Component {
               <TextInput {...this.props}
                 ref='input'
                 underlineColorAndroid="transparent"
-                style={[styles.valueText]}
+                // style={[styles.valueText, 
+                //   {
+                //     height: this.props.multiline ? 50 : (Platform.OS == 'ios' ? 25 : 60),
+                //   } 
+                // ]}
+                style={styles.valueText}
                 defaultValue={this.props.defaultValue}
                 value={this.state.text}
                 maxLength={this.props.maxLength}
                 onFocus={() => this.setFocus()}
                 onBlur={() => this.unsetFocus()}
                 onChangeText={(value) => this.setText(value)}
-                />
+              />
             </TextFieldHolder>
           </View>
         </View>
@@ -188,7 +194,7 @@ class FloatLabelTextField extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: 45,
+    height: 55,
     backgroundColor: 'white',
     justifyContent: 'center'
   },
@@ -205,9 +211,9 @@ const styles = StyleSheet.create({
     left: 0
   },
   fieldLabel: {
-    height: 15,
-    fontSize: 10,
-    color: '#B1B1B1'
+    height: 20,
+    fontSize: 12,
+    color: '#333'
   },
   fieldContainer: {
     flex: 1,
@@ -216,12 +222,13 @@ const styles = StyleSheet.create({
   },
   withBorder: {
     borderBottomWidth: 1 / 2,
-    borderColor: '#C8C7CC',
+    borderColor: '#333',
   },
   valueText: {
     height: (Platform.OS == 'ios' ? 25 : 60),
-    fontSize: 14,
-    color: '#111111'
+    fontSize: 17,
+    color: '#111111',
+    // backgroundColor: "yellow",
   },
   focused: {
     color: Constants.COLORS.SYSTEM.PRIMARY,

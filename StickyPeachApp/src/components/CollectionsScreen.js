@@ -66,6 +66,7 @@ export default class CollectionsScreen extends React.Component {
         // stickyPeachDB.selectAllRecipes()
         // stickyPeachDB.selectAllSteps()
         // stickyPeachDB.selectAllDefaultSettings()
+        stickyPeachDB.selectAllCollections()
     }
 
     _onRefresh() {

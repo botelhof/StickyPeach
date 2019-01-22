@@ -32,6 +32,13 @@ export function initDatabase() {
         tx.executeSql(
             'create table if not exists step (id integer primary key not null, orderNumber int not null, description text not null, picture blob, recipe_id int not null, timestamp_creation timestamp not null, timestamp_updated timestamp, FOREIGN KEY(recipe_id) REFERENCES recipe(id));'
         )
+
+        // tx.executeSql(
+        //     'drop table collection;'
+        // )
+        tx.executeSql(
+            'create table if not exists collection (id integer primary key not null, name text not null, description text not null, timestamp_creation timestamp not null, timestamp_updated timestamp);'
+        )
     },
     (success) => {
         console.log("success initDatabase: " + success)
@@ -92,6 +99,22 @@ export function selectAllSteps() {
     )
 }
 
+export function selectAllCollections() {
+    db.transaction(
+        tx => {
+            tx.executeSql('select * from collection', [], (_, { rows }) =>
+                console.log("select collection: " + JSON.stringify(rows))
+            )
+        },
+        (success) => {
+            console.log("success selectAllCollections: " + success)
+        },
+        (error) => {
+            console.log("error selectAllCollections: " + error)
+        }
+    )
+}
+
 export function selectAllDefaultSettings() {
     db.transaction(
         tx => {
@@ -148,6 +171,20 @@ export function insertRecipe(recipe, user_id) {
         },
         (error) => {
             console.log("error insertRecipe: " + error)
+        }
+    )
+}
+
+export function insertCollection(collection) {
+    db.transaction(
+        tx => {
+            tx.executeSql('insert into collection (name, description, timestamp_creation, timestamp_updated) values (?, ?, ?, ?)', [collection.name, recipe.description, new Date(), null]);
+        },
+        (success) => {
+            console.log("success insertCollection: " + success)
+        },
+        (error) => {
+            console.log("error insertCollection: " + error)
         }
     )
 }

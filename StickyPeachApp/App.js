@@ -12,11 +12,14 @@ import CollectionScreen from './src/components/CollectionScreen'
 import CollectionNewScreen from './src/components/CollectionNewScreen'
 import SettingsScreen from './src/components/SettingsScreen'
 
+import DropdownAlert from 'react-native-dropdownalert'
+
 import {
   Icon,
 } from 'react-native-elements'
 
 import * as Constants from './src/utils/Constants.js'
+import * as DropDownHolder from './src/utils/DropDownHolder.js'
 
 const CategoriesStack = createStackNavigator({
   Categories: CategoriesScreen,
@@ -34,7 +37,7 @@ const SettingsStack = createStackNavigator({
   Category: CategoryScreen
 })
 
-export default createAppContainer(createBottomTabNavigator(
+const AppContainer = createAppContainer(createBottomTabNavigator(
   {
     Collections: {
       screen: CollectionsStack,
@@ -93,3 +96,14 @@ export default createAppContainer(createBottomTabNavigator(
     },
   }
 ))
+
+export default class App extends React.Component {
+  render() {
+      return (
+          <View style={{width: '100%', height: '100%'}}>
+              <AppContainer/>
+              <DropdownAlert ref={(ref) => DropDownHolder.setDropDown(ref)}/>
+          </View>
+      )
+  }
+}
