@@ -44,13 +44,20 @@ export default class SquareComponent extends React.Component {
                 <TouchableOpacity onPress={() => {
                     this.props.nav.navigate(navigateTo, {collection: collection})
                 }}>
-                    <Image 
+                    {/* <Image 
                         source={require("../../assets/pasta.jpg")}
                         // width={viewLength - 10} 
                         // height={viewLength - 10} 
                         resizeMode="cover"
                         style={{
                             // flex: 1,
+                            width: viewLength,
+                            height: viewLength,
+                        }} 
+                    /> */}
+                    <Image 
+                        source={{uri: `data:image/jpg;base64,${collection.item.picture}`,}} 
+                        style={{ 
                             width: viewLength,
                             height: viewLength,
                         }} 

@@ -17,6 +17,9 @@ import FloatLabelTextInput from './FloatLabelTextField'
 
 import * as Constants from '../utils/Constants.js'
 import * as DropDownHolder from '../utils/DropDownHolder.js'
+import * as stickyPeachDB from '../database/db.js'
+
+import { ImagePicker, Permissions, } from 'expo'
 
 export default class CollectionNewScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
@@ -40,6 +43,20 @@ export default class CollectionNewScreen extends React.Component {
         }
     }
 
+    _pickImage = async () => {
+        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        if (status === 'granted') {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+                base64: true,
+                // aspect: [4, 3],
+            })
+            if (!result.cancelled) {
+                this.setState({ picture: result.base64 })
+            }
+        }
+    }
+
     render() {
         return (
             <View style={{flex: 1,}}>
@@ -53,7 +70,7 @@ export default class CollectionNewScreen extends React.Component {
                         placeholder={"Collection name"}
                         value={this.state.name}
                         keyboardType="default"
-                        noBorder
+                        // noBorder
                         maxLength={100}
                         selectionColor={Constants.COLORS.SYSTEM.PRIMARY}
                         onFocus={() => {
@@ -75,7 +92,7 @@ export default class CollectionNewScreen extends React.Component {
                         placeholder={"Collection description"}
                         value={this.state.description}
                         keyboardType="default"
-                        noBorder
+                        // noBorder
                         maxLength={500}
                         // multiline
                         // numberOfLines={3}
@@ -94,6 +111,10 @@ export default class CollectionNewScreen extends React.Component {
                         style={{
                             fontSize: 15,
                         }}
+                    />
+                    <Button
+                        title="Pick a cover picture from camera roll"
+                        onPress={this._pickImage}
                     />
                 </ScrollView>
                 <View style={{
@@ -158,20 +179,37 @@ export default class CollectionNewScreen extends React.Component {
                             let msg = ""
 
                             if (!this.state.name) {
-                                msg += "The field 'Name' is empty. "
+                                msg += "Please, fill the 'Collection name' field "
                             }
 
                             if (!this.state.description) {
-                                msg += "The field 'Description' is empty. "
+                                msg += "Please, fill the 'Collection description' field "
                             }
 
                             if (msg != "") {
                                 DropDownHolder.getDropDown().alertWithType('error', 'Error', msg)
                             } else {
-                                DropDownHolder.getDropDown().alertWithType('info', 'Info', this.state.name)
+                                stickyPeachDB.insertCollection({
+                                    name: this.state.name,
+                                    description: this.state.description,
+                                    picture: this.state.picture,
+                                })
+                                this.props.navigation.goBack()
+                                DropDownHolder.getDropDown().alertWithType('success', 'Success', 'Collection "' + this.state.name + '" created with success')
                             }
                         }}
                     />
+                    {
+                        this.state.picture
+                        &&
+                        <Image 
+                            source={{uri: `data:image/jpg;base64,${this.state.picture}`,}} 
+                            style={{ 
+                                width: 200, 
+                                height: 200 ,
+                            }} 
+                        />
+                    }
                 </View>
             </View>
         )

@@ -37,7 +37,7 @@ export function initDatabase() {
         //     'drop table collection;'
         // )
         tx.executeSql(
-            'create table if not exists collection (id integer primary key not null, name text not null, description text not null, timestamp_creation timestamp not null, timestamp_updated timestamp);'
+            'create table if not exists collection (id integer primary key not null, name text not null, description text not null, picture blob, timestamp_creation timestamp not null, timestamp_updated timestamp);'
         )
     },
     (success) => {
@@ -99,20 +99,24 @@ export function selectAllSteps() {
     )
 }
 
-export function selectAllCollections() {
-    db.transaction(
-        tx => {
-            tx.executeSql('select * from collection', [], (_, { rows }) =>
-                console.log("select collection: " + JSON.stringify(rows))
-            )
-        },
-        (success) => {
-            console.log("success selectAllCollections: " + success)
-        },
-        (error) => {
-            console.log("error selectAllCollections: " + error)
-        }
-    )
+export async function selectAllCollections(callback) {
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            tx => {
+                // tx.executeSql('select * from collection', [], (_, { rows }) =>
+                //     console.log("select collection: " + JSON.stringify(rows))
+                // )
+    
+                // tx.executeSql('select * from collection', [])
+    
+                tx.executeSql('select * from collection', [], (_, { rows }) =>
+                    resolve(rows)
+                )
+            },
+            null,
+            null
+        )
+    })
 }
 
 export function selectAllDefaultSettings() {
@@ -178,7 +182,7 @@ export function insertRecipe(recipe, user_id) {
 export function insertCollection(collection) {
     db.transaction(
         tx => {
-            tx.executeSql('insert into collection (name, description, timestamp_creation, timestamp_updated) values (?, ?, ?, ?)', [collection.name, recipe.description, new Date(), null]);
+            tx.executeSql('insert into collection (name, description, picture, timestamp_creation, timestamp_updated) values (?, ?, ?, ?, ?)', [collection.name, collection.description, collection.picture, new Date(), null]);
         },
         (success) => {
             console.log("success insertCollection: " + success)

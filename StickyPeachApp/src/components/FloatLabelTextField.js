@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   },
   withBorder: {
     borderBottomWidth: 1 / 2,
-    borderColor: '#333',
+    borderColor: '#C8C7CC',
   },
   valueText: {
     height: (Platform.OS == 'ios' ? 25 : 60),

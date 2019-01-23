@@ -39,13 +39,25 @@ export default class CollectionsScreen extends React.Component {
         header: null,
     }
 
+    constructor(props) {
+        super(props)
 
-    constructor() {
-        super()
         this.state = {
             refreshing: false,
             showNavTitle: false,
-            isOpen: false,
+            isOpenz: false,
+        }
+
+        this.props.navigation.addListener('willFocus', this.enterScreen)
+    }
+
+    enterScreen = async () => {
+        const original = await stickyPeachDB.selectAllCollections()
+
+        if (original) {
+            this.setState({
+                list: this._translate(original._array)
+            })
         }
     }
 
@@ -66,7 +78,8 @@ export default class CollectionsScreen extends React.Component {
         // stickyPeachDB.selectAllRecipes()
         // stickyPeachDB.selectAllSteps()
         // stickyPeachDB.selectAllDefaultSettings()
-        stickyPeachDB.selectAllCollections()
+        // stickyPeachDB.selectAllCollections()
+        // this.enterScreen()
     }
 
     _onRefresh() {
@@ -81,16 +94,36 @@ export default class CollectionsScreen extends React.Component {
         }, 2000)
     }
 
-    _getDummyArray = () => {
-        const totalEntries = 9
-        let arr = new Array()
+    _translate = (originalList) => {
+        let listTranslated = new Array()
+        for (let i = 0; i < originalList.length; i++) {
+            const originalItem = originalList[i]
 
-        for (let i = 1; i <= totalEntries; i++) {
-            arr.push({"id": i, "mainDescription": "Italian " + i, "headDescription": "Italian", "subtitleOne" : "20 min", "subtitleTwo": "4", "vegan" : true,})
+            let translatedItem = {}
+            translatedItem['mainDescription'] = originalItem.name
+            translatedItem['headDescription'] = ""
+            translatedItem['subtitleOne'] = ""
+            translatedItem['subtitleTwo'] = ""
+            translatedItem['vegan'] = false
+            translatedItem['picture'] = originalItem.picture
+
+            listTranslated.push(translatedItem)
         }
 
-        return arr
+        // console.log("listTranslated: " + JSON.stringify(listTranslated))
+        return listTranslated
     }
+
+    // _getDummyArray = () => {
+    //     const totalEntries = 9
+    //     let arr = new Array()
+
+    //     for (let i = 1; i <= totalEntries; i++) {
+    //         arr.push({"id": i, "mainDescription": "Italian " + i, "headDescription": "Italian", "subtitleOne" : "20 min", "subtitleTwo": "4", "vegan" : true,})
+    //     }
+
+    //     return arr
+    // }
 
     render() {
         const menu = <MenuSideView navigator={this.props.navigation}/>
@@ -158,7 +191,7 @@ export default class CollectionsScreen extends React.Component {
                         >
                             <Text>{moduleDescription}</Text>
                         </TriggeringView>
-                        <GalleryComponent collections={this._getDummyArray()} navigateTo="Collection" nav={this.props.navigation} />
+                        <GalleryComponent collections={this.state.list} navigateTo="Collection" nav={this.props.navigation} />
                     </HeaderImageScrollView>
                 </View>
             </SideMenu>
