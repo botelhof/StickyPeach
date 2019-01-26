@@ -37,7 +37,7 @@ export default class SquareComponent extends React.Component {
             // const pic = JSON.parse(dbRow)._array[0].val_blob
             this.setState({
                 isLoading: false,
-                defaultImage: dbRow._array[0].val_blob,
+                defaultImage: dbRow && dbRow._array[0] ? dbRow._array[0].val_blob : null,
             })
         })
     }
@@ -107,7 +107,7 @@ export default class SquareComponent extends React.Component {
             <View 
                 style={{
                     width: viewLength,
-                    height: viewLength + 100,
+                    height: viewLength + 80,
                     flexDirection: "column",
                     paddingTop: 5,
                 }}

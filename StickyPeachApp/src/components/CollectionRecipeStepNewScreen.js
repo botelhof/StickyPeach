@@ -22,10 +22,10 @@ import * as stickyPeachDB from '../database/db.js'
 import { ImagePicker, Permissions, } from 'expo'
 
 const { width, height } = Dimensions.get('window')
-export default class CollectionNewScreen extends React.Component {
+export default class CollectionRecipeStepNewScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
         return {
-          title: "New Collection",
+          title: "New Recipe Step",
           headerStyle: {
             backgroundColor: Constants.COLORS.SYSTEM.PRIMARY,
           },
@@ -36,12 +36,20 @@ export default class CollectionNewScreen extends React.Component {
         }
       }
 
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
-            name: null,
             description: null,
+            picture: null,
         }
+    }
+
+    componentDidMount() {
+        const recipe_temp_id = this.props.navigation.state.params.recipe_temp_id
+
+        this.setState({
+            recipe_temp_id: recipe_temp_id,
+        })
     }
 
     _pickImage = async () => {
@@ -59,8 +67,7 @@ export default class CollectionNewScreen extends React.Component {
     }
 
     render() {
-
-        const viewLength = width * 0.6
+        const viewLength = width * 0.4
 
         return (
             <View style={{flex: 1,}}>
@@ -71,35 +78,10 @@ export default class CollectionNewScreen extends React.Component {
                     }}
                 >
                     <FloatLabelTextInput
-                        placeholder={"Collection name"}
-                        value={this.state.name}
-                        keyboardType="default"
-                        // noBorder
-                        maxLength={100}
-                        selectionColor={Constants.COLORS.SYSTEM.PRIMARY}
-                        onFocus={() => {
-
-                        }}
-                        onBlur={() => {
-                            
-                        }}
-                        onChangeTextValue={(txt) => {
-                            this.setState({
-                                name: txt,
-                            })
-                        }}
-                        style={{
-                            fontSize: 15,
-                        }}
-                    />
-                    <FloatLabelTextInput
-                        placeholder={"Collection description"}
+                        placeholder={"Step description"}
                         value={this.state.description}
                         keyboardType="default"
-                        // noBorder
                         maxLength={500}
-                        // multiline
-                        // numberOfLines={3}
                         selectionColor={Constants.COLORS.SYSTEM.PRIMARY}
                         onFocus={() => {
 

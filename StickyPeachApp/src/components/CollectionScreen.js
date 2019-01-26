@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 import {
     Button,
+    Icon,
 } from 'react-native-elements'
 import { 
     Header,
@@ -38,18 +39,54 @@ export default class CollectionScreen extends React.Component {
     }
 
 
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
+
         this.state = {
             refreshing: false,
-            showNavTitle: false
+            showNavTitle: false,
+            isOpen: false,
+        }
+
+        this.props.navigation.addListener('willFocus', this.enterScreen)
+    }
+    
+    enterScreen = async () => {
+        const collection = this.props.navigation.state.params.collection
+
+        const collectionRecipes = await stickyPeachDB.selectAllRecipesForCollection(collection.item.id)
+
+        console.log("collectionRecipes: " + JSON.stringify(collectionRecipes))
+        if (collectionRecipes) {
+            this.setState({
+                list: this._translate(collectionRecipes._array)
+            })
         }
     }
 
     componentDidMount() {
-        stickyPeachDB.initDatabase()
-        // stickyPeachDB.insertRandomUser()
-        stickyPeachDB.selectAllUsers()
+        
+    }
+
+    _translate = (originalList) => {
+        let listTranslated = new Array()
+        for (let i = 0; i < originalList.length; i++) {
+            const originalItem = originalList[i]
+
+            let translatedItem = {}
+            translatedItem['id'] = originalItem.id
+            translatedItem['mainDescription'] = originalItem.name
+            translatedItem['headDescription'] = originalItem.description
+            translatedItem['subtitleOne'] = ""
+            translatedItem['subtitleTwo'] = ""
+            translatedItem['vegan'] = false
+            translatedItem['picture'] = originalItem.picture
+
+            listTranslated.push(translatedItem)
+        }
+
+        // console.log("listTranslated: " + JSON.stringify(listTranslated))
+        return listTranslated
     }
 
     _onRefresh() {
@@ -64,17 +101,6 @@ export default class CollectionScreen extends React.Component {
         }, 2000)
     }
 
-    _getDummyArray = () => {
-        const totalEntries = 9
-        let arr = new Array()
-
-        for (let i = 1; i <= totalEntries; i++) {
-            arr.push({"id": i, "mainDescription": "Some pasta " + i, "headDescription": "Italian", "subtitleOne" : "20 min", "subtitleTwo": "4", "vegan" : false,})
-        }
-
-        return arr
-    }
-
     render() {
         const menu = <MenuSideView navigator={this.props.navigation}/>
         const collection = this.props.navigation.state.params.collection
@@ -86,6 +112,22 @@ export default class CollectionScreen extends React.Component {
                 menuPosition="right"
             >
                 <View style={{ flex: 1 }}>
+                    <Icon 
+                        name="add"
+                        raised
+                        reverse
+                        reverseColor={Constants.COLORS.SYSTEM.SECONDARY}
+                        color={Constants.COLORS.SYSTEM.PRIMARY}
+                        containerStyle={{
+                            position: "absolute",
+                            bottom: 0,
+                            right: 0, 
+                            zIndex: 102,
+                        }}
+                        onPress={() => {
+                            this.props.navigation.navigate("CollectionRecipeNew")
+                        }}
+                    />
                     <MenuButtonComponent 
                         callbackOnPress={() => {
                             this.setState({
@@ -149,7 +191,7 @@ export default class CollectionScreen extends React.Component {
                         >
                             <Text>{collection.item.mainDescription}</Text>
                         </TriggeringView>
-                        <GalleryComponent collections={this._getDummyArray()} />
+                        <GalleryComponent collections={this.state.list} />
                     </HeaderImageScrollView>
                 </View>
             </SideMenu>

@@ -18,14 +18,15 @@ import FloatLabelTextInput from './FloatLabelTextField'
 import * as Constants from '../utils/Constants.js'
 import * as DropDownHolder from '../utils/DropDownHolder.js'
 import * as stickyPeachDB from '../database/db.js'
+import * as Utils from '../utils/Utils'
 
 import { ImagePicker, Permissions, } from 'expo'
 
 const { width, height } = Dimensions.get('window')
-export default class CollectionNewScreen extends React.Component {
+export default class CollectionRecipeNewScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
         return {
-          title: "New Collection",
+          title: "New Recipe",
           headerStyle: {
             backgroundColor: Constants.COLORS.SYSTEM.PRIMARY,
           },
@@ -36,12 +37,22 @@ export default class CollectionNewScreen extends React.Component {
         }
       }
 
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
             name: null,
             description: null,
+            time_preparation: null,
+            time_cook: null,
+            serves: null,
+            vegan: false,
         }
+    }
+
+    componentDidMount() {
+        this.setState({
+            recipe_temp_id: Utils.guid(),
+        })
     }
 
     _pickImage = async () => {
@@ -59,8 +70,7 @@ export default class CollectionNewScreen extends React.Component {
     }
 
     render() {
-
-        const viewLength = width * 0.6
+        const viewLength = width * 0.4
 
         return (
             <View style={{flex: 1,}}>
@@ -71,10 +81,9 @@ export default class CollectionNewScreen extends React.Component {
                     }}
                 >
                     <FloatLabelTextInput
-                        placeholder={"Collection name"}
+                        placeholder={"Recipe name"}
                         value={this.state.name}
                         keyboardType="default"
-                        // noBorder
                         maxLength={100}
                         selectionColor={Constants.COLORS.SYSTEM.PRIMARY}
                         onFocus={() => {
@@ -96,10 +105,7 @@ export default class CollectionNewScreen extends React.Component {
                         placeholder={"Collection description"}
                         value={this.state.description}
                         keyboardType="default"
-                        // noBorder
                         maxLength={500}
-                        // multiline
-                        // numberOfLines={3}
                         selectionColor={Constants.COLORS.SYSTEM.PRIMARY}
                         onFocus={() => {
 
@@ -110,6 +116,48 @@ export default class CollectionNewScreen extends React.Component {
                         onChangeTextValue={(txt) => {
                             this.setState({
                                 description: txt,
+                            })
+                        }}
+                        style={{
+                            fontSize: 15,
+                        }}
+                    />
+                    <FloatLabelTextInput
+                        placeholder={"Preparation time"}
+                        value={this.state.time_preparation}
+                        keyboardType="default"
+                        maxLength={500}
+                        selectionColor={Constants.COLORS.SYSTEM.PRIMARY}
+                        onFocus={() => {
+
+                        }}
+                        onBlur={() => {
+                            
+                        }}
+                        onChangeTextValue={(txt) => {
+                            this.setState({
+                                time_preparation: txt,
+                            })
+                        }}
+                        style={{
+                            fontSize: 15,
+                        }}
+                    />
+                    <FloatLabelTextInput
+                        placeholder={"Cook time"}
+                        value={this.state.time_cook}
+                        keyboardType="default"
+                        maxLength={500}
+                        selectionColor={Constants.COLORS.SYSTEM.PRIMARY}
+                        onFocus={() => {
+
+                        }}
+                        onBlur={() => {
+                            
+                        }}
+                        onChangeTextValue={(txt) => {
+                            this.setState({
+                                time_cook: txt,
                             })
                         }}
                         style={{
@@ -205,6 +253,40 @@ export default class CollectionNewScreen extends React.Component {
                             />
                         </View>
                     }
+                    <View style={{
+                        marginTop: 30,
+                        flexDirection: 'row',
+                        alignContent: 'center',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                    }}>
+                        <Button 
+                            icon={{
+                                name: "add",
+                                color: "#fff",
+                                size: 18,
+                            }}
+                            title="Add a new step"
+                            titleStyle={{
+                                color: "#fff",
+                                fontSize: 14,
+                            }}
+                            buttonStyle={{
+                                backgroundColor: "#3399ff",
+                                padding: 5,
+                            }}
+                            containerStyle={{
+                                marginTop: 5,
+                                alignSelf: 'flex-end',
+                            }}
+                            onPress={() => {
+                                this.props.navigation.navigate("CollectionRecipeStepNew", {recipe_temp_id: this.state.recipe_temp_id})
+                            }}
+                        />
+                        <ScrollView>
+
+                        </ScrollView>
+                    </View>
                 </ScrollView>
                 <View style={{
                     flexDirection: "row",

@@ -4,8 +4,8 @@ import * as databaseInit from './databaseInit'
 
 const db = SQLite.openDatabase('StickyPeach.db')
 
-export function initDatabase() {
-    databaseInit.initDatabase()
+export function initDatabase(defaultSettings) {
+    databaseInit.initDatabase(defaultSettings)
 }
 
 export function selectAllUsers() {
@@ -109,6 +109,24 @@ export function selectRecipeById(recipe_id) {
             console.log("error selectRecipeById: " + error)
         }
     )
+}
+
+export async function selectAllRecipesForCollection(collectionId) {
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            tx => {
+                tx.executeSql('select recipe.* '+
+                            'from recipe, collection, recipe_collection ' +
+                            'where recipe_collection.recipe_id = recipe.id AND ' +
+                            'recipe_collection.collection_id = collection.id ' +
+                            'AND collection.id = ?', [collectionId], (_, { rows }) =>
+                    resolve(rows)
+                )
+            },
+            null,
+            null
+        )
+    })
 }
 
 export async function selectDefaultSetting(default_setting_name) {

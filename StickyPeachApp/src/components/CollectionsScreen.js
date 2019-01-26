@@ -26,6 +26,7 @@ import MenuButtonComponent from './MenuButtonComponent'
 import * as Animatable from 'react-native-animatable'
 import * as stickyPeachDB from '../database/db.js'
 import * as Constants from '../utils/Constants.js'
+import * as DefaultSettings from '../utils/DefaultSettings'
 
 const { width, height } = Dimensions.get('window')
 
@@ -45,7 +46,7 @@ export default class CollectionsScreen extends React.Component {
         this.state = {
             refreshing: false,
             showNavTitle: false,
-            isOpenz: false,
+            isOpen: false,
         }
 
         this.props.navigation.addListener('willFocus', this.enterScreen)
@@ -62,7 +63,7 @@ export default class CollectionsScreen extends React.Component {
     }
 
     componentDidMount() {
-        stickyPeachDB.initDatabase()
+        //stickyPeachDB.initDatabase(DefaultSettings.DEFAULT_SETTINGS)
         
         // stickyPeachDB.insertRandomUser()
         // stickyPeachDB.insertRecipe({
@@ -100,8 +101,9 @@ export default class CollectionsScreen extends React.Component {
             const originalItem = originalList[i]
 
             let translatedItem = {}
+            translatedItem['id'] = originalItem.id
             translatedItem['mainDescription'] = originalItem.name
-            translatedItem['headDescription'] = ""
+            translatedItem['headDescription'] = originalItem.description
             translatedItem['subtitleOne'] = ""
             translatedItem['subtitleTwo'] = ""
             translatedItem['vegan'] = false
@@ -113,17 +115,6 @@ export default class CollectionsScreen extends React.Component {
         // console.log("listTranslated: " + JSON.stringify(listTranslated))
         return listTranslated
     }
-
-    // _getDummyArray = () => {
-    //     const totalEntries = 9
-    //     let arr = new Array()
-
-    //     for (let i = 1; i <= totalEntries; i++) {
-    //         arr.push({"id": i, "mainDescription": "Italian " + i, "headDescription": "Italian", "subtitleOne" : "20 min", "subtitleTwo": "4", "vegan" : true,})
-    //     }
-
-    //     return arr
-    // }
 
     render() {
         const menu = <MenuSideView navigator={this.props.navigation}/>
