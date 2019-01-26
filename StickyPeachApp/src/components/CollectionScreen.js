@@ -78,7 +78,7 @@ export default class CollectionScreen extends React.Component {
     render() {
         const menu = <MenuSideView navigator={this.props.navigation}/>
         const collection = this.props.navigation.state.params.collection
-        console.log("collection collectionScreen: " + JSON.stringify(this.props))
+        // console.log("collection collectionScreen: " + JSON.stringify(this.props))
         return (
             <SideMenu 
                 menu={menu}

@@ -8,35 +8,106 @@ import {
     Image,
     StatusBar,
     TouchableOpacity,
+    ActivityIndicator,
 } from 'react-native'
 import * as Constants from '../utils/Constants.js'
+
+import * as defaultSettings from '../utils/DefaultSettings'
 
 const { width, height } = Dimensions.get('window')
 
 export default class SquareComponent extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            isLoading: true,
+            default_image: null,
+        }
+    }
 
     componentDidMount() {
+        this.setState({
+            isLoading: true,
+        })
 
+        defaultSettings.getDefaultImage()
+        .then((dbRow) => {
+            // console.log("dbRow: " + JSON.stringify(dbRow._array[0].val_blob))
+            // const pic = JSON.parse(dbRow)._array[0].val_blob
+            this.setState({
+                isLoading: false,
+                defaultImage: dbRow._array[0].val_blob,
+            })
+        })
     }
 
     render() {
+        if (this.state.isLoading) {
+            return (
+                <View style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    alignSelf: "center",
+                }}>
+                    <ActivityIndicator />
+                </View>
+            )
+        }
+
         const {collection} = this.props
         const {navigateTo} = this.props
 
         //const viewLength = (width / 2) - 50
-        const viewLength = width * 0.8
+        const viewLength = width * 0.7
         // console.log("collection: " + JSON.stringify(collection))
         // console.log("this.props.navigation: " + JSON.stringify(this.props.nav))
+
+        const headDescription = collection.item.headDescription ? (
+            <Text style={{fontSize: 12, color: "#888", margin: 10,}}>{collection.item.headDescription}</Text>
+        ) : null
+        
+        const mainDescription = collection.item.mainDescription ? (
+            <Text style={{fontSize: 14, color: "#444", marginLeft: 10, marginBottom: 10, marginRight: 10,}}>{collection.item.mainDescription}</Text>
+        ) : null
+
+        const subtitleOne = collection.item.subtitleOne ? (
+            <Text style={{fontSize: 12, color: "#888", marginLeft: 10,}}>{collection.item.subtitleOne}.</Text>
+        ) : null
+        const subtitleTwo = collection.item.subtitleTwo ? (
+            <Text style={{fontSize: 12, color: "#888", marginLeft: 5, }}>Serves {collection.item.subtitleTwo}</Text>
+        ) : null
+
+        const picture = (collection.item && collection.item.picture) ? (
+            <Image 
+                source={{uri: `data:image/jpg;base64,${collection.item.picture}`,}} 
+                style={{ 
+                    width: viewLength,
+                    height: viewLength,
+                    borderColor: Constants.COLORS.SYSTEM.PRIMARY,
+                    borderWidth: 1,
+                }} 
+            />
+        ) : (
+            <Image 
+                source={{uri: `data:image/jpg;base64,${this.state.defaultImage}`,}} 
+                
+                style={{ 
+                    width: viewLength,
+                    height: viewLength,
+                    borderColor: Constants.COLORS.SYSTEM.THIRD,
+                    borderWidth: 1,
+                }} 
+            />
+        )
 
         return (
             <View 
                 style={{
                     width: viewLength,
                     height: viewLength + 100,
-                    // borderBottomWidth: 0.8,
-                    // borderBottomColor: Constants.COLORS.SYSTEM.PRIMARY,
-                    // borderTopWidth: 0.8,
-                    // borderTopColor: Constants.COLORS.SYSTEM.PRIMARY,
                     flexDirection: "column",
                     paddingTop: 5,
                 }}
@@ -44,37 +115,25 @@ export default class SquareComponent extends React.Component {
                 <TouchableOpacity onPress={() => {
                     this.props.nav.navigate(navigateTo, {collection: collection})
                 }}>
-                    {/* <Image 
-                        source={require("../../assets/pasta.jpg")}
-                        // width={viewLength - 10} 
-                        // height={viewLength - 10} 
-                        resizeMode="cover"
-                        style={{
-                            // flex: 1,
-                            width: viewLength,
-                            height: viewLength,
-                        }} 
-                    /> */}
-                    <Image 
-                        source={{uri: `data:image/jpg;base64,${collection.item.picture}`,}} 
-                        style={{ 
-                            width: viewLength,
-                            height: viewLength,
-                        }} 
-                    />
+                    { picture }
                 </TouchableOpacity>
                 <View style={{
-                    // flex: 1,
                     flexDirection: "column",
+                    marginTop: 5,
                 }}>
-                    <Text style={{fontSize: 12, color: "#888", margin: 10,}}>{collection.item.headDescription}</Text>
-                    <Text style={{fontSize: 14, color: "#444", marginLeft: 10, marginBottom: 10, marginRight: 10,}}>{collection.item.mainDescription}</Text>
+                    { headDescription }
+                    <TouchableOpacity onPress={() => {
+                        this.props.nav.navigate(navigateTo, {collection: collection})
+                    }}>
+                        { mainDescription }
+                    </TouchableOpacity>
                 </View>
                 <View style={{
                     flexDirection: "row",
+                    marginTop: 5,
                 }}>
-                    <Text style={{fontSize: 12, color: "#888", marginLeft: 10,}}>{collection.item.subtitleOne}.</Text>
-                    <Text style={{fontSize: 12, color: "#888", marginLeft: 5, }}>Serves {collection.item.subtitleTwo}</Text>
+                    { subtitleOne }
+                    { subtitleTwo }
                 </View>
             </View>
         )

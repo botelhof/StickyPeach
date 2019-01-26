@@ -1,51 +1,11 @@
 import { SQLite } from 'expo'
 
+import * as databaseInit from './databaseInit'
+
 const db = SQLite.openDatabase('StickyPeach.db')
 
 export function initDatabase() {
-    db.transaction(tx => {
-
-        // tx.executeSql(
-        //     'drop table default_settings;'
-        // )
-        tx.executeSql(
-            'create table if not exists default_settings (id integer primary key not null, name text not null, val_text text, val_int int, val_timestamp timestamp, val_boolean boolean, val_blob blob);'
-        )
-
-        // tx.executeSql(
-        //     'drop table user;'
-        // )
-        tx.executeSql(
-            'create table if not exists user (id integer primary key not null, name text not null, email text not null, password text not null, creation timestamp not null);'
-        )
-
-        // tx.executeSql(
-        //     'drop table recipe;'
-        // )
-        tx.executeSql(
-            'create table if not exists recipe (id integer primary key not null, name text not null, time_preparation int not null, time_cook int not null, serves int not null, description text not null, vegan boolean not null, timestamp_creation timestamp not null, timestamp_updated timestamp, user_id int not null, FOREIGN KEY(user_id) REFERENCES user(id));'
-        )
-
-        // tx.executeSql(
-        //     'drop table step;'
-        // )
-        tx.executeSql(
-            'create table if not exists step (id integer primary key not null, orderNumber int not null, description text not null, picture blob, recipe_id int not null, timestamp_creation timestamp not null, timestamp_updated timestamp, FOREIGN KEY(recipe_id) REFERENCES recipe(id));'
-        )
-
-        // tx.executeSql(
-        //     'drop table collection;'
-        // )
-        tx.executeSql(
-            'create table if not exists collection (id integer primary key not null, name text not null, description text not null, picture blob, timestamp_creation timestamp not null, timestamp_updated timestamp);'
-        )
-    },
-    (success) => {
-        console.log("success initDatabase: " + success)
-    },
-    (error) => {
-        console.log("error initDatabase: " + error)
-    })
+    databaseInit.initDatabase()
 }
 
 export function selectAllUsers() {
@@ -99,7 +59,7 @@ export function selectAllSteps() {
     )
 }
 
-export async function selectAllCollections(callback) {
+export async function selectAllCollections() {
     return new Promise((resolve, reject) => {
         db.transaction(
             tx => {
@@ -149,6 +109,20 @@ export function selectRecipeById(recipe_id) {
             console.log("error selectRecipeById: " + error)
         }
     )
+}
+
+export async function selectDefaultSetting(default_setting_name) {
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            tx => {
+                tx.executeSql('select * from default_settings where name = ?', [default_setting_name], (_, { rows }) =>
+                    resolve(rows)
+                )
+            },
+            null,
+            null
+        )
+    })
 }
 
 export function insertRandomUser() {
