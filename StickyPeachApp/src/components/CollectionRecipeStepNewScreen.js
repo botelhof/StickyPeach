@@ -18,8 +18,11 @@ import FloatLabelTextInput from './FloatLabelTextField'
 import * as Constants from '../utils/Constants.js'
 import * as DropDownHolder from '../utils/DropDownHolder.js'
 import * as stickyPeachDB from '../database/db.js'
+import * as Utils from '../utils/Utils'
 
 import { ImagePicker, Permissions, } from 'expo'
+
+import RecipeStepsStore from  '../stores/RecipeStepsStore'
 
 const { width, height } = Dimensions.get('window')
 export default class CollectionRecipeStepNewScreen extends React.Component {
@@ -222,7 +225,6 @@ export default class CollectionRecipeStepNewScreen extends React.Component {
                                     {text: 'Cancel', onPress: () => {}, style: 'cancel'},
                                     {text: 'Clear', onPress: () => {
                                         this.setState({
-                                            name: "",
                                             description: "",
                                             picture: null,
                                         })
@@ -250,24 +252,23 @@ export default class CollectionRecipeStepNewScreen extends React.Component {
                         onPress={() => {
                             let msg = ""
 
-                            if (!this.state.name) {
-                                msg += "Please, fill the 'Collection name' field "
-                            }
-
                             if (!this.state.description) {
-                                msg += "Please, fill the 'Collection description' field "
+                                msg += "Please, fill the 'Step description' field. "
                             }
 
                             if (msg != "") {
                                 DropDownHolder.getDropDown().alertWithType('error', 'Error', msg)
                             } else {
-                                stickyPeachDB.insertCollection({
-                                    name: this.state.name,
+                                
+                                RecipeStepsStore.addStep({
+                                    recipe_step_temp_id: Utils.guid(),
                                     description: this.state.description,
                                     picture: this.state.picture,
+                                    orderNumber: RecipeStepsStore.getSteps().length + 1
                                 })
+
                                 this.props.navigation.goBack()
-                                DropDownHolder.getDropDown().alertWithType('success', 'Success', 'Collection "' + this.state.name + '" created with success')
+                                DropDownHolder.getDropDown().alertWithType('success', 'Success', 'Recipe step created with success')
                             }
                         }}
                     />

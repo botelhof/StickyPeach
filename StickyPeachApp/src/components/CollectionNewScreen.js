@@ -269,11 +269,11 @@ export default class CollectionNewScreen extends React.Component {
                             let msg = ""
 
                             if (!this.state.name) {
-                                msg += "Please, fill the 'Collection name' field "
+                                msg += "Please, fill the 'Collection name' field. "
                             }
 
                             if (!this.state.description) {
-                                msg += "Please, fill the 'Collection description' field "
+                                msg += "Please, fill the 'Collection description' field. "
                             }
 
                             if (msg != "") {

@@ -96,19 +96,33 @@ export function selectAllDefaultSettings() {
 }
 
 export function selectRecipeById(recipe_id) {
-    db.transaction(
-        tx => {
-            tx.executeSql('select * from recipe where id = ?', [recipe_id], (_, { rows }) =>
-                console.log("select selectRecipeById: " + JSON.stringify(rows))
-            )
-        },
-        (success) => {
-            console.log("success selectRecipeById: " + success)
-        },
-        (error) => {
-            console.log("error selectRecipeById: " + error)
-        }
-    )
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            tx => {
+                tx.executeSql('select * from recipe where id = ?', [recipe_id], (_, { rows }) => resolve(rows)
+                )
+            }
+        )
+    })
+}
+
+export function selectRecipeStepsByRecipeId(recipe_id) {
+    // console.log("selectRecipeStepsByRecipeId recipe_id: " + recipe_id)
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            tx => {
+                tx.executeSql("select * from step where recipe_id = ? order by orderNumber asc",
+                            [recipe_id], 
+                            function(tx, results){
+                                resolve(results.rows)
+                            },
+                            function(tx, results){
+                                resolve(results.rows)
+                            },
+                )
+            }
+        )
+    })
 }
 
 export async function selectAllRecipesForCollection(collectionId) {
@@ -157,18 +171,46 @@ export function insertRandomUser() {
     )
 }
 
-export function insertRecipe(recipe, user_id) {
-    db.transaction(
-        tx => {
-            tx.executeSql('insert into recipe (name, time_preparation, time_cook, serves, description, vegan, timestamp_creation, timestamp_updated, user_id) values (?, ?, ?, ?, ?, ?, ?, ?, ?)', [recipe.name, recipe.time_preparation, recipe.time_cook, recipe.serves, recipe.description, recipe.vegan, new Date(), null, user_id]);
-        },
-        (success) => {
-            console.log("success insertRecipe: " + success)
-        },
-        (error) => {
-            console.log("error insertRecipe: " + error)
-        }
-    )
+export async function insertRecipe(recipe, user_id) {
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            tx => {
+                tx.executeSql('insert into recipe (name, time_preparation, time_cook, serves, description, vegan, timestamp_creation, timestamp_updated, user_id) values (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                            [recipe.name, recipe.time_preparation, recipe.time_cook, recipe.serves, recipe.description, recipe.vegan, new Date(), null, user_id],
+                )
+
+                tx.executeSql('SELECT last_insert_rowid() as lastId', [], (_, { rows }) =>
+                    resolve(rows)
+                )
+            },
+            (success) => {
+                console.log("success insertRecipe: " + success)
+            },
+            (error) => {
+                console.log("error insertRecipe: " + error)
+            }
+        )
+    })
+}
+
+export async function insertRecipeCollection(recipe_id, collection_id) {
+    console.log("collection_idcollection_id: collection_id: " + collection_id)
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            tx => {
+                tx.executeSql('insert into recipe_collection (recipe_id, collection_id) values (?, ?)', 
+                            [recipe_id, collection_id],
+                            resolve()
+                )
+            },
+            // (success) => {
+            //     console.log("success insertRecipeCollection: " + success)
+            // },
+            // (error) => {
+            //     console.log("error insertRecipeCollection: " + error)
+            // }
+        )
+    })
 }
 
 export function insertCollection(collection) {
@@ -199,18 +241,23 @@ export function insertDefaultSettingsBlob(name, val_blob) {
     )
 }
 
-export function insertStep(step, recipe_id) {
-    db.transaction(
-        tx => {
-            tx.executeSql('insert into step (orderNumber, description, picture, timestamp_creation, timestamp_updated, recipe_id) values (?, ?, ?, ?, ?, ?)', [step.orderNumber, step.description, step.picture, new Date(), null, recipe_id]);
-        },
-        (success) => {
-            console.log("success insertStep: " + success)
-        },
-        (error) => {
-            console.log("error insertStep: " + error)
-        }
-    )
+export function insertRecipeStep(step, recipe_id) {
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            tx => {
+                tx.executeSql('insert into step (orderNumber, description, picture, timestamp_creation, timestamp_updated, recipe_id) values (?, ?, ?, ?, ?, ?)', 
+                                [step.orderNumber, step.description, step.picture, new Date(), null, recipe_id],
+                )
+                resolve()
+            },
+            (success) => {
+                console.log("success insertStep: " + success)
+            },
+            (error) => {
+                console.log("error insertStep: " + error)
+            }
+        )
+    })
 }
 
 function _getRandomText(totalChars) {

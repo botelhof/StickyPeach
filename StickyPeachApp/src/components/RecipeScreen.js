@@ -7,6 +7,9 @@ import {
     RefreshControl,
     Image,
     StatusBar,
+    FlatList,
+    ActivityIndicator,
+    TouchableOpacity,
 } from 'react-native'
 import {
     Button,
@@ -25,6 +28,8 @@ import MenuButtonComponent from './MenuButtonComponent'
 import * as Animatable from 'react-native-animatable'
 import * as stickyPeachDB from '../database/db.js'
 import * as Constants from '../utils/Constants.js'
+import * as defaultSettings from '../utils/DefaultSettings'
+import * as Utils from '../utils/Utils'
 
 const { width, height } = Dimensions.get('window')
 
@@ -32,7 +37,7 @@ const IMG_HEIGHT = height / 1.5
 const MIN_HEIGHT = Header.HEIGHT + 200
 const MAX_HEIGHT = IMG_HEIGHT
 
-export default class CollectionScreen extends React.Component {
+export default class RecipeScreen extends React.Component {
 
     static navigationOptions = {
         header: null,
@@ -46,46 +51,80 @@ export default class CollectionScreen extends React.Component {
             refreshing: false,
             showNavTitle: false,
             isOpen: false,
+            isLoading: true,
         }
 
         this.props.navigation.addListener('willFocus', this.enterScreen)
     }
     
     enterScreen = async () => {
-        const collection = this.props.navigation.state.params.collection
+        const recipeId = this.props.navigation.state.params.idx
 
-        const collectionRecipes = await stickyPeachDB.selectAllRecipesForCollection(collection.item.id)
-
-        // console.log("collectionRecipes: " + JSON.stringify(collectionRecipes))
-        if (collectionRecipes) {
+        const recipe = await stickyPeachDB.selectRecipeById(recipeId)
+        const recipeSteps = await stickyPeachDB.selectRecipeStepsByRecipeId(recipeId)
+        if (recipe) {
             this.setState({
-                list: this._translate(collectionRecipes._array)
+                recipe: this._translateRecipe(recipe._array)[0],
+                recipeSteps: this._translateRecipeStep(recipeSteps._array),
             })
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        this.setState({
+            isLoading: true,
+        })
         
+        await this.enterScreen()
+
+        defaultSettings.getDefaultImage()
+        .then((dbRow) => {
+            this.setState({
+                isLoading: false,
+                recipe_temp_id: Utils.guid(),
+                defaultImage: dbRow && dbRow._array[0] ? dbRow._array[0].val_blob : null,
+            })
+        })
     }
 
-    _translate = (originalList) => {
+    _translateRecipe = (originalList) => {
         let listTranslated = new Array()
         for (let i = 0; i < originalList.length; i++) {
             const originalItem = originalList[i]
 
             let translatedItem = {}
             translatedItem['id'] = originalItem.id
-            translatedItem['mainDescription'] = originalItem.name
-            translatedItem['headDescription'] = originalItem.description
-            translatedItem['subtitleOne'] = ""
-            translatedItem['subtitleTwo'] = ""
+            translatedItem['name'] = originalItem.name
+            translatedItem['description'] = originalItem.description
+            translatedItem['time_preparation'] = originalItem.time_preparation
+            translatedItem['time_cook'] = originalItem.time_cook
+            translatedItem['time_preparation'] = originalItem.time_preparation
+            translatedItem['serves'] = originalItem.serves
             translatedItem['vegan'] = false
             translatedItem['picture'] = originalItem.picture
 
             listTranslated.push(translatedItem)
         }
 
-        // console.log("listTranslated: " + JSON.stringify(listTranslated))
+        return listTranslated
+    }
+
+    _translateRecipeStep = (originalList) => {
+        let listTranslated = new Array()
+        for (let i = 0; i < originalList.length; i++) {
+            const originalItem = originalList[i]
+
+            let translatedItem = {}
+            translatedItem['id'] = originalItem.id
+            translatedItem['description'] = originalItem.description
+            translatedItem['picture'] = originalItem.picture
+            translatedItem['orderNumber'] = originalItem.orderNumber
+            translatedItem['recipe_id'] = originalItem.recipe_id
+
+            // console.log("step item: id: " + translatedItem.id + ", orderNumber: " + translatedItem.orderNumber + ", recipe_id: " + translatedItem.recipe_id)
+            listTranslated.push(translatedItem)
+        }
+
         return listTranslated
     }
 
@@ -101,10 +140,87 @@ export default class CollectionScreen extends React.Component {
         }, 2000)
     }
 
+    _keyExtractorRecipeStep = (item, index) => "" + item.id;
+
+    _renderRecipeStepItem = ({item}) => (
+        <View style={{
+            flex: 1,
+            flexDirection: 'row',
+            backgroundColor: '#eee',
+        }}>
+            <View style={{
+                // flex: 1,
+                flexDirection: 'column',
+                width: 50,
+            }}>
+                <Text style={{height: 50, paddingRight: 10,}}>{item.orderNumber}</Text>
+            </View>
+            {
+                item.picture
+                &&
+                <Image 
+                    source={{uri: `data:image/jpg;base64,${item.picture}`,}} 
+                    style={{ 
+                        width: 50,
+                        height: 50,
+                    }} 
+                />
+            }
+            {
+                !item.picture
+                &&
+                <Image 
+                    source={{uri: `data:image/jpg;base64,${this.state.defaultImage}`,}} 
+                    style={{ 
+                        width: 50,
+                        height: 50,
+                    }} 
+                />
+            }
+           
+            <View style={{
+                // flex: 1,
+                flexDirection: 'column',
+                justifyContent: "center",
+                // alignContent: "center",
+                // alignItems: "center",
+                // alignSelf: "center",
+                marginLeft: 10,
+            }}>
+                <TouchableOpacity onPress={() => {
+                    
+                }}>
+                    <View style={{
+                        //   height: 10,
+                        //   backgroundColor: 'blue',
+                    }}>
+                        <Text style={{}}>{item.description}</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+        </View>
+    )
+
+    _renderSeparatorRecipeStep = () => {
+        return (
+            <View
+                style={{
+                    height: 1,
+                    width: "86%",
+                    backgroundColor: "#CED0CE",
+                    marginLeft: "14%"
+                }}
+            />
+        )
+    }
+
     render() {
+        if (this.state.isLoading) {
+            return (
+                <ActivityIndicator />
+            )
+        }
         const menu = <MenuSideView navigator={this.props.navigation}/>
-        const collection = this.props.navigation.state.params.collection
-        // console.log("collection collectionScreen: " + JSON.stringify(this.props))
         return (
             <SideMenu 
                 menu={menu}
@@ -112,22 +228,6 @@ export default class CollectionScreen extends React.Component {
                 menuPosition="right"
             >
                 <View style={{ flex: 1 }}>
-                    <Icon 
-                        name="add"
-                        raised
-                        reverse
-                        reverseColor={Constants.COLORS.SYSTEM.SECONDARY}
-                        color={Constants.COLORS.SYSTEM.PRIMARY}
-                        containerStyle={{
-                            position: "absolute",
-                            bottom: 0,
-                            right: 0, 
-                            zIndex: 102,
-                        }}
-                        onPress={() => {
-                            this.props.navigation.navigate("CollectionRecipeNew", {collection_id: collection.item.id})
-                        }}
-                    />
                     <MenuButtonComponent 
                         callbackOnPress={() => {
                             this.setState({
@@ -142,7 +242,9 @@ export default class CollectionScreen extends React.Component {
                         maxOverlayOpacity={0.5}
                         minOverlayOpacity={0.1}
                         fadeOutForeground
-                        renderHeader={() => <Image source={require('../../assets/pasta.jpg')} style={styles.image} />}
+                        renderHeader={() => (
+                            <Image source={{uri: `data:image/jpg;base64,${(this.state.picture ? this.state.picture : this.state.defaultImage)}`,}}  style={styles.image} />
+                        )}
                         renderFixedForeground={() => (
                             <Animatable.View
                                 style={styles.navTitleView}
@@ -163,7 +265,7 @@ export default class CollectionScreen extends React.Component {
                                     }}
                                 />
                                 <Text style={styles.navTitle}>
-                                    {collection.item.mainDescription}
+                                    {this.state.recipe.name}
                                 </Text>
                             </Animatable.View>
                         )}
@@ -180,7 +282,7 @@ export default class CollectionScreen extends React.Component {
                                         this.props.navigation.goBack()
                                     }}
                                 />
-                                <Text style={styles.imageTitle}>{collection.item.mainDescription}</Text>
+                                <Text style={styles.imageTitle}>{this.state.recipe.name}</Text>
                             </View>
                         )}
                         >
@@ -189,9 +291,31 @@ export default class CollectionScreen extends React.Component {
                             onHide={() => this.navTitleView.fadeInUp(200)}
                             onDisplay={() => this.navTitleView.fadeOut(100)}
                         >
-                            <Text>{collection.item.mainDescription}</Text>
+                            <Text>{this.state.recipe.name}</Text>
                         </TriggeringView>
-                        <GalleryComponent collections={this.state.list} navigateTo="Recipe" nav={this.props.navigation} />
+                        <View style={{
+                            margin: 5,
+                        }}>
+                            <Text style={{
+                                marginBottom: 15,
+                            }}>Steps</Text>
+                            {
+                                this.state.recipeSteps && this.state.recipeSteps.length > 0
+                                &&
+                                <FlatList
+                                    data={this.state.recipeSteps}
+                                    extraData={this.state}
+                                    keyExtractor={this._keyExtractorRecipeStep}
+                                    renderItem={this._renderRecipeStepItem}
+                                    ItemSeparatorComponent={this._renderSeparatorRecipeStep}
+                                    style={{
+                                        flex: 1,
+                                        marginBottom: 30,
+                                        marginTop: 10,
+                                    }}
+                                />
+                            }
+                        </View>
                     </HeaderImageScrollView>
                 </View>
             </SideMenu>

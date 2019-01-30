@@ -26,6 +26,8 @@ import * as defaultSettings from '../utils/DefaultSettings'
 
 import { ImagePicker, Permissions, } from 'expo'
 
+import RecipeStepsStore from  '../stores/RecipeStepsStore'
+
 const { width, height } = Dimensions.get('window')
 
 export default class CollectionRecipeNewScreen extends React.Component {
@@ -51,34 +53,10 @@ export default class CollectionRecipeNewScreen extends React.Component {
             time_cook: null,
             serves: null,
             vegan: false,
-            // steps: null,
-            steps: [
-                {
-                    orderNumber: 1,
-                    recipe_step_temp_id: "111111",
-                    description: "aaaaa",
-                    picture: null,
-                },
-                {
-                    orderNumber: 2,
-                    recipe_step_temp_id: "222222",
-                    description: "bbbbb",
-                    picture: null,
-                },
-                {
-                    orderNumber: 3,
-                    recipe_step_temp_id: "33333",
-                    description: "cccccc",
-                    picture: null,
-                },
-                {
-                    orderNumber: 4,
-                    recipe_step_temp_id: "44444",
-                    description: "dddddd",
-                    picture: null,
-                }
-            ],
+            steps: null,
         }
+
+        this.updateRecipeSteps = this.updateRecipeSteps.bind(this)
     }
 
     componentDidMount() {
@@ -91,6 +69,20 @@ export default class CollectionRecipeNewScreen extends React.Component {
                 recipe_temp_id: Utils.guid(),
                 defaultImage: dbRow && dbRow._array[0] ? dbRow._array[0].val_blob : null,
             })
+        })
+
+        //RecipeStepsStore.subscribe(this.updateRecipeSteps)
+
+        this.props.navigation.addListener('willFocus', this.updateRecipeSteps)
+    }
+
+    componentWillUnmount() {
+        RecipeStepsStore.clearSteps()
+    }
+
+    updateRecipeSteps() {
+        this.setState({
+            steps: RecipeStepsStore.getSteps(),
         })
     }
 
@@ -260,13 +252,29 @@ export default class CollectionRecipeNewScreen extends React.Component {
                 }
             </View>
 
-            <Image 
-                source={{uri: `data:image/jpg;base64,${this.state.defaultImage}`,}} 
-                style={{ 
-                    width: 50,
-                    height: 50,
-                }} 
-            />
+            {
+                item.picture
+                &&
+                <Image 
+                    source={{uri: `data:image/jpg;base64,${item.picture}`,}} 
+                    style={{ 
+                        width: 50,
+                        height: 50,
+                    }} 
+                />
+            }
+            {
+                !item.picture
+                &&
+                <Image 
+                    source={{uri: `data:image/jpg;base64,${this.state.defaultImage}`,}} 
+                    style={{ 
+                        width: 50,
+                        height: 50,
+                    }} 
+                />
+            }
+           
             <View style={{
                 // flex: 1,
                 flexDirection: 'column',
@@ -292,16 +300,16 @@ export default class CollectionRecipeNewScreen extends React.Component {
 
     _renderSeparatorRecipeStep = () => {
         return (
-          <View
-            style={{
-              height: 1,
-              width: "86%",
-              backgroundColor: "#CED0CE",
-              marginLeft: "14%"
-            }}
-          />
-        );
-      };
+            <View
+                style={{
+                    height: 1,
+                    width: "86%",
+                    backgroundColor: "#CED0CE",
+                    marginLeft: "14%"
+                }}
+            />
+        )
+    }
 
     render() {
         const viewLength = width * 0.4
@@ -336,7 +344,7 @@ export default class CollectionRecipeNewScreen extends React.Component {
                         }}
                     />
                     <FloatLabelTextInput
-                        placeholder={"Collection description"}
+                        placeholder={"Recipe description"}
                         value={this.state.description}
                         keyboardType="default"
                         maxLength={500}
@@ -392,6 +400,27 @@ export default class CollectionRecipeNewScreen extends React.Component {
                         onChangeTextValue={(txt) => {
                             this.setState({
                                 time_cook: txt,
+                            })
+                        }}
+                        style={{
+                            fontSize: 15,
+                        }}
+                    />
+                    <FloatLabelTextInput
+                        placeholder={"Serves"}
+                        value={this.state.serves}
+                        keyboardType="default"
+                        maxLength={10}
+                        selectionColor={Constants.COLORS.SYSTEM.PRIMARY}
+                        onFocus={() => {
+
+                        }}
+                        onBlur={() => {
+                            
+                        }}
+                        onChangeTextValue={(txt) => {
+                            this.setState({
+                                serves: txt,
                             })
                         }}
                         style={{
@@ -550,6 +579,7 @@ export default class CollectionRecipeNewScreen extends React.Component {
                     alignItems: "flex-end",
                     alignContent: "flex-end",
                     marginBottom: 20,
+                    paddingTop: 5,
                 }}>
                     <Button 
                         icon={{
@@ -602,27 +632,59 @@ export default class CollectionRecipeNewScreen extends React.Component {
                             backgroundColor: "#009900",
                             padding: 5,
                         }}
-                        onPress={() => {
+                        onPress={async () => {
                             let msg = ""
 
                             if (!this.state.name) {
-                                msg += "Please, fill the 'Collection name' field "
+                                msg += "Please, fill the 'Recipe name' field. "
                             }
 
                             if (!this.state.description) {
-                                msg += "Please, fill the 'Collection description' field "
+                                msg += "Please, fill the 'Recipe description' field. "
+                            }
+
+                            if (!this.state.time_preparation) {
+                                msg += "Please, fill the 'Preparation time' field. "
+                            }
+
+                            if (!this.state.time_cook) {
+                                msg += "Please, fill the 'Cook time' field. "
+                            }
+
+                            if (!this.state.serves) {
+                                msg += "Please, fill the 'Serves' field. "
                             }
 
                             if (msg != "") {
                                 DropDownHolder.getDropDown().alertWithType('error', 'Error', msg)
                             } else {
-                                stickyPeachDB.insertCollection({
+                                const recipeMetadataInsert = await stickyPeachDB.insertRecipe({
                                     name: this.state.name,
                                     description: this.state.description,
                                     picture: this.state.picture,
-                                })
+                                    serves: this.state.serves,
+                                    time_cook: this.state.time_cook,
+                                    time_preparation: this.state.time_preparation,
+                                    vegan: false,
+                                }, 1)
+
+                                const recipeId = recipeMetadataInsert._array[0].lastId
+
+                                if (this.state.steps && this.state.steps.length > 0) {
+                                    this.state.steps.forEach(async function (step) {
+                                        await stickyPeachDB.insertRecipeStep({
+                                            orderNumber: step.orderNumber,
+                                            description: step.description,
+                                            picture: step.picture,
+                                        }, recipeId)
+                                    })
+                                }
+
+                                await stickyPeachDB.insertRecipeCollection(recipeId, this.props.navigation.state.params.collection_id)
+                                RecipeStepsStore.clearSteps()
+                                
                                 this.props.navigation.goBack()
-                                DropDownHolder.getDropDown().alertWithType('success', 'Success', 'Collection "' + this.state.name + '" created with success')
+                                DropDownHolder.getDropDown().alertWithType('success', 'Success', 'Recipe "' + this.state.name + '" created with success')
                             }
                         }}
                     />

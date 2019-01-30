@@ -58,6 +58,7 @@ export default class SquareComponent extends React.Component {
         }
 
         const {collection} = this.props
+        const {recipe} = this.props
         const {navigateTo} = this.props
 
         //const viewLength = (width / 2) - 50
@@ -113,7 +114,7 @@ export default class SquareComponent extends React.Component {
                 }}
             >
                 <TouchableOpacity onPress={() => {
-                    this.props.nav.navigate(navigateTo, {collection: collection})
+                    this.props.nav.navigate(navigateTo, {collection: collection, recipe: recipe, idx: collection.item.id})
                 }}>
                     { picture }
                 </TouchableOpacity>
@@ -123,7 +124,7 @@ export default class SquareComponent extends React.Component {
                 }}>
                     { headDescription }
                     <TouchableOpacity onPress={() => {
-                        this.props.nav.navigate(navigateTo, {collection: collection})
+                        this.props.nav.navigate(navigateTo, {collection: collection, recipe: recipe, idx: collection.item.id})
                     }}>
                         { mainDescription }
                     </TouchableOpacity>
