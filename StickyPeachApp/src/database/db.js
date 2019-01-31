@@ -260,6 +260,25 @@ export function insertRecipeStep(step, recipe_id) {
     })
 }
 
+export function deleteRecipe(recipe_id) {
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            tx => {
+                tx.executeSql('delete from recipe where id = ?', 
+                                [recipe_id],
+                )
+                tx.executeSql('delete from step where recipe_id = ?', 
+                    [recipe_id],
+                )
+                tx.executeSql('delete from recipe_collection where recipe_id = ?', 
+                    [recipe_id],
+                )
+                resolve()
+            }
+        )
+    })
+}
+
 function _getRandomText(totalChars) {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

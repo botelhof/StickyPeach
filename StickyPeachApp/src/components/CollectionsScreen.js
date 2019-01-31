@@ -130,8 +130,8 @@ export default class CollectionsScreen extends React.Component {
                         name="add"
                         raised
                         reverse
-                        reverseColor={Constants.COLORS.SYSTEM.SECONDARY}
-                        color={Constants.COLORS.SYSTEM.PRIMARY}
+                        reverseColor={Constants.COLORS.SYSTEM.CRUD.CREATE.FONT}
+                        color={Constants.COLORS.SYSTEM.CRUD.CREATE.BACK}
                         containerStyle={{
                             position: "absolute",
                             bottom: 0,

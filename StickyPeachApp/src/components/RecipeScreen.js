@@ -10,10 +10,12 @@ import {
     FlatList,
     ActivityIndicator,
     TouchableOpacity,
+    Alert,
 } from 'react-native'
 import {
     Button,
     Icon,
+    ButtonGroup,
 } from 'react-native-elements'
 import { 
     Header,
@@ -52,9 +54,15 @@ export default class RecipeScreen extends React.Component {
             showNavTitle: false,
             isOpen: false,
             isLoading: true,
+            selectedRecipePropsIndex: 0,
         }
 
+        this.updateRecipePropsIndex = this.updateRecipePropsIndex.bind(this)
         this.props.navigation.addListener('willFocus', this.enterScreen)
+    }
+
+    updateRecipePropsIndex(selectedRecipePropsIndex) {
+        this.setState({selectedRecipePropsIndex})
     }
     
     enterScreen = async () => {
@@ -151,9 +159,24 @@ export default class RecipeScreen extends React.Component {
             <View style={{
                 // flex: 1,
                 flexDirection: 'column',
-                width: 50,
+                width: 25,
+                height: 25,
+                margin: 5,
+                backgroundColor: Constants.COLORS.SYSTEM.FOUR,
+                borderRadius: 25,
+                alignContent: 'center',
+                alignItems: 'center',
+                alignSelf: "center",
+                justifyContent: 'center',
             }}>
-                <Text style={{height: 50, paddingRight: 10,}}>{item.orderNumber}</Text>
+                <Text style={{
+                    alignContent: 'center',
+                    alignItems: 'center',
+                    alignSelf: "center",
+                    justifyContent: 'center',
+                    color: Constants.COLORS.SYSTEM.SECONDARY,
+                    fontSize: 10,
+                }}>{item.orderNumber}</Text>
             </View>
             {
                 item.picture
@@ -194,7 +217,9 @@ export default class RecipeScreen extends React.Component {
                         //   height: 10,
                         //   backgroundColor: 'blue',
                     }}>
-                        <Text style={{}}>{item.description}</Text>
+                        <Text 
+                            style={{}}
+                        >{item.description}</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -233,6 +258,58 @@ export default class RecipeScreen extends React.Component {
                             this.setState({
                                 isOpen: true,
                             })
+                        }}
+                    />
+                    <Icon 
+                        name="delete"
+                        raised
+                        reverse
+                        reverseColor={Constants.COLORS.SYSTEM.CRUD.DELETE.FONT}
+                        color={Constants.COLORS.SYSTEM.CRUD.DELETE.BACK}
+                        size={14}
+                        containerStyle={{
+                            position: "absolute",
+                            bottom: 55,
+                            right: 4, 
+                            zIndex: 102,
+                        }}
+                        onPress={() => {
+                            Alert.alert(
+                                'Delete Recipe?',
+                                'Do you want to delete this recipe?',
+                                [
+                                    {
+                                        text: 'Delete', onPress: async () => {
+                                            await stickyPeachDB.deleteRecipe(this.state.recipe.id)
+
+                                            this.props.navigation.goBack()
+                                        }
+                                    },
+                                    {
+                                    text: 'Cancel',
+                                        onPress: () => console.log('Cancel Pressed'),
+                                        style: 'cancel',
+                                    },
+                                ],
+                                {cancelable: false},
+                            )
+                        }}
+                    />
+                    <Icon 
+                        name="edit"
+                        raised
+                        reverse
+                        reverseColor={Constants.COLORS.SYSTEM.CRUD.EDIT.FONT}
+                        color={Constants.COLORS.SYSTEM.CRUD.EDIT.BACK}
+                        size={18}
+                        containerStyle={{
+                            position: "absolute",
+                            bottom: 0,
+                            right: 0, 
+                            zIndex: 102,
+                        }}
+                        onPress={() => {
+                            
                         }}
                     />
                     <StatusBar barStyle="light-content" />
@@ -293,29 +370,97 @@ export default class RecipeScreen extends React.Component {
                         >
                             <Text>{this.state.recipe.name}</Text>
                         </TriggeringView>
-                        <View style={{
-                            margin: 5,
-                        }}>
-                            <Text style={{
-                                marginBottom: 15,
-                            }}>Steps</Text>
-                            {
-                                this.state.recipeSteps && this.state.recipeSteps.length > 0
-                                &&
-                                <FlatList
-                                    data={this.state.recipeSteps}
-                                    extraData={this.state}
-                                    keyExtractor={this._keyExtractorRecipeStep}
-                                    renderItem={this._renderRecipeStepItem}
-                                    ItemSeparatorComponent={this._renderSeparatorRecipeStep}
-                                    style={{
-                                        flex: 1,
-                                        marginBottom: 30,
-                                        marginTop: 10,
-                                    }}
-                                />
-                            }
-                        </View>
+                        <ButtonGroup
+                            onPress={this.updateRecipePropsIndex}
+                            selectedIndex={this.state.selectedRecipePropsIndex}
+                            buttons={['Ingredients', 'Materials', 'Steps']}
+                            containerStyle={{height: 30,}} 
+                            buttonStyle={{
+                                backgroundColor: Constants.COLORS.SYSTEM.THIRD,
+                            }}
+                            textStyle={{
+                                color: Constants.COLORS.SYSTEM.FOUR,
+                            }}
+                            selectedButtonStyle={{
+                                backgroundColor: Constants.COLORS.SYSTEM.PRIMARY,
+                            }}
+                            selectedTextStyle={{
+                                color: Constants.COLORS.SYSTEM.SECONDARY,
+                            }}
+                        />
+
+                        {
+                            this.state.selectedRecipePropsIndex === 0
+                            &&
+                            <View style={{
+                                margin: 15,
+                            }}>
+                                {/* {
+                                    this.state.recipeIngredients && this.state.recipeIngredients.length > 0
+                                    &&
+                                    <FlatList
+                                        data={this.state.recipeIngredients}
+                                        extraData={this.state}
+                                        keyExtractor={this._keyExtractorRecipeIngredient}
+                                        renderItem={this._renderRecipeIngredientItem}
+                                        ItemSeparatorComponent={this._renderSeparatorRecipeIngredient}
+                                        style={{
+                                            flex: 1,
+                                            marginBottom: 30,
+                                            marginTop: 10,
+                                        }}
+                                    />
+                                } */}
+                            </View>
+                        }
+                        {
+                            this.state.selectedRecipePropsIndex === 1
+                            &&
+                            <View style={{
+                                margin: 15,
+                            }}>
+                                {/* {
+                                    this.state.recipeMaterials && this.state.recipeMaterials.length > 0
+                                    &&
+                                    <FlatList
+                                        data={this.state.recipeMaterials}
+                                        extraData={this.state}
+                                        keyExtractor={this._keyExtractorMaterialStep}
+                                        renderItem={this._renderRecipeMaterialItem}
+                                        ItemSeparatorComponent={this._renderSeparatorRecipeMaterial}
+                                        style={{
+                                            flex: 1,
+                                            marginBottom: 30,
+                                            marginTop: 10,
+                                        }}
+                                    />
+                                } */}
+                            </View>
+                        }
+                        {
+                            this.state.selectedRecipePropsIndex === 2
+                            &&
+                            <View style={{
+                                margin: 15,
+                            }}>
+                                {
+                                    this.state.recipeSteps && this.state.recipeSteps.length > 0
+                                    &&
+                                    <FlatList
+                                        data={this.state.recipeSteps}
+                                        extraData={this.state}
+                                        keyExtractor={this._keyExtractorRecipeStep}
+                                        renderItem={this._renderRecipeStepItem}
+                                        ItemSeparatorComponent={this._renderSeparatorRecipeStep}
+                                        style={{
+                                            flex: 1,
+                                            marginBottom: 30,
+                                            marginTop: 10,
+                                        }}
+                                    />
+                                }
+                            </View>
+                        }
                     </HeaderImageScrollView>
                 </View>
             </SideMenu>
