@@ -27,22 +27,24 @@ import * as defaultSettings from '../utils/DefaultSettings'
 import { ImagePicker, Permissions, } from 'expo'
 
 import RecipeStepsStore from  '../stores/RecipeStepsStore'
+import RecipeMaterialsStore from  '../stores/RecipeMaterialsStore'
+import RecipeIngredientsStore from  '../stores/RecipeIngredientsStore'
 
 const { width, height } = Dimensions.get('window')
 
 export default class CollectionRecipeNewScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
         return {
-          title: "New Recipe",
-          headerStyle: {
-            backgroundColor: Constants.COLORS.SYSTEM.PRIMARY,
-          },
-          headerTintColor: Constants.COLORS.SYSTEM.SECONDARY,
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
+            title: "New Recipe",
+            headerStyle: {
+                backgroundColor: Constants.COLORS.SYSTEM.PRIMARY,
+            },
+            headerTintColor: Constants.COLORS.SYSTEM.SECONDARY,
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
         }
-      }
+    }
 
     constructor(props) {
         super(props)
@@ -56,7 +58,7 @@ export default class CollectionRecipeNewScreen extends React.Component {
             steps: null,
         }
 
-        this.updateRecipeSteps = this.updateRecipeSteps.bind(this)
+        this.updateRecipeProps = this.updateRecipeProps.bind(this)
     }
 
     componentDidMount() {
@@ -71,18 +73,20 @@ export default class CollectionRecipeNewScreen extends React.Component {
             })
         })
 
-        //RecipeStepsStore.subscribe(this.updateRecipeSteps)
-
-        this.props.navigation.addListener('willFocus', this.updateRecipeSteps)
+        this.props.navigation.addListener('willFocus', this.updateRecipeProps)
     }
 
     componentWillUnmount() {
         RecipeStepsStore.clearSteps()
+        RecipeMaterialsStore.clearMaterials()
+        RecipeIngredientsStore.clearIngredients()
     }
 
-    updateRecipeSteps() {
+    updateRecipeProps() {
         this.setState({
             steps: RecipeStepsStore.getSteps(),
+            materials: RecipeMaterialsStore.getMaterials(),
+            ingredients: RecipeIngredientsStore.getIngredients(),
         })
     }
 
@@ -100,100 +104,101 @@ export default class CollectionRecipeNewScreen extends React.Component {
         }
     }
 
-    _changeRecipeStepItemUp = (orderNumberFrom) => {
+    _changeRecipeItemUp = (orderNumberFrom, list) => {
         if (orderNumberFrom == 1) {
             return
         }
-
-        let steps = this.state.steps
+        
         const orderNumberTo = orderNumberFrom - 1
-        if (steps && steps.length > 0) {
+        if (list && list.length > 0) {
 
             //found the from order number and rename to "_12"
-            for (let i = 0; i < steps.length; i++) {
-                if (steps[i].orderNumber == orderNumberFrom) {
-                    steps[i].orderNumber = "_" + orderNumberTo
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].orderNumber == orderNumberFrom) {
+                    list[i].orderNumber = "_" + orderNumberTo
                     break
                 }
             }
 
-            // console.log("steps 1: " + JSON.stringify(steps))
+            // console.log("list 1: " + JSON.stringify(list))
 
             //found to and rename for the previus
-            for (let i = 0; i < steps.length; i++) {
-                if (steps[i].orderNumber == orderNumberTo) {
-                    steps[i].orderNumber = orderNumberFrom
-                    // this.state.steps[i + 1].orderNumber = orderNumberFrom
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].orderNumber == orderNumberTo) {
+                    list[i].orderNumber = orderNumberFrom
+                    // this.state.list[i + 1].orderNumber = orderNumberFrom
                     break
                 }
             }
 
             //remove de "_" from to
-            for (let i = 0; i < steps.length; i++) {
-                if (steps[i].orderNumber == "_" + orderNumberTo) {
-                    steps[i].orderNumber = orderNumberTo
-                    // this.state.steps[i + 1].orderNumber = orderNumberFrom
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].orderNumber == "_" + orderNumberTo) {
+                    list[i].orderNumber = orderNumberTo
+                    // this.state.list[i + 1].orderNumber = orderNumberFrom
                     break
                 }
             }
 
-            steps.sort(function(obj1, obj2) {
+            list.sort(function(obj1, obj2) {
                 // Ascending: first age less than the previous
                 return obj1.orderNumber - obj2.orderNumber;
             })
         }
 
-        this.setState({steps})
+        return list
+        // this.setState({steps})
     }
 
-    _changeRecipeStepItemDown = (orderNumberFrom) => {
-        let steps = this.state.steps
-        
-        if (steps && orderNumberFrom == steps.length) {
+    _changeRecipeItemDown = (orderNumberFrom, list) => {
+        if (list && orderNumberFrom == list.length) {
             return
         }
         
         const orderNumberTo = orderNumberFrom + 1
-        if (steps && steps.length > 0) {
+        if (list && list.length > 0) {
 
             //found the from order number and rename to "_12"
-            for (let i = 0; i < steps.length; i++) {
-                if (steps[i].orderNumber == orderNumberFrom) {
-                    steps[i].orderNumber = "_" + orderNumberTo
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].orderNumber == orderNumberFrom) {
+                    list[i].orderNumber = "_" + orderNumberTo
                     break
                 }
             }
 
-            // console.log("steps 1: " + JSON.stringify(steps))
+            // console.log("list 1: " + JSON.stringify(list))
 
             //found to and rename for the previus
-            for (let i = 0; i < steps.length; i++) {
-                if (steps[i].orderNumber == orderNumberTo) {
-                    steps[i].orderNumber = orderNumberFrom
-                    // this.state.steps[i + 1].orderNumber = orderNumberFrom
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].orderNumber == orderNumberTo) {
+                    list[i].orderNumber = orderNumberFrom
+                    // this.state.list[i + 1].orderNumber = orderNumberFrom
                     break
                 }
             }
 
             //remove de "_" from to
-            for (let i = 0; i < steps.length; i++) {
-                if (steps[i].orderNumber == "_" + orderNumberTo) {
-                    steps[i].orderNumber = orderNumberTo
-                    // this.state.steps[i + 1].orderNumber = orderNumberFrom
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].orderNumber == "_" + orderNumberTo) {
+                    list[i].orderNumber = orderNumberTo
+                    // this.state.list[i + 1].orderNumber = orderNumberFrom
                     break
                 }
             }
 
-            steps.sort(function(obj1, obj2) {
+            list.sort(function(obj1, obj2) {
                 // Ascending: first age less than the previous
                 return obj1.orderNumber - obj2.orderNumber;
             })
         }
 
-        this.setState({steps})
+        return list
+        // this.setState({steps})
     }
 
-    _keyExtractorRecipeStep = (item, index) => item.recipe_step_temp_id;
+    _keyExtractorRecipeStep = (item, index) => item.recipe_step_temp_id
+    _keyExtractorRecipeMaterial = (item, index) => item.recipe_material_temp_id
+    _keyExtractorRecipeIngredient = (item, index) => item.recipe_ingredient_temp_id
 
     _renderRecipeStepItem = ({item}) => (
         <View style={{
@@ -214,7 +219,8 @@ export default class CollectionRecipeNewScreen extends React.Component {
                         size={25}
                         color="#888"
                         onPress={() => {
-                            this._changeRecipeStepItemUp(item.orderNumber)
+                            let sortedList = this._changeRecipeItemUp(item.orderNumber, this.state.steps)
+                            this.setState({steps: sortedList,})
                         }}
                         underlayColor="#eee"
                         containerStyle={{
@@ -237,7 +243,8 @@ export default class CollectionRecipeNewScreen extends React.Component {
                         color="#888"
                         underlayColor="#eee"
                         onPress={() => {
-                            this._changeRecipeStepItemDown(item.orderNumber)
+                            let sortedList = this._changeRecipeItemDown(item.orderNumber, this.state.steps)
+                            this.setState({steps: sortedList,})
                         }}
                         containerStyle={{
                             backgroundColor: "#eee",
@@ -298,7 +305,243 @@ export default class CollectionRecipeNewScreen extends React.Component {
         </View>
     )
 
+    _renderRecipeMaterialItem = ({item}) => (
+        <View style={{
+            flex: 1,
+            flexDirection: 'row',
+            backgroundColor: '#eee',
+        }}>
+            <View style={{
+                // flex: 1,
+                flexDirection: 'column',
+                width: 50,
+            }}>
+                {
+                    item.orderNumber > 1
+                    &&
+                    <Icon
+                        name="arrow-drop-up"
+                        size={25}
+                        color="#888"
+                        onPress={() => {
+                            let sortedList = this._changeRecipeItemUp(item.orderNumber, this.state.materials)
+                            this.setState({materials: sortedList,})
+                        }}
+                        underlayColor="#eee"
+                        containerStyle={{
+                            backgroundColor: "#eee",
+                            height: 25,
+                        }}
+                    />
+                }
+                {
+                    item.orderNumber == 1
+                    &&
+                    <View style={{height: 25,}}></View>
+                }
+                {
+                    item.orderNumber < this.state.materials.length
+                    &&
+                    <Icon
+                        name="arrow-drop-down"
+                        size={25}
+                        color="#888"
+                        underlayColor="#eee"
+                        onPress={() => {
+                            let sortedList = this._changeRecipeItemDown(item.orderNumber, this.state.steps)
+                            this.setState({materials: sortedList,})
+                        }}
+                        containerStyle={{
+                            backgroundColor: "#eee",
+                            height: 25,
+                        }}
+                    />
+                }
+                {
+                    item.orderNumber == this.state.materials.length
+                    &&
+                    <View style={{height: 25,}}></View>
+                }
+            </View>
+
+            {
+                item.picture
+                &&
+                <Image 
+                    source={{uri: `data:image/jpg;base64,${item.picture}`,}} 
+                    style={{ 
+                        width: 50,
+                        height: 50,
+                    }} 
+                />
+            }
+            {
+                !item.picture
+                &&
+                <Image 
+                    source={{uri: `data:image/jpg;base64,${this.state.defaultImage}`,}} 
+                    style={{ 
+                        width: 50,
+                        height: 50,
+                    }} 
+                />
+            }
+           
+            <View style={{
+                // flex: 1,
+                flexDirection: 'column',
+                justifyContent: "center",
+                // alignContent: "center",
+                // alignItems: "center",
+                // alignSelf: "center",
+                marginLeft: 10,
+            }}>
+                <TouchableOpacity onPress={() => {
+                    
+                }}>
+                    <View style={{
+                        //   height: 10,
+                        //   backgroundColor: 'blue',
+                    }}>
+                        <Text style={{}}>{item.description}</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+        </View>
+    )
+
+    _renderRecipeIngredientItem = ({item}) => (
+        <View style={{
+            flex: 1,
+            flexDirection: 'row',
+            backgroundColor: '#eee',
+        }}>
+            <View style={{
+                // flex: 1,
+                flexDirection: 'column',
+                width: 50,
+            }}>
+                {
+                    item.orderNumber > 1
+                    &&
+                    <Icon
+                        name="arrow-drop-up"
+                        size={25}
+                        color="#888"
+                        onPress={() => {
+                            let sortedList = this._changeRecipeItemUp(item.orderNumber, this.state.ingredients)
+                            this.setState({ingredients: sortedList,})
+                        }}
+                        underlayColor="#eee"
+                        containerStyle={{
+                            backgroundColor: "#eee",
+                            height: 25,
+                        }}
+                    />
+                }
+                {
+                    item.orderNumber == 1
+                    &&
+                    <View style={{height: 25,}}></View>
+                }
+                {
+                    item.orderNumber < this.state.ingredients.length
+                    &&
+                    <Icon
+                        name="arrow-drop-down"
+                        size={25}
+                        color="#888"
+                        underlayColor="#eee"
+                        onPress={() => {
+                            let sortedList = this._changeRecipeItemDown(item.orderNumber, this.state.ingredients)
+                            this.setState({ingredients: sortedList,})
+                        }}
+                        containerStyle={{
+                            backgroundColor: "#eee",
+                            height: 25,
+                        }}
+                    />
+                }
+                {
+                    item.orderNumber == this.state.ingredients.length
+                    &&
+                    <View style={{height: 25,}}></View>
+                }
+            </View>
+
+            {
+                item.picture
+                &&
+                <Image 
+                    source={{uri: `data:image/jpg;base64,${item.picture}`,}} 
+                    style={{ 
+                        width: 50,
+                        height: 50,
+                    }} 
+                />
+            }
+            {
+                !item.picture
+                &&
+                <Image 
+                    source={{uri: `data:image/jpg;base64,${this.state.defaultImage}`,}} 
+                    style={{ 
+                        width: 50,
+                        height: 50,
+                    }} 
+                />
+            }
+           
+            <View style={{
+                // flex: 1,
+                flexDirection: 'column',
+                justifyContent: "center",
+                // alignContent: "center",
+                // alignItems: "center",
+                // alignSelf: "center",
+                marginLeft: 10,
+            }}>
+                <TouchableOpacity onPress={() => {
+                    
+                }}>
+                    <View style={{
+                        //   height: 10,
+                        //   backgroundColor: 'blue',
+                    }}>
+                        <Text style={{}}>{item.description}</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+        </View>
+    )
+
     _renderSeparatorRecipeStep = () => {
+        return (
+            <View
+                style={{
+                    height: 1,
+                    width: "86%",
+                    backgroundColor: "#CED0CE",
+                    marginLeft: "14%"
+                }}
+            />
+        )
+    }
+
+    _renderSeparatorRecipeMaterial = () => {
+        return (
+            <View
+                style={{
+                    height: 1,
+                    width: "86%",
+                    backgroundColor: "#CED0CE",
+                    marginLeft: "14%"
+                }}
+            />
+        )
+    }
+
+    _renderSeparatorRecipeIngredient = () => {
         return (
             <View
                 style={{
@@ -518,13 +761,58 @@ export default class CollectionRecipeNewScreen extends React.Component {
                     }
                     <View style={{
                         flex: 1,
-                        // backgroundColor: 'yellow',
                         marginTop: 30,
                         flexDirection: 'column',
-                        // justifyContent: "center",
-                        // alignContent: "center",
-                        // alignItems: "center",
-                        // alignSelf: "center",
+                    }}>
+                        <Button 
+                            icon={{
+                                name: "add",
+                                color: "#fff",
+                                size: 18,
+                            }}
+                            title="Add a new ingredient"
+                            titleStyle={{
+                                color: "#fff",
+                                fontSize: 14,
+                            }}
+                            buttonStyle={{
+                                backgroundColor: "#3399ff",
+                                padding: 5,
+                            }}
+                            containerStyle={{
+                                marginTop: 5,
+                                alignSelf: 'flex-end',
+                            }}
+                            onPress={() => {
+                                this.props.navigation.navigate("CollectionRecipeIngredientNew", {recipe_temp_id: this.state.recipe_temp_id})
+                            }}
+                        />
+                        {
+                            (!this.state.ingredients || this.state.ingredients.length == 0)
+                            &&
+                            <Text>No ingredients added yet...</Text>
+                        }
+                        {
+                            (this.state.ingredients && this.state.ingredients.length > 0)
+                            &&
+                            <FlatList
+                                data={this.state.ingredients}
+                                extraData={this.state}
+                                keyExtractor={this._keyExtractorRecipeIngredient}
+                                renderItem={this._renderRecipeIngredientItem}
+                                ItemSeparatorComponent={this._renderSeparatorRecipeIngredient}
+                                style={{
+                                    flex: 1,
+                                    marginBottom: 30,
+                                    marginTop: 10,
+                                }}
+                            />
+                        }
+                    </View>
+                    <View style={{
+                        flex: 1,
+                        marginTop: 30,
+                        flexDirection: 'column',
                     }}>
                         <Button 
                             icon={{
@@ -563,6 +851,56 @@ export default class CollectionRecipeNewScreen extends React.Component {
                                 keyExtractor={this._keyExtractorRecipeStep}
                                 renderItem={this._renderRecipeStepItem}
                                 ItemSeparatorComponent={this._renderSeparatorRecipeStep}
+                                style={{
+                                    flex: 1,
+                                    marginBottom: 30,
+                                    marginTop: 10,
+                                }}
+                            />
+                        }
+                    </View>
+                    <View style={{
+                        flex: 1,
+                        marginTop: 30,
+                        flexDirection: 'column',
+                    }}>
+                        <Button 
+                            icon={{
+                                name: "add",
+                                color: "#fff",
+                                size: 18,
+                            }}
+                            title="Add a new material"
+                            titleStyle={{
+                                color: "#fff",
+                                fontSize: 14,
+                            }}
+                            buttonStyle={{
+                                backgroundColor: "#3399ff",
+                                padding: 5,
+                            }}
+                            containerStyle={{
+                                marginTop: 5,
+                                alignSelf: 'flex-end',
+                            }}
+                            onPress={() => {
+                                this.props.navigation.navigate("CollectionRecipeMaterialNew", {recipe_temp_id: this.state.recipe_temp_id})
+                            }}
+                        />
+                        {
+                            (!this.state.materials || this.state.materials.length == 0)
+                            &&
+                            <Text>No materials added yet...</Text>
+                        }
+                        {
+                            (this.state.materials && this.state.materials.length > 0)
+                            &&
+                            <FlatList
+                                data={this.state.materials}
+                                extraData={this.state}
+                                keyExtractor={this._keyExtractorRecipeMaterial}
+                                renderItem={this._renderRecipeMaterialItem}
+                                ItemSeparatorComponent={this._renderSeparatorRecipeMaterial}
                                 style={{
                                     flex: 1,
                                     marginBottom: 30,
@@ -676,6 +1014,26 @@ export default class CollectionRecipeNewScreen extends React.Component {
                                             orderNumber: step.orderNumber,
                                             description: step.description,
                                             picture: step.picture,
+                                        }, recipeId)
+                                    })
+                                }
+
+                                if (this.state.materials && this.state.materials.length > 0) {
+                                    this.state.materials.forEach(async function (material) {
+                                        await stickyPeachDB.insertRecipeMaterial({
+                                            orderNumber: material.orderNumber,
+                                            description: material.description,
+                                            picture: material.picture,
+                                        }, recipeId)
+                                    })
+                                }
+
+                                if (this.state.ingredients && this.state.ingredients.length > 0) {
+                                    this.state.ingredients.forEach(async function (ingredient) {
+                                        await stickyPeachDB.insertRecipeIngredient({
+                                            orderNumber: ingredient.orderNumber,
+                                            description: ingredient.description,
+                                            picture: ingredient.picture,
                                         }, recipeId)
                                     })
                                 }

@@ -70,10 +70,18 @@ export default class RecipeScreen extends React.Component {
 
         const recipe = await stickyPeachDB.selectRecipeById(recipeId)
         const recipeSteps = await stickyPeachDB.selectRecipeStepsByRecipeId(recipeId)
+        const recipeMaterials = await stickyPeachDB.selectRecipeMaterialsByRecipeId(recipeId)
+        const recipeIngredients = await stickyPeachDB.selectRecipeIngredientsByRecipeId(recipeId)
+        // console.log("this._translateRecipe(recipe._array)[0]: " + JSON.stringify(this._translateRecipe(recipe._array)[0]))
+        // console.log("recipeSteps: " + JSON.stringify(recipeSteps))
+        // console.log("recipeMaterials: " + JSON.stringify(recipeMaterials))
+        // console.log("recipeIngredients: " + JSON.stringify(recipeIngredients))
         if (recipe) {
             this.setState({
                 recipe: this._translateRecipe(recipe._array)[0],
                 recipeSteps: this._translateRecipeStep(recipeSteps._array),
+                recipeMaterials: this._translateRecipeMaterial(recipeMaterials._array),
+                recipeIngredients: this._translateRecipeIngredient(recipeIngredients._array),
             })
         }
     }
@@ -136,6 +144,42 @@ export default class RecipeScreen extends React.Component {
         return listTranslated
     }
 
+    _translateRecipeMaterial = (originalList) => {
+        let listTranslated = new Array()
+        for (let i = 0; i < originalList.length; i++) {
+            const originalItem = originalList[i]
+
+            let translatedItem = {}
+            translatedItem['id'] = originalItem.id
+            translatedItem['description'] = originalItem.description
+            translatedItem['picture'] = originalItem.picture
+            translatedItem['orderNumber'] = originalItem.orderNumber
+            translatedItem['recipe_id'] = originalItem.recipe_id
+
+            listTranslated.push(translatedItem)
+        }
+
+        return listTranslated
+    }
+
+    _translateRecipeIngredient = (originalList) => {
+        let listTranslated = new Array()
+        for (let i = 0; i < originalList.length; i++) {
+            const originalItem = originalList[i]
+
+            let translatedItem = {}
+            translatedItem['id'] = originalItem.id
+            translatedItem['description'] = originalItem.description
+            translatedItem['picture'] = originalItem.picture
+            translatedItem['orderNumber'] = originalItem.orderNumber
+            translatedItem['recipe_id'] = originalItem.recipe_id
+
+            listTranslated.push(translatedItem)
+        }
+
+        return listTranslated
+    }
+
     _onRefresh() {
         this.setState({
             refreshing: true,
@@ -149,8 +193,162 @@ export default class RecipeScreen extends React.Component {
     }
 
     _keyExtractorRecipeStep = (item, index) => "" + item.id;
+    _keyExtractorRecipeIngredient = (item, index) => "" + item.id;
+    _keyExtractorRecipeMaterial = (item, index) => "" + item.id;
 
     _renderRecipeStepItem = ({item}) => (
+        <View style={{
+            flex: 1,
+            flexDirection: 'row',
+            backgroundColor: '#eee',
+        }}>
+            <View style={{
+                // flex: 1,
+                flexDirection: 'column',
+                width: 25,
+                height: 25,
+                margin: 5,
+                backgroundColor: Constants.COLORS.SYSTEM.FOUR,
+                borderRadius: 25,
+                alignContent: 'center',
+                alignItems: 'center',
+                alignSelf: "center",
+                justifyContent: 'center',
+            }}>
+                <Text style={{
+                    alignContent: 'center',
+                    alignItems: 'center',
+                    alignSelf: "center",
+                    justifyContent: 'center',
+                    color: Constants.COLORS.SYSTEM.SECONDARY,
+                    fontSize: 10,
+                }}>{item.orderNumber}</Text>
+            </View>
+            {
+                item.picture
+                &&
+                <Image 
+                    source={{uri: `data:image/jpg;base64,${item.picture}`,}} 
+                    style={{ 
+                        width: 50,
+                        height: 50,
+                    }} 
+                />
+            }
+            {
+                !item.picture
+                &&
+                <Image 
+                    source={{uri: `data:image/jpg;base64,${this.state.defaultImage}`,}} 
+                    style={{ 
+                        width: 50,
+                        height: 50,
+                    }} 
+                />
+            }
+           
+            <View style={{
+                // flex: 1,
+                flexDirection: 'column',
+                justifyContent: "center",
+                // alignContent: "center",
+                // alignItems: "center",
+                // alignSelf: "center",
+                marginLeft: 10,
+            }}>
+                <TouchableOpacity onPress={() => {
+                    
+                }}>
+                    <View style={{
+                        //   height: 10,
+                        //   backgroundColor: 'blue',
+                    }}>
+                        <Text 
+                            style={{}}
+                        >{item.description}</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+        </View>
+    )
+
+    _renderRecipeMaterialItem = ({item}) => (
+        <View style={{
+            flex: 1,
+            flexDirection: 'row',
+            backgroundColor: '#eee',
+        }}>
+            <View style={{
+                // flex: 1,
+                flexDirection: 'column',
+                width: 25,
+                height: 25,
+                margin: 5,
+                backgroundColor: Constants.COLORS.SYSTEM.FOUR,
+                borderRadius: 25,
+                alignContent: 'center',
+                alignItems: 'center',
+                alignSelf: "center",
+                justifyContent: 'center',
+            }}>
+                <Text style={{
+                    alignContent: 'center',
+                    alignItems: 'center',
+                    alignSelf: "center",
+                    justifyContent: 'center',
+                    color: Constants.COLORS.SYSTEM.SECONDARY,
+                    fontSize: 10,
+                }}>{item.orderNumber}</Text>
+            </View>
+            {
+                item.picture
+                &&
+                <Image 
+                    source={{uri: `data:image/jpg;base64,${item.picture}`,}} 
+                    style={{ 
+                        width: 50,
+                        height: 50,
+                    }} 
+                />
+            }
+            {
+                !item.picture
+                &&
+                <Image 
+                    source={{uri: `data:image/jpg;base64,${this.state.defaultImage}`,}} 
+                    style={{ 
+                        width: 50,
+                        height: 50,
+                    }} 
+                />
+            }
+           
+            <View style={{
+                // flex: 1,
+                flexDirection: 'column',
+                justifyContent: "center",
+                // alignContent: "center",
+                // alignItems: "center",
+                // alignSelf: "center",
+                marginLeft: 10,
+            }}>
+                <TouchableOpacity onPress={() => {
+                    
+                }}>
+                    <View style={{
+                        //   height: 10,
+                        //   backgroundColor: 'blue',
+                    }}>
+                        <Text 
+                            style={{}}
+                        >{item.description}</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+        </View>
+    )
+
+    _renderRecipeIngredientItem = ({item}) => (
         <View style={{
             flex: 1,
             flexDirection: 'row',
@@ -239,6 +437,32 @@ export default class RecipeScreen extends React.Component {
         )
     }
 
+    _renderSeparatorRecipeMaterial = () => {
+        return (
+            <View
+                style={{
+                    height: 1,
+                    width: "86%",
+                    backgroundColor: "#CED0CE",
+                    marginLeft: "14%"
+                }}
+            />
+        )
+    }
+
+    _renderSeparatorRecipeIngredient = () => {
+        return (
+            <View
+                style={{
+                    height: 1,
+                    width: "86%",
+                    backgroundColor: "#CED0CE",
+                    marginLeft: "14%"
+                }}
+            />
+        )
+    }
+
     render() {
         if (this.state.isLoading) {
             return (
@@ -272,6 +496,7 @@ export default class RecipeScreen extends React.Component {
                             bottom: 55,
                             right: 4, 
                             zIndex: 102,
+                            opacity: 0.8,
                         }}
                         onPress={() => {
                             Alert.alert(
@@ -307,6 +532,7 @@ export default class RecipeScreen extends React.Component {
                             bottom: 0,
                             right: 0, 
                             zIndex: 102,
+                            opacity: 0.8,
                         }}
                         onPress={() => {
                             
@@ -320,7 +546,7 @@ export default class RecipeScreen extends React.Component {
                         minOverlayOpacity={0.1}
                         fadeOutForeground
                         renderHeader={() => (
-                            <Image source={{uri: `data:image/jpg;base64,${(this.state.picture ? this.state.picture : this.state.defaultImage)}`,}}  style={styles.image} />
+                            <Image source={{uri: `data:image/jpg;base64,${(this.state.recipe.picture ? this.state.recipe.picture : this.state.defaultImage)}`,}}  style={styles.image} />
                         )}
                         renderFixedForeground={() => (
                             <Animatable.View
@@ -395,7 +621,7 @@ export default class RecipeScreen extends React.Component {
                             <View style={{
                                 margin: 15,
                             }}>
-                                {/* {
+                                {
                                     this.state.recipeIngredients && this.state.recipeIngredients.length > 0
                                     &&
                                     <FlatList
@@ -410,7 +636,7 @@ export default class RecipeScreen extends React.Component {
                                             marginTop: 10,
                                         }}
                                     />
-                                } */}
+                                }
                             </View>
                         }
                         {
@@ -419,13 +645,13 @@ export default class RecipeScreen extends React.Component {
                             <View style={{
                                 margin: 15,
                             }}>
-                                {/* {
+                                {
                                     this.state.recipeMaterials && this.state.recipeMaterials.length > 0
                                     &&
                                     <FlatList
                                         data={this.state.recipeMaterials}
                                         extraData={this.state}
-                                        keyExtractor={this._keyExtractorMaterialStep}
+                                        keyExtractor={this._keyExtractorRecipeMaterial}
                                         renderItem={this._renderRecipeMaterialItem}
                                         ItemSeparatorComponent={this._renderSeparatorRecipeMaterial}
                                         style={{
@@ -434,7 +660,7 @@ export default class RecipeScreen extends React.Component {
                                             marginTop: 10,
                                         }}
                                     />
-                                } */}
+                                }
                             </View>
                         }
                         {

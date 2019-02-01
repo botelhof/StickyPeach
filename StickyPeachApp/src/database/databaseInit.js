@@ -23,7 +23,7 @@ export function initDatabase(defaultSettings) {
         //     'drop table recipe;'
         // )
         tx.executeSql(
-            'create table if not exists recipe (id integer primary key not null, name text not null, time_preparation int not null, time_cook int not null, serves int not null, description text not null, vegan boolean not null, timestamp_creation timestamp not null, timestamp_updated timestamp, user_id int not null, FOREIGN KEY(user_id) REFERENCES user(id));'
+            'create table if not exists recipe (id integer primary key not null, name text not null, time_preparation int not null, time_cook int not null, serves int not null, description text not null, vegan boolean not null, picture blob, timestamp_creation timestamp not null, timestamp_updated timestamp, user_id int not null, FOREIGN KEY(user_id) REFERENCES user(id));'
         )
 
         // tx.executeSql(
@@ -31,6 +31,20 @@ export function initDatabase(defaultSettings) {
         // )
         tx.executeSql(
             'create table if not exists step (id integer primary key not null, orderNumber int not null, description text not null, picture blob, recipe_id int not null, timestamp_creation timestamp not null, timestamp_updated timestamp, FOREIGN KEY(recipe_id) REFERENCES recipe(id));'
+        )
+
+        // tx.executeSql(
+        //     'drop table material;'
+        // )
+        tx.executeSql(
+            'create table if not exists material (id integer primary key not null, orderNumber int not null, description text not null, picture blob, recipe_id int not null, timestamp_creation timestamp not null, timestamp_updated timestamp, FOREIGN KEY(recipe_id) REFERENCES recipe(id));'
+        )
+
+        // tx.executeSql(
+        //     'drop table ingredient;'
+        // )
+        tx.executeSql(
+            'create table if not exists ingredient (id integer primary key not null, orderNumber int not null, description text not null, picture blob, recipe_id int not null, timestamp_creation timestamp not null, timestamp_updated timestamp, FOREIGN KEY(recipe_id) REFERENCES recipe(id));'
         )
 
         // tx.executeSql(
@@ -73,12 +87,6 @@ function initDBDefaultSettings(defaultSettings) {
             , [defaultSettings.PICTURE_NAME, default_picture]
         );
         
-    },
-    (success) => {
-        console.log("success initDatabase: " + success)
-    },
-    (error) => {
-        console.log("error initDatabase: " + error)
     })
 }
 
@@ -97,11 +105,5 @@ function initDBUser() {
             , ['Filipe Botelho', 'fff@fff@ff', 'qwerty', new Date() ]
         );
         
-    },
-    (success) => {
-        console.log("success initDatabase: " + success)
-    },
-    (error) => {
-        console.log("error initDatabase: " + error)
     })
 }

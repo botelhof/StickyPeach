@@ -63,7 +63,7 @@ export default class CollectionsScreen extends React.Component {
     }
 
     componentDidMount() {
-        //stickyPeachDB.initDatabase(DefaultSettings.DEFAULT_SETTINGS)
+        // stickyPeachDB.initDatabase(DefaultSettings.DEFAULT_SETTINGS)
         
         // stickyPeachDB.insertRandomUser()
         // stickyPeachDB.insertRecipe({
@@ -137,6 +137,7 @@ export default class CollectionsScreen extends React.Component {
                             bottom: 0,
                             right: 0, 
                             zIndex: 102,
+                            opacity: 0.8,
                         }}
                         onPress={() => {
                             this.props.navigation.navigate("CollectionNew")

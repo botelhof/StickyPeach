@@ -11,7 +11,9 @@ import CollectionsScreen from './src/components/CollectionsScreen'
 import CollectionScreen from './src/components/CollectionScreen'
 import CollectionNewScreen from './src/components/CollectionNewScreen'
 import CollectionRecipeNewScreen from './src/components/CollectionRecipeNewScreen'
+import CollectionRecipeIngredientNewScreen from './src/components/CollectionRecipeIngredientNewScreen'
 import CollectionRecipeStepNewScreen from './src/components/CollectionRecipeStepNewScreen'
+import CollectionRecipeMaterialNewScreen from './src/components/CollectionRecipeMaterialNewScreen'
 import SettingsScreen from './src/components/SettingsScreen'
 import RecipeScreen from './src/components/RecipeScreen'
 
@@ -34,7 +36,9 @@ const CollectionsStack = createStackNavigator({
   Collection: CollectionScreen,
   CollectionNew: CollectionNewScreen,
   CollectionRecipeNew: CollectionRecipeNewScreen,
+  CollectionRecipeIngredientNew: CollectionRecipeIngredientNewScreen,
   CollectionRecipeStepNew: CollectionRecipeStepNewScreen,
+  CollectionRecipeMaterialNew: CollectionRecipeMaterialNewScreen,
   Recipe: RecipeScreen,
 })
 
