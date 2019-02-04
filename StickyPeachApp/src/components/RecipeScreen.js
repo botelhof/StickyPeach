@@ -22,6 +22,7 @@ import {
 } from 'react-navigation'
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view'
 import SideMenu from 'react-native-side-menu'
+import ActionButton from 'react-native-circular-action-menu'
 
 import GalleryComponent from './GalleryComponent'
 import MenuSideView from './MenuSideView'
@@ -484,7 +485,7 @@ export default class RecipeScreen extends React.Component {
                             })
                         }}
                     />
-                    <Icon 
+                    {/* <Icon 
                         name="delete"
                         raised
                         reverse
@@ -537,7 +538,59 @@ export default class RecipeScreen extends React.Component {
                         onPress={() => {
                             
                         }}
-                    />
+                    /> */}
+                    <View style={{
+                        position: "absolute",
+                        bottom: 15,
+                        right: 20, 
+                        // left: (width / 2) - 30,
+                        zIndex: 102,
+                        opacity: 0.6,
+                    }}>
+                        <ActionButton 
+                            position="right"
+                            radius={100}
+                            size={50}
+                            itemSize={40}
+                            icon={
+                                <Icon name="settings" color="#FFF" />
+                            }
+                            buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.MAIN}>
+                            <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.COOK} title="Cook now" onPress={() => {
+                            }}>
+                                <Icon name="local-dining" color="#FFF" style={styles.actionButtonIcon} />
+                            </ActionButton.Item>
+                            <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.SHOPPING} title="Add do shopping list" onPress={() => console.log("notes tapped!")}>
+                                <Icon name="add-shopping-cart" color="#444" style={styles.actionButtonIcon} />
+                            </ActionButton.Item>
+                            <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.EDIT} title="Edit" onPress={() => {}}>
+                                <Icon name="edit" color="#FFF" style={styles.actionButtonIcon} />
+                            </ActionButton.Item>
+                            <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.DELETE} title="Delete recipe" onPress={() => {
+                                Alert.alert(
+                                    'Delete Recipe?',
+                                    'Do you want to delete this recipe?',
+                                    [
+                                        {
+                                            text: 'Delete', onPress: async () => {
+                                                await stickyPeachDB.deleteRecipe(this.state.recipe.id)
+
+                                                this.props.navigation.goBack()
+                                            }
+                                        },
+                                        {
+                                        text: 'Cancel',
+                                            onPress: () => console.log('Cancel Pressed'),
+                                            style: 'cancel',
+                                        },
+                                    ],
+                                    {cancelable: false},
+                                )
+                            }}>
+                                <Icon name="delete" color="#FFF" style={styles.actionButtonIcon} />
+                            </ActionButton.Item>
+                        </ActionButton>
+                    </View>
                     <StatusBar barStyle="light-content" />
                     <HeaderImageScrollView
                         maxHeight={MAX_HEIGHT}
@@ -767,6 +820,11 @@ const styles = StyleSheet.create({
     },
     sectionLarge: {
         height: 600,
+    },
+    actionButtonIcon: {
+        fontSize: 20,
+        height: 22,
+        color: 'white',
     },
 })
   

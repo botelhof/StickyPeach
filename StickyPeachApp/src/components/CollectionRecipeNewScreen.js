@@ -17,6 +17,7 @@ import {
     Icon,
 } from 'react-native-elements'
 import FloatLabelTextInput from './FloatLabelTextField'
+import ActionButton from 'react-native-circular-action-menu'
 
 import * as Constants from '../utils/Constants.js'
 import * as DropDownHolder from '../utils/DropDownHolder.js'
@@ -559,6 +560,65 @@ export default class CollectionRecipeNewScreen extends React.Component {
 
         return (
             <View style={{flex: 1,}}>
+                <View style={{
+                    position: "absolute",
+                    bottom: 80,
+                    left: 10, 
+                    // left: (width / 2) - 30,
+                    zIndex: 102,
+                    opacity: 0.6,
+                }}>
+                    <ActionButton 
+                        position="left"
+                        radius={100}
+                        size={50}
+                        itemSize={40}
+                        icon={
+                            <Icon name="photo-camera" color="#FFF" />
+                        }
+                        buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.MAIN}>
+                        <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.PICK_PICTURE} title="Pick a picture" onPress={this._pickImage}>
+                            <Icon name="camera-roll" color="#FFF" style={styles.actionButtonIcon} />
+                        </ActionButton.Item>
+                        <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.TAKE_PICTURE} title="Take a picture" onPress={this._pickImage}>
+                            <Icon name="camera" color="#FFF" style={styles.actionButtonIcon} />
+                        </ActionButton.Item>
+                    </ActionButton>
+                </View>
+                <View style={{
+                    position: "absolute",
+                    bottom: 80,
+                    right: 20, 
+                    // left: (width / 2) - 30,
+                    zIndex: 102,
+                    opacity: 0.6,
+                }}>
+                    <ActionButton 
+                        position="right"
+                        radius={100}
+                        size={50}
+                        itemSize={40}
+                        icon={
+                            <Icon name="add" color="#FFF" />
+                        }
+                        buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.MAIN}>
+                        <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.ADD_INGREDIENT} title="Add a ingredient" onPress={() => {
+                            this.props.navigation.navigate("CollectionRecipeIngredientNew", {recipe_temp_id: this.state.recipe_temp_id})
+                        }}>
+                            <Icon name="local-florist" color="#FFF" style={styles.actionButtonIcon} />
+                        </ActionButton.Item>
+                        <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.ADD_STEP} title="Add a step" onPress={() => {
+                            this.props.navigation.navigate("CollectionRecipeStepNew", {recipe_temp_id: this.state.recipe_temp_id})
+                        }}>
+                            <Icon name="art-track" color="#FFF" style={styles.actionButtonIcon} />
+                        </ActionButton.Item>
+                        <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.ADD_MATERIAL} title="Add a material" onPress={() => {
+                            this.props.navigation.navigate("CollectionRecipeMaterialNew", {recipe_temp_id: this.state.recipe_temp_id})
+                        }}>
+                            <Icon name="local-dining" color="#FFF" style={styles.actionButtonIcon} />
+                        </ActionButton.Item>
+                    </ActionButton>
+                </View>
                 <ScrollView
                     style={{
                         flex: 1,
@@ -670,48 +730,6 @@ export default class CollectionRecipeNewScreen extends React.Component {
                             fontSize: 15,
                         }}
                     />
-                    <View style={{
-                        marginTop: 30,
-                        flexDirection: 'row',
-                        alignContent: 'center',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                    }}>
-                        <Button 
-                            icon={{
-                                name: "camera-roll",
-                                color: "#fff",
-                                size: 18,
-                            }}
-                            title="Pick a picture"
-                            titleStyle={{
-                                color: "#fff",
-                                fontSize: 14,
-                            }}
-                            buttonStyle={{
-                                backgroundColor: "#888",
-                                padding: 5,
-                            }}
-                            onPress={this._pickImage}
-                        />
-                        <Button 
-                            icon={{
-                                name: "camera",
-                                color: "#fff",
-                                size: 18,
-                            }}
-                            title="Take a picture"
-                            titleStyle={{
-                                color: "#fff",
-                                fontSize: 14,
-                            }}
-                            buttonStyle={{
-                                backgroundColor: "#888",
-                                padding: 5,
-                            }}
-                            onPress={this._pickImage}
-                        />
-                    </View>
                     {
                         this.state.picture
                         &&
@@ -764,49 +782,31 @@ export default class CollectionRecipeNewScreen extends React.Component {
                         marginTop: 30,
                         flexDirection: 'column',
                     }}>
-                        <Button 
-                            icon={{
-                                name: "add",
-                                color: "#fff",
-                                size: 18,
-                            }}
-                            title="Add a new ingredient"
-                            titleStyle={{
-                                color: "#fff",
-                                fontSize: 14,
-                            }}
-                            buttonStyle={{
-                                backgroundColor: "#3399ff",
-                                padding: 5,
-                            }}
-                            containerStyle={{
-                                marginTop: 5,
-                                alignSelf: 'flex-end',
-                            }}
-                            onPress={() => {
-                                this.props.navigation.navigate("CollectionRecipeIngredientNew", {recipe_temp_id: this.state.recipe_temp_id})
-                            }}
-                        />
                         {
                             (!this.state.ingredients || this.state.ingredients.length == 0)
                             &&
-                            <Text>No ingredients added yet...</Text>
+                            <Text style={styles.noContentLabel}>No ingredients added yet...</Text>
                         }
                         {
                             (this.state.ingredients && this.state.ingredients.length > 0)
                             &&
-                            <FlatList
-                                data={this.state.ingredients}
-                                extraData={this.state}
-                                keyExtractor={this._keyExtractorRecipeIngredient}
-                                renderItem={this._renderRecipeIngredientItem}
-                                ItemSeparatorComponent={this._renderSeparatorRecipeIngredient}
-                                style={{
-                                    flex: 1,
-                                    marginBottom: 30,
-                                    marginTop: 10,
-                                }}
-                            />
+                            <View style={{
+                                flexDirection: "column",
+                            }}>
+                                <Text style={styles.listHeaderLabel}>Ingredients</Text>
+                                <FlatList
+                                    data={this.state.ingredients}
+                                    extraData={this.state}
+                                    keyExtractor={this._keyExtractorRecipeIngredient}
+                                    renderItem={this._renderRecipeIngredientItem}
+                                    ItemSeparatorComponent={this._renderSeparatorRecipeIngredient}
+                                    style={{
+                                        flex: 1,
+                                        marginBottom: 30,
+                                        marginTop: 10,
+                                    }}
+                                />
+                            </View>
                         }
                     </View>
                     <View style={{
@@ -814,49 +814,31 @@ export default class CollectionRecipeNewScreen extends React.Component {
                         marginTop: 30,
                         flexDirection: 'column',
                     }}>
-                        <Button 
-                            icon={{
-                                name: "add",
-                                color: "#fff",
-                                size: 18,
-                            }}
-                            title="Add a new step"
-                            titleStyle={{
-                                color: "#fff",
-                                fontSize: 14,
-                            }}
-                            buttonStyle={{
-                                backgroundColor: "#3399ff",
-                                padding: 5,
-                            }}
-                            containerStyle={{
-                                marginTop: 5,
-                                alignSelf: 'flex-end',
-                            }}
-                            onPress={() => {
-                                this.props.navigation.navigate("CollectionRecipeStepNew", {recipe_temp_id: this.state.recipe_temp_id})
-                            }}
-                        />
                         {
                             (!this.state.steps || this.state.steps.length == 0)
                             &&
-                            <Text>No steps added yet...</Text>
+                            <Text style={styles.noContentLabel}>No steps added yet...</Text>
                         }
                         {
                             (this.state.steps && this.state.steps.length > 0)
                             &&
-                            <FlatList
-                                data={this.state.steps}
-                                extraData={this.state}
-                                keyExtractor={this._keyExtractorRecipeStep}
-                                renderItem={this._renderRecipeStepItem}
-                                ItemSeparatorComponent={this._renderSeparatorRecipeStep}
-                                style={{
-                                    flex: 1,
-                                    marginBottom: 30,
-                                    marginTop: 10,
-                                }}
-                            />
+                            <View style={{
+                                flexDirection: "column",
+                            }}>
+                                <Text style={styles.listHeaderLabel}>Steps</Text>
+                                <FlatList
+                                    data={this.state.steps}
+                                    extraData={this.state}
+                                    keyExtractor={this._keyExtractorRecipeStep}
+                                    renderItem={this._renderRecipeStepItem}
+                                    ItemSeparatorComponent={this._renderSeparatorRecipeStep}
+                                    style={{
+                                        flex: 1,
+                                        marginBottom: 30,
+                                        marginTop: 10,
+                                    }}
+                                />
+                            </View>
                         }
                     </View>
                     <View style={{
@@ -864,49 +846,31 @@ export default class CollectionRecipeNewScreen extends React.Component {
                         marginTop: 30,
                         flexDirection: 'column',
                     }}>
-                        <Button 
-                            icon={{
-                                name: "add",
-                                color: "#fff",
-                                size: 18,
-                            }}
-                            title="Add a new material"
-                            titleStyle={{
-                                color: "#fff",
-                                fontSize: 14,
-                            }}
-                            buttonStyle={{
-                                backgroundColor: "#3399ff",
-                                padding: 5,
-                            }}
-                            containerStyle={{
-                                marginTop: 5,
-                                alignSelf: 'flex-end',
-                            }}
-                            onPress={() => {
-                                this.props.navigation.navigate("CollectionRecipeMaterialNew", {recipe_temp_id: this.state.recipe_temp_id})
-                            }}
-                        />
                         {
                             (!this.state.materials || this.state.materials.length == 0)
                             &&
-                            <Text>No materials added yet...</Text>
+                            <Text style={styles.noContentLabel}>No materials added yet...</Text>
                         }
                         {
                             (this.state.materials && this.state.materials.length > 0)
                             &&
-                            <FlatList
-                                data={this.state.materials}
-                                extraData={this.state}
-                                keyExtractor={this._keyExtractorRecipeMaterial}
-                                renderItem={this._renderRecipeMaterialItem}
-                                ItemSeparatorComponent={this._renderSeparatorRecipeMaterial}
-                                style={{
-                                    flex: 1,
-                                    marginBottom: 30,
-                                    marginTop: 10,
-                                }}
-                            />
+                            <View style={{
+                                flexDirection: "column",
+                            }}>
+                                <Text style={styles.listHeaderLabel}>Materials</Text>
+                                <FlatList
+                                    data={this.state.materials}
+                                    extraData={this.state}
+                                    keyExtractor={this._keyExtractorRecipeMaterial}
+                                    renderItem={this._renderRecipeMaterialItem}
+                                    ItemSeparatorComponent={this._renderSeparatorRecipeMaterial}
+                                    style={{
+                                        flex: 1,
+                                        marginBottom: 30,
+                                        marginTop: 10,
+                                    }}
+                                />
+                            </View>
                         }
                     </View>
                 </ScrollView>
@@ -1051,3 +1015,22 @@ export default class CollectionRecipeNewScreen extends React.Component {
         )
     }
 }
+
+const styles = StyleSheet.create({
+    actionButtonIcon: {
+        fontSize: 20,
+        height: 22,
+        color: '#FFF',
+    },
+    listHeaderLabel: {
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    noContentLabel: {
+        color: "#444",
+        fontSize: 14,
+        color: "#222",
+        fontStyle: 'italic',
+    },
+})
+  
