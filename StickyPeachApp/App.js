@@ -16,6 +16,7 @@ import CollectionRecipeStepNewScreen from './src/components/CollectionRecipeStep
 import CollectionRecipeMaterialNewScreen from './src/components/CollectionRecipeMaterialNewScreen'
 import SettingsScreen from './src/components/SettingsScreen'
 import RecipeScreen from './src/components/RecipeScreen'
+import CookingScreen from './src/components/CookingScreen'
 
 import DropdownAlert from 'react-native-dropdownalert'
 
@@ -40,6 +41,7 @@ const CollectionsStack = createStackNavigator({
   CollectionRecipeStepNew: CollectionRecipeStepNewScreen,
   CollectionRecipeMaterialNew: CollectionRecipeMaterialNewScreen,
   Recipe: RecipeScreen,
+  Cooking: CookingScreen,
 })
 
 const SettingsStack = createStackNavigator({

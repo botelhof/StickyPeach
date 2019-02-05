@@ -35,6 +35,18 @@ export const COLORS = {
                 ADD_STEP: "#248f24",
                 ADD_MATERIAL: "#a35FF4",
             },
+        },
+        COOKING: {
+            CLOSE: {
+                FONT: "#CCC",
+                BACK: "#444",
+            },
+            PAGINATION: {
+                DOT_INACTIVE: "#CCC",
+                DOT_ACTIVE: "#ff8b4d",
+                BUTTON_NEXT: "#ff8b4d",
+                BUTTON_PREVIOUS: "#ff8b4d",
+            }
         }
     }
 }

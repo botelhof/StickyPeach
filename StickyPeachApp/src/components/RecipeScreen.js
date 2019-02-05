@@ -46,7 +46,6 @@ export default class RecipeScreen extends React.Component {
         header: null,
     }
 
-
     constructor(props) {
         super(props)
 
@@ -485,60 +484,6 @@ export default class RecipeScreen extends React.Component {
                             })
                         }}
                     />
-                    {/* <Icon 
-                        name="delete"
-                        raised
-                        reverse
-                        reverseColor={Constants.COLORS.SYSTEM.CRUD.DELETE.FONT}
-                        color={Constants.COLORS.SYSTEM.CRUD.DELETE.BACK}
-                        size={14}
-                        containerStyle={{
-                            position: "absolute",
-                            bottom: 55,
-                            right: 4, 
-                            zIndex: 102,
-                            opacity: 0.8,
-                        }}
-                        onPress={() => {
-                            Alert.alert(
-                                'Delete Recipe?',
-                                'Do you want to delete this recipe?',
-                                [
-                                    {
-                                        text: 'Delete', onPress: async () => {
-                                            await stickyPeachDB.deleteRecipe(this.state.recipe.id)
-
-                                            this.props.navigation.goBack()
-                                        }
-                                    },
-                                    {
-                                    text: 'Cancel',
-                                        onPress: () => console.log('Cancel Pressed'),
-                                        style: 'cancel',
-                                    },
-                                ],
-                                {cancelable: false},
-                            )
-                        }}
-                    />
-                    <Icon 
-                        name="edit"
-                        raised
-                        reverse
-                        reverseColor={Constants.COLORS.SYSTEM.CRUD.EDIT.FONT}
-                        color={Constants.COLORS.SYSTEM.CRUD.EDIT.BACK}
-                        size={18}
-                        containerStyle={{
-                            position: "absolute",
-                            bottom: 0,
-                            right: 0, 
-                            zIndex: 102,
-                            opacity: 0.8,
-                        }}
-                        onPress={() => {
-                            
-                        }}
-                    /> */}
                     <View style={{
                         position: "absolute",
                         bottom: 15,
@@ -549,7 +494,7 @@ export default class RecipeScreen extends React.Component {
                     }}>
                         <ActionButton 
                             position="right"
-                            radius={100}
+                            radius={150}
                             size={50}
                             itemSize={40}
                             icon={
@@ -557,14 +502,23 @@ export default class RecipeScreen extends React.Component {
                             }
                             buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.MAIN}>
                             <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.COOK} title="Cook now" onPress={() => {
+                                this.props.navigation.navigate("Cooking", {
+                                    recipe_id: this.state.recipe.id,
+                                })
                             }}>
-                                <Icon name="local-dining" color="#FFF" style={styles.actionButtonIcon} />
+                                <Icon name="play-arrow" color="#FFF" style={styles.actionButtonIcon} />
                             </ActionButton.Item>
                             <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.SHOPPING} title="Add do shopping list" onPress={() => console.log("notes tapped!")}>
                                 <Icon name="add-shopping-cart" color="#444" style={styles.actionButtonIcon} />
                             </ActionButton.Item>
                             <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.EDIT} title="Edit" onPress={() => {}}>
                                 <Icon name="edit" color="#FFF" style={styles.actionButtonIcon} />
+                            </ActionButton.Item>
+                            <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.EDIT} title="Add to favorites" onPress={() => {}}>
+                                <Icon name="favorite" color="#FFF" style={styles.actionButtonIcon} />
+                            </ActionButton.Item>
+                            <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.EDIT} title="Add to recipe book" onPress={() => {}}>
+                                <Icon name="import-contacts" color="#FFF" style={styles.actionButtonIcon} />
                             </ActionButton.Item>
                             <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.DELETE} title="Delete recipe" onPress={() => {
                                 Alert.alert(
