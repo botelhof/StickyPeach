@@ -570,7 +570,7 @@ export default class CollectionRecipeNewScreen extends React.Component {
                 }}>
                     <ActionButton 
                         position="left"
-                        radius={100}
+                        radius={80}
                         size={50}
                         itemSize={40}
                         icon={
@@ -595,27 +595,27 @@ export default class CollectionRecipeNewScreen extends React.Component {
                 }}>
                     <ActionButton 
                         position="right"
-                        radius={100}
+                        radius={90}
                         size={50}
                         itemSize={40}
                         icon={
                             <Icon name="add" color="#FFF" />
                         }
                         buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.MAIN}>
-                        <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.ADD_INGREDIENT} title="Add a ingredient" onPress={() => {
-                            this.props.navigation.navigate("CollectionRecipeIngredientNew", {recipe_temp_id: this.state.recipe_temp_id})
+                        <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.ADD_MATERIAL} title="Add a material" onPress={() => {
+                            this.props.navigation.navigate("CollectionRecipeMaterialNew", {recipe_temp_id: this.state.recipe_temp_id})
                         }}>
-                            <Icon name="local-florist" color="#FFF" style={styles.actionButtonIcon} />
+                            <Icon name="local-dining" color="#FFF" style={styles.actionButtonIcon} />
                         </ActionButton.Item>
                         <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.ADD_STEP} title="Add a step" onPress={() => {
                             this.props.navigation.navigate("CollectionRecipeStepNew", {recipe_temp_id: this.state.recipe_temp_id})
                         }}>
                             <Icon name="art-track" color="#FFF" style={styles.actionButtonIcon} />
                         </ActionButton.Item>
-                        <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.ADD_MATERIAL} title="Add a material" onPress={() => {
-                            this.props.navigation.navigate("CollectionRecipeMaterialNew", {recipe_temp_id: this.state.recipe_temp_id})
+                        <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.ADD_INGREDIENT} title="Add a ingredient" onPress={() => {
+                            this.props.navigation.navigate("CollectionRecipeIngredientNew", {recipe_temp_id: this.state.recipe_temp_id})
                         }}>
-                            <Icon name="local-dining" color="#FFF" style={styles.actionButtonIcon} />
+                            <Icon name="local-florist" color="#FFF" style={styles.actionButtonIcon} />
                         </ActionButton.Item>
                     </ActionButton>
                 </View>

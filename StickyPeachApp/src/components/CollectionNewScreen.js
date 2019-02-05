@@ -12,8 +12,10 @@ import {
 } from 'react-native'
 import {
     Button,
+    Icon,
 } from 'react-native-elements'
 import FloatLabelTextInput from './FloatLabelTextField'
+import ActionButton from 'react-native-circular-action-menu'
 
 import * as Constants from '../utils/Constants.js'
 import * as DropDownHolder from '../utils/DropDownHolder.js'
@@ -64,6 +66,31 @@ export default class CollectionNewScreen extends React.Component {
 
         return (
             <View style={{flex: 1,}}>
+                <View style={{
+                    position: "absolute",
+                    bottom: 80,
+                    left: 10, 
+                    // left: (width / 2) - 30,
+                    zIndex: 102,
+                    opacity: 0.6,
+                }}>
+                    <ActionButton 
+                        position="left"
+                        radius={80}
+                        size={50}
+                        itemSize={40}
+                        icon={
+                            <Icon name="photo-camera" color="#FFF" />
+                        }
+                        buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.MAIN}>
+                        <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.PICK_PICTURE} title="Pick a picture" onPress={this._pickImage}>
+                            <Icon name="camera-roll" color="#FFF" style={styles.actionButtonIcon} />
+                        </ActionButton.Item>
+                        <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.TAKE_PICTURE} title="Take a picture" onPress={this._pickImage}>
+                            <Icon name="camera" color="#FFF" style={styles.actionButtonIcon} />
+                        </ActionButton.Item>
+                    </ActionButton>
+                </View>
                 <ScrollView
                     style={{
                         flex: 1,
@@ -116,48 +143,6 @@ export default class CollectionNewScreen extends React.Component {
                             fontSize: 15,
                         }}
                     />
-                    <View style={{
-                        marginTop: 30,
-                        flexDirection: 'row',
-                        alignContent: 'center',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                    }}>
-                        <Button 
-                            icon={{
-                                name: "camera-roll",
-                                color: "#fff",
-                                size: 18,
-                            }}
-                            title="Pick a picture"
-                            titleStyle={{
-                                color: "#fff",
-                                fontSize: 14,
-                            }}
-                            buttonStyle={{
-                                backgroundColor: "#888",
-                                padding: 5,
-                            }}
-                            onPress={this._pickImage}
-                        />
-                        <Button 
-                            icon={{
-                                name: "camera",
-                                color: "#fff",
-                                size: 18,
-                            }}
-                            title="Take a picture"
-                            titleStyle={{
-                                color: "#fff",
-                                fontSize: 14,
-                            }}
-                            buttonStyle={{
-                                backgroundColor: "#888",
-                                padding: 5,
-                            }}
-                            onPress={this._pickImage}
-                        />
-                    </View>
                     {
                         this.state.picture
                         &&
@@ -294,3 +279,21 @@ export default class CollectionNewScreen extends React.Component {
         )
     }
 }
+
+const styles = StyleSheet.create({
+    actionButtonIcon: {
+        fontSize: 20,
+        height: 22,
+        color: '#FFF',
+    },
+    listHeaderLabel: {
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    noContentLabel: {
+        color: "#444",
+        fontSize: 14,
+        color: "#222",
+        fontStyle: 'italic',
+    },
+})
