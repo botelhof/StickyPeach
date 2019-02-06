@@ -490,7 +490,7 @@ export default class RecipeScreen extends React.Component {
                         right: 20, 
                         // left: (width / 2) - 30,
                         zIndex: 102,
-                        opacity: 0.6,
+                        opacity: 0.8,
                     }}>
                         <ActionButton 
                             position="right"
@@ -514,10 +514,10 @@ export default class RecipeScreen extends React.Component {
                             <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.EDIT} title="Edit" onPress={() => {}}>
                                 <Icon name="edit" color="#FFF" style={styles.actionButtonIcon} />
                             </ActionButton.Item>
-                            <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.EDIT} title="Add to favorites" onPress={() => {}}>
+                            <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.FAVORITE} title="Add to favorites" onPress={() => {}}>
                                 <Icon name="favorite" color="#FFF" style={styles.actionButtonIcon} />
                             </ActionButton.Item>
-                            <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.EDIT} title="Add to recipe book" onPress={() => {}}>
+                            <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.BOOK} title="Add to recipe book" onPress={() => {}}>
                                 <Icon name="import-contacts" color="#FFF" style={styles.actionButtonIcon} />
                             </ActionButton.Item>
                             <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.DELETE} title="Delete recipe" onPress={() => {

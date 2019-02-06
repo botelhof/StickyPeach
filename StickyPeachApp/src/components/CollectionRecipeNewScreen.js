@@ -602,6 +602,13 @@ export default class CollectionRecipeNewScreen extends React.Component {
                             <Icon name="add" color="#FFF" />
                         }
                         buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.MAIN}>
+                        <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.ASSOCIATE_STEP_PROPS} title="Associate step proprieties" onPress={() => {
+                            this.props.navigation.navigate("CollectionAssociateStepProps", {
+                                recipe_temp_id: this.state.recipe_temp_id,
+                            })
+                        }}>
+                            <Icon name="low-priority" color="#FFF" style={styles.actionButtonIcon} />
+                        </ActionButton.Item>
                         <ActionButton.Item buttonColor={Constants.COLORS.SYSTEM.CRUD.MANAGE.ADD_MATERIAL} title="Add a material" onPress={() => {
                             this.props.navigation.navigate("CollectionRecipeMaterialNew", {recipe_temp_id: this.state.recipe_temp_id})
                         }}>
