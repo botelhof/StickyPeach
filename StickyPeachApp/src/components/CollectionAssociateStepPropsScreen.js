@@ -9,6 +9,7 @@ import {
     StatusBar,
     ScrollView,
     Alert,
+    FlatList,
 } from 'react-native'
 import {
     Button,
@@ -26,12 +27,14 @@ import * as Utils from '../utils/Utils'
 import { ImagePicker, Permissions, } from 'expo'
 
 import RecipeMaterialsStore from  '../stores/RecipeMaterialsStore'
+import RecipeStepsStore from '../stores/RecipeStepsStore'
+import RecipeIngredientsStore from '../stores/RecipeIngredientsStore'
 
 const { width, height } = Dimensions.get('window')
 export default class CollectionAssociateStepPropsScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
         return {
-          title: "Associate step stuff",
+          title: "Step's associations",
           headerStyle: {
             backgroundColor: Constants.COLORS.SYSTEM.PRIMARY,
           },
@@ -44,11 +47,13 @@ export default class CollectionAssociateStepPropsScreen extends React.Component 
 
     constructor(props) {
         super(props)
+
         this.state = {
             description: null,
             picture: null,
-            selectedItems1: [],
-            selectedItems2: [],
+            selectedItemsSteps: [],
+            selectedItemsStepProps: [],
+            associations: [],
         }
     }
 
@@ -57,167 +62,256 @@ export default class CollectionAssociateStepPropsScreen extends React.Component 
 
         this.setState({
             recipe_temp_id: recipe_temp_id,
+            associations: RecipeStepsStore.getStepAssociations()
         })
     }
 
+    renderItem = ({ item }) => {
+        // console.log("FB: item: " + JSON.stringify(item))
+        return (
+            <View style={{
+                flex: 1,
+                padding: 5,
+                margin: 10,
+                backgroundColor: Constants.COLORS.SYSTEM.STEP_ASSOCIATION.LIST_ITEM_BACK,
+                flexDirection: "column",
+            }}>
+                <Text style={{
+                    color: Constants.COLORS.SYSTEM.STEP_ASSOCIATION.LIST_ITEM_HEADER_FRONT,
+                    fontWeight: 'bold',
+                    fontSize: 14,
+                    marginBottom: 20,
+                }}>{ item.step.name }</Text>
+                {
+                    item.props.map((prop) => {
+                        {/* console.log("FB: item prop: " + JSON.stringify(prop)) */}
+                        if (prop.prop.type === 'Ingredient') {
+                            return (
+                                <View 
+                                    style={{
+                                        flexDirection: "row",
+                                        marginBottom: 5,
+                                    }}
+                                    key={prop.prop.id}
+                                >
+                                    <Icon
+                                        name="local-florist"
+                                        color={Constants.COLORS.SYSTEM.STEP_ASSOCIATION.LIST_ITEM_CONTENT_INGREDIENT}
+                                        size={12}
+                                        containerStyle={{
+                                            marginRight: 3,
+                                        }}
+                                    />
+                                    <Text 
+                                        style={{
+                                            color: Constants.COLORS.SYSTEM.STEP_ASSOCIATION.LIST_ITEM_CONTENT_INGREDIENT,
+                                            fontWeight: 'normal',
+                                            fontSize: 12,
+                                        }}
+                                    >{prop.prop.name}</Text>
+                                </View>
+                            )
+                        } else if (prop.prop.type === 'Material') {
+                            return (
+                                <View 
+                                    style={{
+                                        flexDirection: "row",
+                                        marginBottom: 5,
+                                    }}
+                                    key={prop.prop.id}
+                                >
+                                    <Icon
+                                        name="local-dining"
+                                        color={Constants.COLORS.SYSTEM.STEP_ASSOCIATION.LIST_ITEM_CONTENT_MATERIAL}
+                                        size={12}
+                                        containerStyle={{
+                                            marginRight: 3,
+                                        }}
+                                    />
+                                    <Text 
+                                        style={{
+                                            color: Constants.COLORS.SYSTEM.STEP_ASSOCIATION.LIST_ITEM_CONTENT_MATERIAL,
+                                            fontWeight: 'normal',
+                                            fontSize: 12,
+                                        }}
+                                        key={prop.prop.id}
+                                    >{prop.prop.name}</Text>
+                                </View>
+                            )
+                        }
+                    })
+                }
+            </View>
+        )
+    }
+
     render() {
-        const items1 = [
-            {  
-              name: "Fruits",
-              id: 0,
-              //icon: icon, // local required file
-              children: [{
-                  name: "Apple",
-                  id: 10,
-                },{
-                  name: "Strawberry",
-                  id: 17,
-                },{
-                  name: "Pineapple",
-                  id: 13,
-                },{
-                  name: "Banana",
-                  id: 14,
-                },{
-                  name: "Watermelon",
-                  id: 15,
-                },{
-                  name: "Kiwi fruit",
-                  id: 16,
-                }]
-            },
-            {
-              name: "Gems",
-              id: 1,
-              //icon: { uri: "https://cdn4.iconfinder.com/data/icons/free-crystal-icons/512/Gemstone.png" }, // web uri
-              children: [{
-                  name: "Quartz",
-                  id: 20,
-                },{
-                  name: "Zircon",
-                  id: 21,
-                },{
-                  name: "Sapphire",
-                  id: 22,
-                },{
-                  name: "Topaz",
-                  id: 23,
-                }]
-            },
-            {
-              name: "Plants",
-              id: 2,
-              //icon: "filter_vintage", // material icons icon name
-              children: [{
-                  name: "Mother In Law\'s Tongue",
-                  id: 30,
-                },{
-                  name: "Yucca",
-                  id: 31,
-                },{
-                  name: "Monsteria",
-                  id: 32,
-                },{
-                  name: "Palm",
-                  id: 33,
-                }]
-            },
-          ]
-
-          const items2 = [
-            {  
-              name: "Fruits",
-              id: 0,
-              //icon: icon, // local required file
-              children: [{
-                  name: "Apple",
-                  id: 10,
-                },{
-                  name: "Strawberry",
-                  id: 17,
-                },{
-                  name: "Pineapple",
-                  id: 13,
-                },{
-                  name: "Banana",
-                  id: 14,
-                },{
-                  name: "Watermelon",
-                  id: 15,
-                },{
-                  name: "Kiwi fruit",
-                  id: 16,
-                }]
-            },
-            {
-              name: "Gems",
-              id: 1,
-              //icon: { uri: "https://cdn4.iconfinder.com/data/icons/free-crystal-icons/512/Gemstone.png" }, // web uri
-              children: [{
-                  name: "Quartz",
-                  id: 20,
-                },{
-                  name: "Zircon",
-                  id: 21,
-                },{
-                  name: "Sapphire",
-                  id: 22,
-                },{
-                  name: "Topaz",
-                  id: 23,
-                }]
-            },
-            {
-              name: "Plants",
-              id: 2,
-              //icon: "filter_vintage", // material icons icon name
-              children: [{
-                  name: "Mother In Law\'s Tongue",
-                  id: 30,
-                },{
-                  name: "Yucca",
-                  id: 31,
-                },{
-                  name: "Monsteria",
-                  id: 32,
-                },{
-                  name: "Palm",
-                  id: 33,
-                }]
-            },
-          ]
-
+        // console.log("FB: associations: " + JSON.stringify(this.state.associations))
         return (
             <View style={{flex: 1,}}>
-                <Text>{ this.state.recipe_temp_id }</Text>
+                {/* <Text>{ this.state.recipe_temp_id }</Text> */}
 
-                <SectionedMultiSelect
-                    items={items1} 
-                    uniqueKey='id'
-                    subKey='children'
-                    iconKey='icon'
-                    selectText='Choose the step...'
-                    showDropDowns={true}
-                    readOnlyHeadings={true}
-                    onSelectedItemsChange={(selectedItems1) => {
-                        this.setState({ selectedItems1 })
-                    }}
-                    selectedItems={this.state.selectedItems1}
+                <View style={{
+                    // backgroundColor: Constants.COLORS.SYSTEM.PRIMARY,
+                    borderRadius: 2,
+                    marginLeft: 10,
+                    marginRight: 10,
+                    padding: 5,
+                }}>
+                    <SectionedMultiSelect
+                        items={[RecipeStepsStore.getStepsForDropDownAssociation()]} 
+                        uniqueKey='id'
+                        subKey='children'
+                        iconKey='icon'
+                        selectText='Choose the step...'
+                        confirmText='Close'
+                        single
+                        expandDropDowns
+                        showDropDowns={true}
+                        readOnlyHeadings={true}
+                        onSelectedItemsChange={(selectedItemsSteps) => {
+                            this.setState({ selectedItemsSteps })
+                        }}
+                        onSelectedItemObjectsChange={(selectedItemsStepsObj) => {
+                            this.setState({ selectedItemsStepsObj })
+                        }}
+                        selectedItems={this.state.selectedItemsSteps}
+                        // styles={{
+                        //     container: {
+                        //         backgroundColor: "yellow",
+                        //     }
+                        // }}
+                    />
+
+                    {
+                        this.state.selectedItemsSteps &&
+                        this.state.selectedItemsSteps.length > 0
+                        &&
+                        <SectionedMultiSelect
+                            items={[RecipeIngredientsStore.getIngredientsForDropDownAssociation(), RecipeMaterialsStore.getMaterialsForDropDownAssociation()]} 
+                            uniqueKey='id'
+                            subKey='children'
+                            iconKey='icon'
+                            selectText='Ingredients and materials...'
+                            confirmText='Close'
+                            expandDropDowns
+                            // showCancelButton
+                            showDropDowns={true}
+                            readOnlyHeadings={true}
+                            onSelectedItemsChange={(selectedItemsStepProps) => {
+                                this.setState({ selectedItemsStepProps })
+                            }}
+                            onSelectedItemObjectsChange={(selectedItemsStepPropsObj) => {
+                                this.setState({ selectedItemsStepPropsObj })
+                            }}
+                            selectedItems={this.state.selectedItemsStepProps}
+                        />
+                    }
+                </View>
+
+                {
+                    this.state.selectedItemsStepProps &&
+                    this.state.selectedItemsStepProps.length > 0 &&
+                    this.state.selectedItemsSteps &&
+                    this.state.selectedItemsSteps.length > 0
+                    &&
+                    <Button 
+                        icon={{
+                            name: "done",
+                            color: "#fff",
+                            size: 14,
+                        }}
+                        title="Add association"
+                        titleStyle={{
+                            color: "#fff",
+                            fontSize: 14,
+                        }}
+                        buttonStyle={{
+                            backgroundColor: "#b3d9ff",
+                            padding: 5,
+                        }}
+                        containerStyle={{
+                            marginLeft: 50,
+                            marginRight: 50,
+                            marginTop: 10,
+                            marginBottom: 10,
+                        }}
+                        onPress={() => {
+                            // alert(JSON.stringify(this.state.selectedItemsStepsObj))
+
+                            const propsArr = new Array()
+                            if (this.state.selectedItemsStepPropsObj) {
+                                this.state.selectedItemsStepPropsObj.forEach(function (prop) {
+                                    propsArr.push({
+                                        prop: prop,
+                                    })
+                                })
+                            }
+                            const newAssociation = {
+                                step: {
+                                    name: this.state.selectedItemsStepsObj[0].name,
+                                },
+                                props: propsArr,
+                            }
+
+                            // console.log(JSON.stringify(newAssociation))
+                            
+                            let newAssociations = this.state.associations
+                            if (!newAssociation) {
+                                newAssociations = new Array()
+                            }
+
+                            newAssociations.push(newAssociation)
+
+                            this.setState({
+                                associations: newAssociations,
+                                selectedItemsSteps: [],
+                                selectedItemsStepProps: [],
+                                selectedItemsStepsObj: [],
+                                selectedItemsStepPropsObj: null,
+                            })
+                        }}
+                    />
+                }
+
+                <FlatList
+                    keyExtractor = { (item, index) => index.toString() }
+                    data={this.state.associations}
+                    extraData={this.state}
+                    renderItem={this.renderItem}
                 />
 
-                <SectionedMultiSelect
-                    items={items2} 
-                    uniqueKey='id'
-                    subKey='children'
-                    iconKey='icon'
-                    selectText='Choose the property to associate...'
-                    showDropDowns={true}
-                    readOnlyHeadings={true}
-                    onSelectedItemsChange={(selectedItems2) => {
-                        this.setState({ selectedItems2 })
-                    }}
-                    selectedItems={this.state.selectedItems2}
-                />
+                {
+                    this.state.associations &&
+                    this.state.associations.length > 0
+                    &&
+                    <Button 
+                        icon={{
+                            name: "done",
+                            color: "#fff",
+                            size: 14,
+                        }}
+                        title="Create associations"
+                        titleStyle={{
+                            color: "#fff",
+                            fontSize: 14,
+                        }}
+                        buttonStyle={{
+                            backgroundColor: "#009900",
+                            padding: 5,
+                        }}
+                        containerStyle={{
+                            marginLeft: 50,
+                            marginRight: 50,
+                            marginTop: 10,
+                            marginBottom: 10,
+                        }}
+                        onPress={() => {
+                            RecipeStepsStore.setStepAssociations(this.state.associations)
+                            this.props.navigation.goBack()
+                        }}
+                    />
+                }
             </View>
         )
     }

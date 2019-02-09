@@ -74,7 +74,123 @@ export default class CollectionRecipeNewScreen extends React.Component {
             })
         })
 
+        this._generateDummyContent()
+
         this.props.navigation.addListener('willFocus', this.updateRecipeProps)
+    }
+
+    _generateDummyContent = () => {
+
+        let materialCount = 1
+        let ingredientCount = 1
+        let stepCount = 1
+
+        RecipeMaterialsStore.addMaterial({
+            recipe_material_temp_id: Utils.guid(),
+            description: "Material " + materialCount++,
+            picture: null,
+            orderNumber: RecipeMaterialsStore.getMaterials().length + 1
+        })
+        RecipeMaterialsStore.addMaterial({
+            recipe_material_temp_id: Utils.guid(),
+            description: "Material " + materialCount++,
+            picture: null,
+            orderNumber: RecipeMaterialsStore.getMaterials().length + 1
+        })
+        RecipeMaterialsStore.addMaterial({
+            recipe_material_temp_id: Utils.guid(),
+            description: "Material " + materialCount++,
+            picture: null,
+            orderNumber: RecipeMaterialsStore.getMaterials().length + 1
+        })
+
+
+        RecipeIngredientsStore.addIngredient({
+            recipe_ingredient_temp_id: Utils.guid(),
+            description: "Ingredient " + ingredientCount++,
+            picture: null,
+            orderNumber: RecipeIngredientsStore.getIngredients().length + 1
+        })
+        RecipeIngredientsStore.addIngredient({
+            recipe_ingredient_temp_id: Utils.guid(),
+            description: "Ingredient " + ingredientCount++,
+            picture: null,
+            orderNumber: RecipeIngredientsStore.getIngredients().length + 1
+        })
+        RecipeIngredientsStore.addIngredient({
+            recipe_ingredient_temp_id: Utils.guid(),
+            description: "Ingredient " + ingredientCount++,
+            picture: null,
+            orderNumber: RecipeIngredientsStore.getIngredients().length + 1
+        })
+        RecipeIngredientsStore.addIngredient({
+            recipe_ingredient_temp_id: Utils.guid(),
+            description: "Ingredient " + ingredientCount++,
+            picture: null,
+            orderNumber: RecipeIngredientsStore.getIngredients().length + 1
+        })
+        RecipeIngredientsStore.addIngredient({
+            recipe_ingredient_temp_id: Utils.guid(),
+            description: "Ingredient " + ingredientCount++,
+            picture: null,
+            orderNumber: RecipeIngredientsStore.getIngredients().length + 1
+        })
+
+
+        RecipeStepsStore.addStep({
+            recipe_step_temp_id: Utils.guid(),
+            description: "Step " + stepCount++,
+            picture: this.state.picture,
+            orderNumber: RecipeStepsStore.getSteps().length + 1
+        })
+        RecipeStepsStore.addStep({
+            recipe_step_temp_id: Utils.guid(),
+            description: "Step " + stepCount++,
+            picture: this.state.picture,
+            orderNumber: RecipeStepsStore.getSteps().length + 1
+        })
+        RecipeStepsStore.addStep({
+            recipe_step_temp_id: Utils.guid(),
+            description: "Step " + stepCount++,
+            picture: this.state.picture,
+            orderNumber: RecipeStepsStore.getSteps().length + 1
+        })
+        RecipeStepsStore.addStep({
+            recipe_step_temp_id: Utils.guid(),
+            description: "Step " + stepCount++,
+            picture: this.state.picture,
+            orderNumber: RecipeStepsStore.getSteps().length + 1
+        })
+        RecipeStepsStore.addStep({
+            recipe_step_temp_id: Utils.guid(),
+            description: "Step " + stepCount++,
+            picture: this.state.picture,
+            orderNumber: RecipeStepsStore.getSteps().length + 1
+        })
+        RecipeStepsStore.addStep({
+            recipe_step_temp_id: Utils.guid(),
+            description: "Step " + stepCount++,
+            picture: this.state.picture,
+            orderNumber: RecipeStepsStore.getSteps().length + 1
+        })
+        RecipeStepsStore.addStep({
+            recipe_step_temp_id: Utils.guid(),
+            description: "Step " + stepCount++,
+            picture: this.state.picture,
+            orderNumber: RecipeStepsStore.getSteps().length + 1
+        })
+        RecipeStepsStore.addStep({
+            recipe_step_temp_id: Utils.guid(),
+            description: "Step " + stepCount++,
+            picture: this.state.picture,
+            orderNumber: RecipeStepsStore.getSteps().length + 1
+        })
+        RecipeStepsStore.addStep({
+            recipe_step_temp_id: Utils.guid(),
+            description: "Step " + stepCount++,
+            picture: this.state.picture,
+            orderNumber: RecipeStepsStore.getSteps().length + 1
+        })
     }
 
     componentWillUnmount() {
@@ -555,6 +671,84 @@ export default class CollectionRecipeNewScreen extends React.Component {
         )
     }
 
+    _renderStepAssociationItem = ({ item }) => {
+        // console.log("FB: item: " + JSON.stringify(item))
+        return (
+            <View style={{
+                flex: 1,
+                padding: 5,
+                backgroundColor: Constants.COLORS.SYSTEM.STEP_ASSOCIATION.LIST_ITEM_BACK,
+                flexDirection: "column",
+            }}>
+                <Text style={{
+                    color: Constants.COLORS.SYSTEM.STEP_ASSOCIATION.LIST_ITEM_HEADER_FRONT,
+                    fontWeight: 'bold',
+                    fontSize: 14,
+                    marginBottom: 20,
+                }}>{ item.step.name }</Text>
+                {
+                    item.props.map((prop) => {
+                        {/* console.log("FB: item prop: " + JSON.stringify(prop)) */}
+                        if (prop.prop.type === 'Ingredient') {
+                            return (
+                                <View 
+                                    style={{
+                                        flexDirection: "row",
+                                        marginBottom: 5,
+                                    }}
+                                    key={prop.prop.id}
+                                >
+                                    <Icon
+                                        name="local-florist"
+                                        color={Constants.COLORS.SYSTEM.STEP_ASSOCIATION.LIST_ITEM_CONTENT_INGREDIENT}
+                                        size={12}
+                                        containerStyle={{
+                                            marginRight: 3,
+                                        }}
+                                    />
+                                    <Text 
+                                        style={{
+                                            color: Constants.COLORS.SYSTEM.STEP_ASSOCIATION.LIST_ITEM_CONTENT_INGREDIENT,
+                                            fontWeight: 'normal',
+                                            fontSize: 12,
+                                        }}
+                                    >{prop.prop.name}</Text>
+                                </View>
+                            )
+                        } else if (prop.prop.type === 'Material') {
+                            return (
+                                <View 
+                                    style={{
+                                        flexDirection: "row",
+                                        marginBottom: 5,
+                                    }}
+                                    key={prop.prop.id}
+                                >
+                                    <Icon
+                                        name="local-dining"
+                                        color={Constants.COLORS.SYSTEM.STEP_ASSOCIATION.LIST_ITEM_CONTENT_MATERIAL}
+                                        size={12}
+                                        containerStyle={{
+                                            marginRight: 3,
+                                        }}
+                                    />
+                                    <Text 
+                                        style={{
+                                            color: Constants.COLORS.SYSTEM.STEP_ASSOCIATION.LIST_ITEM_CONTENT_MATERIAL,
+                                            fontWeight: 'normal',
+                                            fontSize: 12,
+                                        }}
+                                        key={prop.prop.id}
+                                    >{prop.prop.name}</Text>
+                                </View>
+                            )
+                        }
+                    })
+                }
+            </View>
+        )
+    }
+
     render() {
         const viewLength = width * 0.4
 
@@ -880,6 +1074,24 @@ export default class CollectionRecipeNewScreen extends React.Component {
                             </View>
                         }
                     </View>
+                    <View style={{
+                        flex: 1,
+                        marginTop: 10,
+                        flexDirection: 'column',
+                        marginBottom: 10,
+                    }}>
+                        <Text style={RecipeStepsStore.getStepAssociations().length > 0 ? styles.listHeaderLabel : styles.noContentLabel}>{RecipeStepsStore.getStepAssociations().length > 0 ? "Step's associations" : "No step's associations"}</Text>
+                        {
+                            RecipeStepsStore.getStepAssociations().length > 0
+                            &&
+                            <FlatList
+                                keyExtractor = { (item, index) => index.toString() }
+                                data={RecipeStepsStore.getStepAssociations()}
+                                extraData={this.state}
+                                renderItem={this._renderStepAssociationItem}
+                            />
+                        }
+                    </View>
                 </ScrollView>
                 <View style={{
                     flexDirection: "row",
@@ -915,6 +1127,8 @@ export default class CollectionRecipeNewScreen extends React.Component {
                                 [
                                     {text: 'Cancel', onPress: () => {}, style: 'cancel'},
                                     {text: 'Clear', onPress: () => {
+                                        RecipeStepsStore.clearSteps()
+                                        RecipeStepsStore.clearStepAssociations()
                                         this.setState({
                                             name: "",
                                             description: "",
@@ -1009,8 +1223,20 @@ export default class CollectionRecipeNewScreen extends React.Component {
                                     })
                                 }
 
+                                // if (RecipeStepsStore.getStepAssociations() && RecipeStepsStore.getStepAssociations().length > 0) {
+                                //     RecipeStepsStore.getStepAssociations().forEach(async function (stepAssociation) {
+                                //         await stickyPeachDB.insertStepIngredientMaterial({
+                                //             step_id: stepAssociation.step.id,
+                                //             ingredient_id: ingredient.description,
+                                //             material_id: ingredient.picture,
+                                //         }, recipeId)
+                                //     })
+                                // }
+
                                 await stickyPeachDB.insertRecipeCollection(recipeId, this.props.navigation.state.params.collection_id)
+                                
                                 RecipeStepsStore.clearSteps()
+                                RecipeStepsStore.clearStepAssociations()
                                 
                                 this.props.navigation.goBack()
                                 DropDownHolder.getDropDown().alertWithType('success', 'Success', 'Recipe "' + this.state.name + '" created with success')

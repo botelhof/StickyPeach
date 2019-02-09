@@ -61,6 +61,13 @@ export function initDatabase(defaultSettings) {
             'create table if not exists recipe_collection (recipe_id int not null, collection_id int not null, FOREIGN KEY(recipe_id) REFERENCES recipe(id), FOREIGN KEY(collection_id) REFERENCES collection(id));'
         )
 
+        // tx.executeSql(
+        //     'drop table step_material_ingredient;'
+        // )
+        tx.executeSql(
+            'create table if not exists step_material_ingredient (step_id int not null, ingredient_id int not null, material_id int not null, FOREIGN KEY(step_id) REFERENCES step(id), FOREIGN KEY(ingredient_id) REFERENCES ingredient(id), FOREIGN KEY(material_id) REFERENCES material(id));'
+        )
+
         // initDBEntries(defaultSettings)
     })
 

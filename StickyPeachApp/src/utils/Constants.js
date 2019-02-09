@@ -50,6 +50,12 @@ export const COLORS = {
                 BUTTON_NEXT: "#ff8b4d",
                 BUTTON_PREVIOUS: "#ff8b4d",
             }
+        },
+        STEP_ASSOCIATION: {
+            LIST_ITEM_BACK: "#eafaea",
+            LIST_ITEM_HEADER_FRONT: "#004d99",
+            LIST_ITEM_CONTENT_INGREDIENT: "#ff8b4d",
+            LIST_ITEM_CONTENT_MATERIAL: "#a35FF4",
         }
     }
 }

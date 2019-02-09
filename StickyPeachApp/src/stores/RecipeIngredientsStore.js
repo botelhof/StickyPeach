@@ -30,6 +30,26 @@ class RecipeIngredientsStore {
         this.updateRecipeIngredients()
     }
 
+    getIngredientsForDropDownAssociation() {
+        let recipeIngredientsArr = new Array()
+        if (this.recipeIngredients) {
+            this.recipeIngredients.forEach(function (recipeIngredient) {
+                recipeIngredientsArr.push({
+                    name: recipeIngredient.description,
+                    type: "Ingredient",
+                    id: recipeIngredient.recipe_ingredient_temp_id,
+                })
+            })
+        }
+
+        return {  
+            name: "Ingredients",
+            id: 0,
+            //icon: icon, // local required file
+            children: recipeIngredientsArr
+        }
+    }
+
     getIngredients() {
         return this.recipeIngredients
     }

@@ -4,6 +4,7 @@ class RecipeStepsStore {
     subscriptions = []
     RecipeSteps = {}
     recipeSteps = []
+    stepAssociations = []
 
     constructor() {
         if (instance !== null) {
@@ -28,6 +29,38 @@ class RecipeStepsStore {
         this.recipeSteps.push(step)
 
         this.updateRecipeSteps()
+    }
+
+    getStepsForDropDownAssociation() {
+        let recipeStepsArr = new Array()
+        if (this.recipeSteps) {
+            this.recipeSteps.forEach(function (recipeStep) {
+                recipeStepsArr.push({
+                    name: recipeStep.description,
+                    type: "Step",
+                    id: recipeStep.recipe_step_temp_id,
+                })
+            })
+        }
+
+        return {  
+            name: "Steps",
+            id: 0,
+            //icon: icon, // local required file
+            children: recipeStepsArr
+        }
+    }
+
+    setStepAssociations(stepAssociations) {
+        this.stepAssociations = stepAssociations
+    }
+
+    getStepAssociations() {
+        return this.stepAssociations
+    }
+
+    clearStepAssociations() {
+        this.stepAssociations = new Array()
     }
 
     getSteps() {

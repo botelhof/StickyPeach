@@ -30,6 +30,26 @@ class RecipeMaterialsStore {
         this.updateRecipeMaterials()
     }
 
+    getMaterialsForDropDownAssociation() {
+        let recipeMaterialsArr = new Array()
+        if (this.recipeMaterials) {
+            this.recipeMaterials.forEach(function (recipeMaterial) {
+                recipeMaterialsArr.push({
+                    name: recipeMaterial.description,
+                    type: "Material",
+                    id: recipeMaterial.recipe_material_temp_id,
+                })
+            })
+        }
+
+        return {  
+            name: "Materials",
+            id: 1,
+            //icon: icon, // local required file
+            children: recipeMaterialsArr
+        }
+    }
+
     getMaterials() {
         return this.recipeMaterials
     }
