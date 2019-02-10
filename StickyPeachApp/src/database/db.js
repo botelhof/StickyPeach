@@ -151,6 +151,31 @@ export async function selectAllRecipesForCollection(collectionId) {
     })
 }
 
+export async function selectAllStepAssociations(recipeId) {
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            tx => {
+                // tx.executeSql('select step.description as stepDescription, ' +
+                //             'ingredient.description as ingredientDescription, material.description as materialDescription '+
+                //             'from step, material, ingredient, step_material_ingredient ' +
+                //             'where step.id = step_material_ingredient.step_id AND ' +
+                //             '(material.id = step_material_ingredient.material_id or ' +
+                //             'ingredient.id = step_material_ingredient.ingredient_id) ' +
+                //             'AND step.id = ?', [recipeId], (_, { rows }) => {
+                //                 console.log("FB: aaa" + rows)
+                //                 resolve(rows)
+                //             },
+                //             (error) => reject("FB selectAllStepAssociations error: " + JSON.stringify(error))
+                // )
+                tx.executeSql('select * from step_material_ingredient ' +
+                            '', [], (_, { rows }) => resolve(rows),
+                            (error) => reject("FB selectAllStepAssociations error: " + JSON.stringify(error))
+                )
+            }
+        )
+    })
+}
+
 export async function selectDefaultSetting(default_setting_name) {
     return new Promise((resolve, reject) => {
         db.transaction(
@@ -248,6 +273,19 @@ export function insertRecipeIngredient(ingredient, recipe_id) {
             tx => {
                 tx.executeSql('insert into ingredient (orderNumber, description, picture, timestamp_creation, timestamp_updated, recipe_id) values (?, ?, ?, ?, ?, ?)', 
                                 [ingredient.orderNumber, ingredient.description, ingredient.picture, new Date(), null, recipe_id],
+                )
+                resolve()
+            }
+        )
+    })
+}
+
+export function insertStepIngredientMaterial(step_id, ingredient_id, material_id) {
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            tx => {
+                tx.executeSql('insert into step_material_ingredient (step_id, ingredient_id, material_id) values (?, ?, ?)', 
+                                [step_id, ingredient_id, material_id],
                 )
                 resolve()
             }

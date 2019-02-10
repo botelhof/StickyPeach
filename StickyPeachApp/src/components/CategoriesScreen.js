@@ -47,9 +47,6 @@ export default class CategoriesScreen extends React.Component {
     }
 
     componentDidMount() {
-        // stickyPeachDB.initDatabase()
-        // stickyPeachDB.insertRandomUser()
-        // stickyPeachDB.selectAllUsers()
     }
 
     _onRefresh() {

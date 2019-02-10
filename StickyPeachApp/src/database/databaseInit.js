@@ -65,7 +65,7 @@ export function initDatabase(defaultSettings) {
         //     'drop table step_material_ingredient;'
         // )
         tx.executeSql(
-            'create table if not exists step_material_ingredient (step_id int not null, ingredient_id int not null, material_id int not null, FOREIGN KEY(step_id) REFERENCES step(id), FOREIGN KEY(ingredient_id) REFERENCES ingredient(id), FOREIGN KEY(material_id) REFERENCES material(id));'
+            'create table if not exists step_material_ingredient (step_id int not null, ingredient_id int, material_id int, FOREIGN KEY(step_id) REFERENCES step(id), FOREIGN KEY(ingredient_id) REFERENCES ingredient(id), FOREIGN KEY(material_id) REFERENCES material(id));'
         )
 
         // initDBEntries(defaultSettings)

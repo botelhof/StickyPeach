@@ -53,13 +53,15 @@ export default class CookingScreen extends React.Component {
 
     enterScreen = async () => {
         const recipeId = this.props.navigation.state.params.recipe_id
-        // console.log("FB: this.props.navigation.state.params: " + JSON.stringify(this.props.navigation.state.params))
-        // console.log("FB: recipeId: " + recipeId)
-
+        
         const recipe = await stickyPeachDB.selectRecipeById(recipeId)
         const recipeSteps = await stickyPeachDB.selectRecipeStepsByRecipeId(recipeId)
         const recipeMaterials = await stickyPeachDB.selectRecipeMaterialsByRecipeId(recipeId)
         const recipeIngredients = await stickyPeachDB.selectRecipeIngredientsByRecipeId(recipeId)
+        const recipeAssociations = await stickyPeachDB.selectAllStepAssociations(recipeId).catch((err) => console.log("FB: err: " + JSON.stringify(err)))
+
+        console.log("FB: recipeAssociations: " + JSON.stringify(recipeAssociations))
+
         if (recipe) {
             this.setState({
                 isLoading: false,

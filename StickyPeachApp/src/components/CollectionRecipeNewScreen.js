@@ -1196,6 +1196,7 @@ export default class CollectionRecipeNewScreen extends React.Component {
                                 if (this.state.steps && this.state.steps.length > 0) {
                                     this.state.steps.forEach(async function (step) {
                                         await stickyPeachDB.insertRecipeStep({
+                                            id: step.recipe_step_temp_id,
                                             orderNumber: step.orderNumber,
                                             description: step.description,
                                             picture: step.picture,
@@ -1206,6 +1207,7 @@ export default class CollectionRecipeNewScreen extends React.Component {
                                 if (this.state.materials && this.state.materials.length > 0) {
                                     this.state.materials.forEach(async function (material) {
                                         await stickyPeachDB.insertRecipeMaterial({
+                                            id: material.recipe_material_temp_id,
                                             orderNumber: material.orderNumber,
                                             description: material.description,
                                             picture: material.picture,
@@ -1216,6 +1218,7 @@ export default class CollectionRecipeNewScreen extends React.Component {
                                 if (this.state.ingredients && this.state.ingredients.length > 0) {
                                     this.state.ingredients.forEach(async function (ingredient) {
                                         await stickyPeachDB.insertRecipeIngredient({
+                                            id: ingredient.recipe_ingredient_temp_id,
                                             orderNumber: ingredient.orderNumber,
                                             description: ingredient.description,
                                             picture: ingredient.picture,
@@ -1223,15 +1226,20 @@ export default class CollectionRecipeNewScreen extends React.Component {
                                     })
                                 }
 
-                                // if (RecipeStepsStore.getStepAssociations() && RecipeStepsStore.getStepAssociations().length > 0) {
-                                //     RecipeStepsStore.getStepAssociations().forEach(async function (stepAssociation) {
-                                //         await stickyPeachDB.insertStepIngredientMaterial({
-                                //             step_id: stepAssociation.step.id,
-                                //             ingredient_id: ingredient.description,
-                                //             material_id: ingredient.picture,
-                                //         }, recipeId)
-                                //     })
-                                // }
+                                if (RecipeStepsStore.getStepAssociations() && RecipeStepsStore.getStepAssociations().length > 0) {
+                                    RecipeStepsStore.getStepAssociations().forEach(async function (stepAssociation) {
+                                        // console.log("FB: insertStepIngredientMaterial stepAssociation " + JSON.stringify(stepAssociation))
+                                        stepAssociation.props.forEach(async function (item) {
+                                            // console.log("FB: insertStepIngredientMaterial stepAssociation.step.id: " + stepAssociation.step.id)
+                                            // console.log("FB: insertStepIngredientMaterial " + item.prop.type + ": " + item.prop.id)
+                                            await stickyPeachDB.insertStepIngredientMaterial(
+                                                stepAssociation.step.id,
+                                                item.prop.type === "Ingredient" ? item.prop.id : null,
+                                                item.prop.type === "Material" ? item.prop.id : null,
+                                            )
+                                        })
+                                    })
+                                }
 
                                 await stickyPeachDB.insertRecipeCollection(recipeId, this.props.navigation.state.params.collection_id)
                                 

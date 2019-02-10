@@ -72,10 +72,7 @@ export default class RecipeScreen extends React.Component {
         const recipeSteps = await stickyPeachDB.selectRecipeStepsByRecipeId(recipeId)
         const recipeMaterials = await stickyPeachDB.selectRecipeMaterialsByRecipeId(recipeId)
         const recipeIngredients = await stickyPeachDB.selectRecipeIngredientsByRecipeId(recipeId)
-        // console.log("this._translateRecipe(recipe._array)[0]: " + JSON.stringify(this._translateRecipe(recipe._array)[0]))
-        // console.log("recipeSteps: " + JSON.stringify(recipeSteps))
-        // console.log("recipeMaterials: " + JSON.stringify(recipeMaterials))
-        // console.log("recipeIngredients: " + JSON.stringify(recipeIngredients))
+        
         if (recipe) {
             this.setState({
                 recipe: this._translateRecipe(recipe._array)[0],

@@ -250,6 +250,7 @@ export default class CollectionAssociateStepPropsScreen extends React.Component 
                             const newAssociation = {
                                 step: {
                                     name: this.state.selectedItemsStepsObj[0].name,
+                                    id: this.state.selectedItemsStepsObj[0].id
                                 },
                                 props: propsArr,
                             }
