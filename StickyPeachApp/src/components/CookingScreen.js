@@ -21,6 +21,7 @@ import Swiper from 'react-native-swiper'
 
 import * as stickyPeachDB from '../database/db.js'
 import * as Constants from '../utils/Constants.js'
+import * as Utils from '../utils/Utils.js'
 import * as defaultSettings from '../utils/DefaultSettings'
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -51,6 +52,65 @@ export default class CookingScreen extends React.Component {
         })
     }
 
+    setStepAssociations(recipeStepAssociations) {
+        let associationsObj = null
+
+        if (recipeStepAssociations && recipeStepAssociations._array && recipeStepAssociations._array.length > 0) {
+            console.log("FB: recipeStepAssociations: " + JSON.stringify(recipeStepAssociations._array))
+            recipeStepAssociations._array.forEach(function (assoc) {
+                if (assoc && assoc.si && assoc.sDesc) {
+                    if (!associationsObj) {
+                        associationsObj = {}
+                    }
+    
+                    let stepProps
+    
+                    if (associationsObj.hasOwnProperty(assoc.si)) {
+                        stepProps = associationsObj[assoc.si]
+                    } else {
+                        stepProps = new Array()
+                    }
+    
+                    if (assoc.mDesc) {
+                        stepProps.push({
+                            type: "Material",
+                            desc: assoc.mDesc,
+                        })
+                    } else if (assoc.iDesc) {
+                        stepProps.push({
+                            type: "Ingredient",
+                            desc: assoc.iDesc,
+                        })
+                    } else {
+                        stepProps.push({
+                            type: "Ingredient",
+                            desc: "Unknown",
+                        })
+                    }
+    
+                    associationsObj[assoc.si] = stepProps
+                }
+            })
+        }
+
+        if (associationsObj) {
+            // console.log("FB: associationsObj: " + JSON.stringify(associationsObj))
+            this.setState({
+                associations: associationsObj,
+            })
+        }
+    }
+
+    getStepAssociations(stepId) {
+        if (this.state.associations && this.state.associations.hasOwnProperty(stepId)) {
+            return this.state.associations[stepId]
+        }
+        return [{
+            type: "Ingredient",
+            desc: "-",
+        }]
+    }
+
     enterScreen = async () => {
         const recipeId = this.props.navigation.state.params.recipe_id
         
@@ -58,9 +118,11 @@ export default class CookingScreen extends React.Component {
         const recipeSteps = await stickyPeachDB.selectRecipeStepsByRecipeId(recipeId)
         const recipeMaterials = await stickyPeachDB.selectRecipeMaterialsByRecipeId(recipeId)
         const recipeIngredients = await stickyPeachDB.selectRecipeIngredientsByRecipeId(recipeId)
-        const recipeAssociations = await stickyPeachDB.selectAllStepAssociations(recipeId).catch((err) => console.log("FB: err: " + JSON.stringify(err)))
+        const recipeStepAssociations = await stickyPeachDB.selectAllStepAssociations(recipeId).catch((err) => console.log("FB: err: " + JSON.stringify(err)))
 
-        console.log("FB: recipeAssociations: " + JSON.stringify(recipeAssociations))
+        // console.log("FB: recipeStepAssociations: " + JSON.stringify(recipeStepAssociations))
+
+        this.setStepAssociations(recipeStepAssociations)
 
         if (recipe) {
             this.setState({
@@ -190,19 +252,32 @@ export default class CookingScreen extends React.Component {
                     <View style={{
                         height: 100,
                         backgroundColor: "#333",
-                        flexDirection: "column",
+                        flexDirection: "row",
                     }}>
-                        <View style={{
-                            height: 50,
-                            // backgroundColor: "#444",
-                            flexDirection: "column",
-                            padding: 5,
-                        }}>
-                            <Text style={{
-                                color: "#FFF",
-                                fontSize: 12,
-                            }}>100g Parmesan cheese</Text>
-                        </View>
+                        {
+                            this.getStepAssociations(step.id).map((association, index) => (
+                                <View 
+                                    style={{
+                                        height: 50,
+                                        // backgroundColor: "#444",
+                                        flexDirection: "row",
+                                        padding: 5,
+                                    }}
+                                    key={index}
+                                >
+                                    <Icon
+                                        name={ association.type === "Material" ? "local-dining" : "local-florist" }
+                                        size={12}
+                                        color="#FFF"
+                                    />
+                                    <Text style={{
+                                        color: "#FFF",
+                                        fontSize: 12,
+                                        marginLeft: 5,
+                                    }}>{ association.desc }</Text>
+                                </View>
+                            ))
+                        }
                         <View style={{
                             height: 50,
                             // backgroundColor: "#CCC",

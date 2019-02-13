@@ -155,21 +155,22 @@ export async function selectAllStepAssociations(recipeId) {
     return new Promise((resolve, reject) => {
         db.transaction(
             tx => {
-                // tx.executeSql('select step.description as stepDescription, ' +
-                //             'ingredient.description as ingredientDescription, material.description as materialDescription '+
-                //             'from step, material, ingredient, step_material_ingredient ' +
-                //             'where step.id = step_material_ingredient.step_id AND ' +
-                //             '(material.id = step_material_ingredient.material_id or ' +
-                //             'ingredient.id = step_material_ingredient.ingredient_id) ' +
-                //             'AND step.id = ?', [recipeId], (_, { rows }) => {
-                //                 console.log("FB: aaa" + rows)
-                //                 resolve(rows)
-                //             },
-                //             (error) => reject("FB selectAllStepAssociations error: " + JSON.stringify(error))
-                // )
-                tx.executeSql('select * from step_material_ingredient ' +
-                            '', [], (_, { rows }) => resolve(rows),
-                            (error) => reject("FB selectAllStepAssociations error: " + JSON.stringify(error))
+                tx.executeSql('SELECT ' +
+                                'step_props.step_id AS si, step.description AS sDesc, material.description AS mDesc, ingredient.description AS iDesc ' +
+                                'FROM ' +
+                                'step_props  ' +
+                                'LEFT JOIN step ON step_props.step_id = step.id AND step.recipe_id = ? ' +
+                                'LEFT JOIN material ON step_props.material_id = material.id ' +
+                                'LEFT JOIN ingredient ON step_props.ingredient_id = ingredient.id '
+                            , [recipeId], 
+                            function(tx, results){
+                                // console.log("FB: 1111: " + JSON.stringify(results))
+                                resolve(results.rows)
+                            },
+                            function(tx, results){
+                                console.log("FB: 2222: " + JSON.stringify(results))
+                                resolve(results.rows)
+                            },
                 )
             }
         )
@@ -245,8 +246,8 @@ export function insertRecipeStep(step, recipe_id) {
     return new Promise((resolve, reject) => {
         db.transaction(
             tx => {
-                tx.executeSql('insert into step (orderNumber, description, picture, timestamp_creation, timestamp_updated, recipe_id) values (?, ?, ?, ?, ?, ?)', 
-                                [step.orderNumber, step.description, step.picture, new Date(), null, recipe_id],
+                tx.executeSql('insert into step (id, orderNumber, description, picture, timestamp_creation, timestamp_updated, recipe_id) values (?, ?, ?, ?, ?, ?, ?)', 
+                                [step.id, step.orderNumber, step.description, step.picture, new Date(), null, recipe_id],
                 )
                 resolve()
             }
@@ -258,8 +259,8 @@ export function insertRecipeMaterial(material, recipe_id) {
     return new Promise((resolve, reject) => {
         db.transaction(
             tx => {
-                tx.executeSql('insert into material (orderNumber, description, picture, timestamp_creation, timestamp_updated, recipe_id) values (?, ?, ?, ?, ?, ?)', 
-                                [material.orderNumber, material.description, material.picture, new Date(), null, recipe_id],
+                tx.executeSql('insert into material (id, orderNumber, description, picture, timestamp_creation, timestamp_updated, recipe_id) values (?, ?, ?, ?, ?, ?, ?)', 
+                                [material.id, material.orderNumber, material.description, material.picture, new Date(), null, recipe_id],
                 )
                 resolve()
             }
@@ -271,8 +272,8 @@ export function insertRecipeIngredient(ingredient, recipe_id) {
     return new Promise((resolve, reject) => {
         db.transaction(
             tx => {
-                tx.executeSql('insert into ingredient (orderNumber, description, picture, timestamp_creation, timestamp_updated, recipe_id) values (?, ?, ?, ?, ?, ?)', 
-                                [ingredient.orderNumber, ingredient.description, ingredient.picture, new Date(), null, recipe_id],
+                tx.executeSql('insert into ingredient (id, orderNumber, description, picture, timestamp_creation, timestamp_updated, recipe_id) values (?, ?, ?, ?, ?, ?, ?)', 
+                                [ingredient.id, ingredient.orderNumber, ingredient.description, ingredient.picture, new Date(), null, recipe_id],
                 )
                 resolve()
             }
@@ -281,13 +282,13 @@ export function insertRecipeIngredient(ingredient, recipe_id) {
 }
 
 export function insertStepIngredientMaterial(step_id, ingredient_id, material_id) {
+    // console.log("FB: insertStepIngredientMaterial: " + step_id + ", " + ingredient_id + ", " + material_id + "|")
     return new Promise((resolve, reject) => {
         db.transaction(
             tx => {
-                tx.executeSql('insert into step_material_ingredient (step_id, ingredient_id, material_id) values (?, ?, ?)', 
-                                [step_id, ingredient_id, material_id],
+                tx.executeSql('insert into step_props (step_id, ingredient_id, material_id) values (?, ?, ?)', 
+                                [step_id, ingredient_id, material_id], (_, { rows }) => resolve(rows)
                 )
-                resolve()
             }
         )
     })

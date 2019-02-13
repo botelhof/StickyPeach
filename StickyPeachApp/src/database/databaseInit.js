@@ -30,21 +30,21 @@ export function initDatabase(defaultSettings) {
         //     'drop table step;'
         // )
         tx.executeSql(
-            'create table if not exists step (id integer primary key not null, orderNumber int not null, description text not null, picture blob, recipe_id int not null, timestamp_creation timestamp not null, timestamp_updated timestamp, FOREIGN KEY(recipe_id) REFERENCES recipe(id));'
+            'create table if not exists step (id text primary key not null, orderNumber int not null, description text not null, picture blob, recipe_id int not null, timestamp_creation timestamp not null, timestamp_updated timestamp, FOREIGN KEY(recipe_id) REFERENCES recipe(id));'
         )
 
         // tx.executeSql(
         //     'drop table material;'
         // )
         tx.executeSql(
-            'create table if not exists material (id integer primary key not null, orderNumber int not null, description text not null, picture blob, recipe_id int not null, timestamp_creation timestamp not null, timestamp_updated timestamp, FOREIGN KEY(recipe_id) REFERENCES recipe(id));'
+            'create table if not exists material (id text primary key not null, orderNumber int not null, description text not null, picture blob, recipe_id int not null, timestamp_creation timestamp not null, timestamp_updated timestamp, FOREIGN KEY(recipe_id) REFERENCES recipe(id));'
         )
 
         // tx.executeSql(
         //     'drop table ingredient;'
         // )
         tx.executeSql(
-            'create table if not exists ingredient (id integer primary key not null, orderNumber int not null, description text not null, picture blob, recipe_id int not null, timestamp_creation timestamp not null, timestamp_updated timestamp, FOREIGN KEY(recipe_id) REFERENCES recipe(id));'
+            'create table if not exists ingredient (id text primary key not null, orderNumber int not null, description text not null, picture blob, recipe_id int not null, timestamp_creation timestamp not null, timestamp_updated timestamp, FOREIGN KEY(recipe_id) REFERENCES recipe(id));'
         )
 
         // tx.executeSql(
@@ -62,10 +62,10 @@ export function initDatabase(defaultSettings) {
         )
 
         // tx.executeSql(
-        //     'drop table step_material_ingredient;'
+        //     'drop table step_props;'
         // )
         tx.executeSql(
-            'create table if not exists step_material_ingredient (step_id int not null, ingredient_id int, material_id int, FOREIGN KEY(step_id) REFERENCES step(id), FOREIGN KEY(ingredient_id) REFERENCES ingredient(id), FOREIGN KEY(material_id) REFERENCES material(id));'
+            'create table if not exists step_props (step_id text not null, ingredient_id text, material_id text, FOREIGN KEY(step_id) REFERENCES step(id), FOREIGN KEY(ingredient_id) REFERENCES ingredient(id), FOREIGN KEY(material_id) REFERENCES material(id));'
         )
 
         // initDBEntries(defaultSettings)
