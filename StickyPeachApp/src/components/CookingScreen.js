@@ -106,8 +106,8 @@ export default class CookingScreen extends React.Component {
             return this.state.associations[stepId]
         }
         return [{
-            type: "Ingredient",
-            desc: "-",
+            type: null,
+            desc: null,
         }]
     }
 
@@ -251,39 +251,41 @@ export default class CookingScreen extends React.Component {
                     </ScrollView>
                     <View style={{
                         height: 100,
+                        width: width,
                         backgroundColor: "#333",
-                        flexDirection: "row",
+                        flexDirection: 'row', 
+                        flexWrap: 'wrap',
                     }}>
                         {
-                            this.getStepAssociations(step.id).map((association, index) => (
-                                <View 
-                                    style={{
-                                        height: 50,
-                                        // backgroundColor: "#444",
-                                        flexDirection: "row",
-                                        padding: 5,
-                                    }}
-                                    key={index}
-                                >
-                                    <Icon
-                                        name={ association.type === "Material" ? "local-dining" : "local-florist" }
-                                        size={12}
-                                        color="#FFF"
-                                    />
-                                    <Text style={{
-                                        color: "#FFF",
-                                        fontSize: 12,
-                                        marginLeft: 5,
-                                    }}>{ association.desc }</Text>
-                                </View>
-                            ))
+                            this.getStepAssociations(step.id).map((association, index) => {
+                                if (association && association.type) {
+                                    return (
+                                        <View 
+                                            style={{
+                                                // height: 50,
+                                                // backgroundColor: "darkgrey",
+                                                flexDirection: "row",
+                                                padding: 5,
+                                            }}
+                                            key={index}
+                                        >
+                                            <Icon
+                                                name={ association.type === "Material" ? "local-dining" : "local-florist" }
+                                                size={12}
+                                                color={association.type === "Material" ? "#ccf5ff" : "#e6ffcc"}
+                                            />
+                                            <Text style={{
+                                                color: association.type === "Material" ? "#ccf5ff" : "#e6ffcc",
+                                                fontSize: 12,
+                                                marginLeft: 5,
+                                            }}>{ association.desc }</Text>
+                                        </View>
+                                    )
+                                } else {
+                                    return null
+                                }
+                            })
                         }
-                        <View style={{
-                            height: 50,
-                            // backgroundColor: "#CCC",
-                        }}>
-
-                        </View>
                     </View>
                 </View>
             ))
