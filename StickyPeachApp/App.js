@@ -7,6 +7,7 @@ import {
 } from 'react-navigation'
 import CategoriesScreen from './src/components/CategoriesScreen'
 import CategoryScreen from './src/components/CategoryScreen'
+import CategoryNewScreen from './src/components/CategoryNewScreen'
 import CollectionsScreen from './src/components/CollectionsScreen'
 import CollectionScreen from './src/components/CollectionScreen'
 import CollectionNewScreen from './src/components/CollectionNewScreen'
@@ -30,7 +31,8 @@ import * as DropDownHolder from './src/utils/DropDownHolder.js'
 
 const CategoriesStack = createStackNavigator({
   Categories: CategoriesScreen,
-  Category: CategoryScreen
+  Category: CategoryScreen,
+  CategoryNew: CategoryNewScreen,
 })
 
 const CollectionsStack = createStackNavigator({

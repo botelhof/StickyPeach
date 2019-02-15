@@ -15,6 +15,9 @@ import {
 } from 'react-navigation'
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view'
 import SideMenu from 'react-native-side-menu'
+import {
+    Icon,
+} from 'react-native-elements'
 
 import GalleryComponent from './GalleryComponent'
 import MenuSideView from './MenuSideView'
@@ -23,6 +26,7 @@ import MenuButtonComponent from './MenuButtonComponent'
 import * as Animatable from 'react-native-animatable'
 import * as stickyPeachDB from '../database/db.js'
 import * as Constants from '../utils/Constants.js'
+import * as DefaultSettings from '../utils/DefaultSettings'
 
 const { width, height } = Dimensions.get('window')
 
@@ -36,13 +40,25 @@ export default class CategoriesScreen extends React.Component {
         header: null,
     }
 
+    constructor(props) {
+        super(props)
 
-    constructor() {
-        super()
         this.state = {
             refreshing: false,
             showNavTitle: false,
             isOpen: false,
+        }
+
+        this.props.navigation.addListener('willFocus', this.enterScreen)
+    }
+
+    enterScreen = async () => {
+        const original = await stickyPeachDB.selectAllCategories()
+
+        if (original) {
+            this.setState({
+                list: this._translate(original._array)
+            })
         }
     }
 
@@ -61,15 +77,25 @@ export default class CategoriesScreen extends React.Component {
         }, 2000)
     }
 
-    _getDummyArray = () => {
-        const totalEntries = 9
-        let arr = new Array()
+    _translate = (originalList) => {
+        let listTranslated = new Array()
+        for (let i = 0; i < originalList.length; i++) {
+            const originalItem = originalList[i]
 
-        for (let i = 1; i <= totalEntries; i++) {
-            arr.push({"id": i, "mainDescription": "Italian " + i, "headDescription": "Italian", "subtitleOne" : "20 min", "subtitleTwo": "4", "vegan" : true,})
+            let translatedItem = {}
+            translatedItem['id'] = originalItem.id
+            translatedItem['mainDescription'] = originalItem.name
+            translatedItem['headDescription'] = originalItem.description
+            translatedItem['subtitleOne'] = ""
+            translatedItem['subtitleTwo'] = ""
+            translatedItem['vegan'] = false
+            translatedItem['picture'] = originalItem.picture
+
+            listTranslated.push(translatedItem)
         }
 
-        return arr
+        // console.log("listTranslated: " + JSON.stringify(listTranslated))
+        return listTranslated
     }
 
     render() {
@@ -82,6 +108,23 @@ export default class CategoriesScreen extends React.Component {
                 menuPosition="right"
             >
                 <View style={{ flex: 1 }}>
+                    <Icon 
+                        name="add"
+                        raised
+                        reverse
+                        reverseColor={Constants.COLORS.SYSTEM.CRUD.CREATE.FONT}
+                        color={Constants.COLORS.SYSTEM.CRUD.CREATE.BACK}
+                        containerStyle={{
+                            position: "absolute",
+                            bottom: 0,
+                            right: 0, 
+                            zIndex: 102,
+                            opacity: 0.8,
+                        }}
+                        onPress={() => {
+                            this.props.navigation.navigate("CategoryNew")
+                        }}
+                    />
                     <MenuButtonComponent 
                         callbackOnPress={() => {
                             this.setState({
@@ -96,7 +139,7 @@ export default class CategoriesScreen extends React.Component {
                         maxOverlayOpacity={0.5}
                         minOverlayOpacity={0.1}
                         fadeOutForeground
-                        renderHeader={() => <Image source={require('../../assets/salads.jpg')} style={styles.image} />}
+                        renderHeader={() => <Image source={require('../../assets/categories.jpg')} style={styles.image} />}
                         renderFixedForeground={() => (
                             <Animatable.View
                                 style={styles.navTitleView}
@@ -122,7 +165,38 @@ export default class CategoriesScreen extends React.Component {
                         >
                             <Text>{moduleDescription}</Text>
                         </TriggeringView>
-                        <GalleryComponent collections={this._getDummyArray()} navigateTo="Category" nav={this.props.navigation} />
+                        {
+                            this.state.list && this.state.list.map((category, index) => {
+                                if (category) {
+                                    return (
+                                        <View 
+                                            style={{
+                                                // height: 50,
+                                                // backgroundColor: "darkgrey",
+                                                flexDirection: "column",
+                                                padding: 5,
+                                                borderBottomColor: "#CCC",
+                                                borderBottomWidth: 0.5,
+                                                margin: 10,
+                                            }}
+                                            key={index}
+                                        >
+                                            <Text style={{
+                                                color: "#222",
+                                                fontSize: 14,
+                                                fontWeight: 'bold',
+                                            }}>{ category.mainDescription }</Text>
+                                            <Text style={{
+                                                color: "#444",
+                                                fontSize: 12,
+                                            }}>{ category.headDescription }</Text>
+                                        </View>
+                                    )
+                                } else {
+                                    return null
+                                }
+                            })
+                        }
                     </HeaderImageScrollView>
                 </View>
             </SideMenu>

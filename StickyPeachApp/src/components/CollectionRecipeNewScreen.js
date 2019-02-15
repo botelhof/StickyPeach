@@ -18,6 +18,7 @@ import {
 } from 'react-native-elements'
 import FloatLabelTextInput from './FloatLabelTextField'
 import ActionButton from 'react-native-circular-action-menu'
+import SectionedMultiSelect from 'react-native-sectioned-multi-select'
 
 import * as Constants from '../utils/Constants.js'
 import * as DropDownHolder from '../utils/DropDownHolder.js'
@@ -30,6 +31,7 @@ import { ImagePicker, Permissions, } from 'expo'
 import RecipeStepsStore from  '../stores/RecipeStepsStore'
 import RecipeMaterialsStore from  '../stores/RecipeMaterialsStore'
 import RecipeIngredientsStore from  '../stores/RecipeIngredientsStore'
+import CategoryStore from '../stores/CategoryStore';
 
 const { width, height } = Dimensions.get('window')
 
@@ -57,18 +59,21 @@ export default class CollectionRecipeNewScreen extends React.Component {
             serves: null,
             vegan: false,
             steps: null,
+            selectedItemsCategories: [],
+            selectedItemsCategoriesObj: [],
         }
 
         this.updateRecipeProps = this.updateRecipeProps.bind(this)
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         defaultSettings.getDefaultImage()
-        .then((dbRow) => {
+        .then(async (dbRow) => {
             // console.log("dbRow: " + JSON.stringify(dbRow._array[0].val_blob))
             // const pic = JSON.parse(dbRow)._array[0].val_blob
             this.setState({
                 isLoading: false,
+                categories: [await CategoryStore.getCategoriesForDropDownAssociation()],
                 recipe_temp_id: Utils.guid(),
                 defaultImage: dbRow && dbRow._array[0] ? dbRow._array[0].val_blob : null,
             })
@@ -931,6 +936,25 @@ export default class CollectionRecipeNewScreen extends React.Component {
                             fontSize: 15,
                         }}
                     />
+                    <SectionedMultiSelect
+                        items={this.state.categories} 
+                        uniqueKey='id'
+                        subKey='children'
+                        iconKey='icon'
+                        selectText='Choose categories'
+                        confirmText='Close'
+                        expandDropDowns
+                        showDropDowns={true}
+                        readOnlyHeadings={true}
+                        onSelectedItemsChange={(selectedItemsCategories) => {
+                            this.setState({ selectedItemsCategories })
+                        }}
+                        onSelectedItemObjectsChange={(selectedItemsCategoriesObj) => {
+                            this.setState({ selectedItemsCategoriesObj })
+                        }}
+                        selectedItems={this.state.selectedItemsCategories}
+                    />
+
                     {
                         this.state.picture
                         &&

@@ -55,10 +55,24 @@ export function initDatabase(defaultSettings) {
         )
 
         // tx.executeSql(
+        //     'drop table category;'
+        // )
+        tx.executeSql(
+            'create table if not exists category (id integer primary key not null, name text not null, description text not null, timestamp_creation timestamp not null, timestamp_updated timestamp);'
+        )
+
+        // tx.executeSql(
         //     'drop table recipe_collection;'
         // )
         tx.executeSql(
             'create table if not exists recipe_collection (recipe_id int not null, collection_id int not null, FOREIGN KEY(recipe_id) REFERENCES recipe(id), FOREIGN KEY(collection_id) REFERENCES collection(id));'
+        )
+
+        // tx.executeSql(
+        //     'drop table recipe_category;'
+        // )
+        tx.executeSql(
+            'create table if not exists recipe_category (recipe_id int not null, category_id int not null, FOREIGN KEY(recipe_id) REFERENCES recipe(id), FOREIGN KEY(category_id) REFERENCES category(id));'
         )
 
         // tx.executeSql(

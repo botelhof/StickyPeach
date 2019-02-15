@@ -157,7 +157,7 @@ export default class CollectionsScreen extends React.Component {
                         maxOverlayOpacity={0.5}
                         minOverlayOpacity={0.1}
                         fadeOutForeground
-                        renderHeader={() => <Image source={require('../../assets/salads.jpg')} style={styles.image} />}
+                        renderHeader={() => <Image source={require('../../assets/collections.jpg')} style={styles.image} />}
                         renderFixedForeground={() => (
                             <Animatable.View
                                 style={styles.navTitleView}

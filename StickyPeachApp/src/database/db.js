@@ -59,6 +59,18 @@ export async function selectAllCollections() {
     })
 }
 
+export async function selectAllCategories() {
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            tx => {
+                tx.executeSql('select * from category', [], (_, { rows }) =>
+                    resolve(rows)
+                )
+            }
+        )
+    })
+}
+
 export function selectAllDefaultSettings() {
     db.transaction(
         tx => {
@@ -230,6 +242,14 @@ export function insertCollection(collection) {
     db.transaction(
         tx => {
             tx.executeSql('insert into collection (name, description, picture, timestamp_creation, timestamp_updated) values (?, ?, ?, ?, ?)', [collection.name, collection.description, collection.picture, new Date(), null]);
+        }
+    )
+}
+
+export function insertCategory(category) {
+    db.transaction(
+        tx => {
+            tx.executeSql('insert into category (name, description, timestamp_creation, timestamp_updated) values (?, ?, ?, ?)', [category.name, category.description, new Date(), null]);
         }
     )
 }
