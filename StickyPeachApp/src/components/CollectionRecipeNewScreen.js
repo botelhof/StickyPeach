@@ -1266,6 +1266,12 @@ export default class CollectionRecipeNewScreen extends React.Component {
                                 }
 
                                 await stickyPeachDB.insertRecipeCollection(recipeId, this.props.navigation.state.params.collection_id)
+
+                                if (this.state.selectedItemsCategoriesObj && this.state.selectedItemsCategoriesObj.length > 0) {
+                                    this.state.selectedItemsCategoriesObj.forEach(async function (category) {
+                                        await stickyPeachDB.insertRecipeCategory(recipeId, category.id)
+                                    })
+                                }
                                 
                                 RecipeStepsStore.clearSteps()
                                 RecipeStepsStore.clearStepAssociations()

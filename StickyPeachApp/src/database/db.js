@@ -163,6 +163,22 @@ export async function selectAllRecipesForCollection(collectionId) {
     })
 }
 
+export async function selectAllCategoriesForRecipe(recipeId) {
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            tx => {
+                tx.executeSql('select category.* '+
+                            'from recipe, category, recipe_category ' +
+                            'where recipe_category.recipe_id = recipe.id AND ' +
+                            'recipe_category.category_id = category.id ' +
+                            'AND recipe.id = ?', [recipeId], (_, { rows }) =>
+                    resolve(rows)
+                )
+            }
+        )
+    })
+}
+
 export async function selectAllStepAssociations(recipeId) {
     return new Promise((resolve, reject) => {
         db.transaction(
@@ -231,6 +247,19 @@ export async function insertRecipeCollection(recipe_id, collection_id) {
             tx => {
                 tx.executeSql('insert into recipe_collection (recipe_id, collection_id) values (?, ?)', 
                             [recipe_id, collection_id],
+                            resolve()
+                )
+            }
+        )
+    })
+}
+
+export async function insertRecipeCategory(recipe_id, category_id) {
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            tx => {
+                tx.executeSql('insert into recipe_category (recipe_id, category_id) values (?, ?)', 
+                            [recipe_id, category_id],
                             resolve()
                 )
             }
@@ -331,6 +360,9 @@ export function deleteRecipe(recipe_id) {
                     [recipe_id],
                 )
                 tx.executeSql('delete from recipe_collection where recipe_id = ?', 
+                    [recipe_id],
+                )
+                tx.executeSql('delete from recipe_category where recipe_id = ?', 
                     [recipe_id],
                 )
                 resolve()

@@ -72,6 +72,7 @@ export default class RecipeScreen extends React.Component {
         const recipeSteps = await stickyPeachDB.selectRecipeStepsByRecipeId(recipeId)
         const recipeMaterials = await stickyPeachDB.selectRecipeMaterialsByRecipeId(recipeId)
         const recipeIngredients = await stickyPeachDB.selectRecipeIngredientsByRecipeId(recipeId)
+        const recipeCategories = await stickyPeachDB.selectAllCategoriesForRecipe(recipeId)
         
         if (recipe) {
             this.setState({
@@ -79,6 +80,7 @@ export default class RecipeScreen extends React.Component {
                 recipeSteps: this._translateRecipeStep(recipeSteps._array),
                 recipeMaterials: this._translateRecipeMaterial(recipeMaterials._array),
                 recipeIngredients: this._translateRecipeIngredient(recipeIngredients._array),
+                recipeCategories: this._translateRecipeCategory(recipeCategories._array),
             })
         }
     }
@@ -170,6 +172,21 @@ export default class RecipeScreen extends React.Component {
             translatedItem['picture'] = originalItem.picture
             translatedItem['orderNumber'] = originalItem.orderNumber
             translatedItem['recipe_id'] = originalItem.recipe_id
+
+            listTranslated.push(translatedItem)
+        }
+
+        return listTranslated
+    }
+
+    _translateRecipeCategory = (originalList) => {
+        let listTranslated = new Array()
+        for (let i = 0; i < originalList.length; i++) {
+            const originalItem = originalList[i]
+
+            let translatedItem = {}
+            translatedItem['id'] = originalItem.id
+            translatedItem['name'] = originalItem.name
 
             listTranslated.push(translatedItem)
         }
@@ -600,6 +617,41 @@ export default class RecipeScreen extends React.Component {
                         >
                             <Text>{this.state.recipe.name}</Text>
                         </TriggeringView>
+                        <View 
+                            style={{
+                                margin: 5,
+                                backgroundColor: "#EEE",
+                                padding: 3,
+                                flexDirection: "row",
+                            }}
+                        >
+                            {/* <Text>Categories</Text> */}
+                            {
+                                this.state.recipeCategories &&
+                                this.state.recipeCategories.map(category => (
+                                    <View 
+                                        key={category.id}
+                                        style={{
+                                            flexDirection: "row",
+                                            marginRight: 10,
+                                            alignContent: 'center',
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <Icon
+                                            name="class"
+                                            size={12}
+                                            color="#444"
+                                        />
+                                        <Text style={{
+                                            marginLeft: 3,
+                                            fontSize: 12,
+                                            color: "#444",
+                                        }}>{ category.name }</Text>
+                                    </View>
+                                ))
+                            }
+                        </View>
                         <ButtonGroup
                             onPress={this.updateRecipePropsIndex}
                             selectedIndex={this.state.selectedRecipePropsIndex}
