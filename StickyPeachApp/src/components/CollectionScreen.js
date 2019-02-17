@@ -25,6 +25,7 @@ import MenuButtonComponent from './MenuButtonComponent'
 import * as Animatable from 'react-native-animatable'
 import * as stickyPeachDB from '../database/db.js'
 import * as Constants from '../utils/Constants.js'
+import * as defaultSettings from '../utils/DefaultSettings'
 
 const { width, height } = Dimensions.get('window')
 
@@ -65,7 +66,12 @@ export default class CollectionScreen extends React.Component {
     }
 
     componentDidMount() {
-        
+        defaultSettings.getDefaultImage()
+        .then((dbRow) => {
+            this.setState({
+                defaultImage: dbRow && dbRow._array[0] ? dbRow._array[0].val_blob : null,
+            })
+        })
     }
 
     _translate = (originalList) => {
@@ -143,7 +149,9 @@ export default class CollectionScreen extends React.Component {
                         maxOverlayOpacity={0.5}
                         minOverlayOpacity={0.1}
                         fadeOutForeground
-                        renderHeader={() => <Image source={require('../../assets/pasta.jpg')} style={styles.image} />}
+                        renderHeader={() => (
+                            <Image source={{uri: `data:image/jpg;base64,${(collection.item.picture ? collection.item.picture : this.state.defaultImage)}`,}}  style={styles.image} />
+                        )}
                         renderFixedForeground={() => (
                             <Animatable.View
                                 style={styles.navTitleView}
