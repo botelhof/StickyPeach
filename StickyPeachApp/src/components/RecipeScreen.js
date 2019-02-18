@@ -623,6 +623,7 @@ export default class RecipeScreen extends React.Component {
                                 backgroundColor: "#EEE",
                                 padding: 3,
                                 flexDirection: "row",
+                                flexWrap: 'wrap',
                             }}
                         >
                             {/* <Text>Categories</Text> */}

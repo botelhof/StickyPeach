@@ -57,7 +57,8 @@ export default class CategoriesScreen extends React.Component {
 
         if (original) {
             this.setState({
-                list: this._translate(original._array)
+                list: this._translate(original._array),
+                isOpen: false,
             })
         }
     }
