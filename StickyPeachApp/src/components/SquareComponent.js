@@ -62,7 +62,7 @@ export default class SquareComponent extends React.Component {
         const {navigateTo} = this.props
 
         //const viewLength = (width / 2) - 50
-        const viewLength = width * 0.7
+        const viewLength = width * 0.65
         // console.log("collection: " + JSON.stringify(collection))
         // console.log("this.props.navigation: " + JSON.stringify(this.props.nav))
 
@@ -108,7 +108,7 @@ export default class SquareComponent extends React.Component {
             <View 
                 style={{
                     width: viewLength,
-                    height: viewLength + 80,
+                    height: viewLength + 150,
                     flexDirection: "column",
                     paddingTop: 5,
                 }}

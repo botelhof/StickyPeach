@@ -9,6 +9,7 @@ import {
     StatusBar,
     ScrollView,
     TouchableOpacity,
+    TouchableHighlight,
 } from 'react-native'
 import { 
     Header,
@@ -18,10 +19,11 @@ import SideMenu from 'react-native-side-menu'
 import {
     Icon,
 } from 'react-native-elements'
+import Swipeable from 'react-native-swipeable'
 
-import GalleryComponent from './GalleryComponent'
 import MenuSideView from './MenuSideView'
 import MenuButtonComponent from './MenuButtonComponent'
+import ActionButton from 'react-native-circular-action-menu'
 
 import * as Animatable from 'react-native-animatable'
 import * as stickyPeachDB from '../database/db.js'
@@ -170,28 +172,71 @@ export default class CategoriesScreen extends React.Component {
                             this.state.list && this.state.list.map((category, index) => {
                                 if (category) {
                                     return (
-                                        <View 
+                                        <Swipeable 
+                                            key={index}
+                                            // leftContent={
+                                            //     <Text>Pull to activate</Text>
+                                            // } 
+                                            rightButtons={
+                                                [
+                                                <TouchableHighlight style={{
+                                                    flex: 1,
+                                                    backgroundColor: "#0077b3",
+                                                    alignContent: "center",
+                                                    // alignItems: "center",
+                                                    justifyContent: "center",
+                                                    // alignSelf: "center",
+                                                }}>
+                                                    <Text style={{
+                                                        color: "#FFF",
+                                                        fontSize: 12,
+                                                        marginLeft: 10,
+                                                    }}>Edit</Text>
+                                                </TouchableHighlight>,
+                                                <TouchableHighlight style={{
+                                                    backgroundColor: "#b30000",
+                                                    flex: 1,
+                                                    alignContent: "center",
+                                                    // alignItems: "center",
+                                                    justifyContent: "center",
+                                                }}>
+                                                    <Text style={{
+                                                        color: "#FFF",
+                                                        fontSize: 12,
+                                                        marginLeft: 10,
+                                                    }}>Delete</Text>
+                                                </TouchableHighlight>,
+                                                ]
+                                            }
                                             style={{
-                                                // height: 50,
-                                                // backgroundColor: "darkgrey",
-                                                flexDirection: "column",
-                                                padding: 5,
                                                 borderBottomColor: "#CCC",
                                                 borderBottomWidth: 0.5,
-                                                margin: 10,
                                             }}
-                                            key={index}
                                         >
-                                            <Text style={{
-                                                color: "#222",
-                                                fontSize: 14,
-                                                fontWeight: 'bold',
-                                            }}>{ category.mainDescription }</Text>
-                                            <Text style={{
-                                                color: "#444",
-                                                fontSize: 12,
-                                            }}>{ category.headDescription }</Text>
-                                        </View>
+                                            <View 
+                                                style={{
+                                                    // height: 50,
+                                                    // backgroundColor: "darkgrey",
+                                                    flexDirection: "row",
+                                                    padding: 10,
+                                                    // margin: 10,
+                                                }}
+                                            >
+                                                <View style={{
+                                                    flexDirection: "column",
+                                                }}>
+                                                    <Text style={{
+                                                        color: "#222",
+                                                        fontSize: 14,
+                                                        fontWeight: 'bold',
+                                                    }}>{ category.mainDescription }</Text>
+                                                    <Text style={{
+                                                        color: "#444",
+                                                        fontSize: 12,
+                                                    }}>{ category.headDescription }</Text>
+                                                </View>
+                                            </View>
+                                        </Swipeable>
                                     )
                                 } else {
                                     return null
@@ -278,5 +323,10 @@ const styles = StyleSheet.create({
     },
     sectionLarge: {
         height: 600,
+    },
+    actionButtonIcon: {
+        fontSize: 10,
+        height: 15,
+        color: '#FFF',
     },
 })

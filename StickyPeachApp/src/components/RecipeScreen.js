@@ -615,7 +615,7 @@ export default class RecipeScreen extends React.Component {
                             onHide={() => this.navTitleView.fadeInUp(200)}
                             onDisplay={() => this.navTitleView.fadeOut(100)}
                         >
-                            <Text>{this.state.recipe.name}</Text>
+                            <Text>{this.state.recipe.description}</Text>
                         </TriggeringView>
                         <View 
                             style={{

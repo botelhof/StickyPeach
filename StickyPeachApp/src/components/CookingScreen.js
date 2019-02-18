@@ -56,7 +56,7 @@ export default class CookingScreen extends React.Component {
         let associationsObj = null
 
         if (recipeStepAssociations && recipeStepAssociations._array && recipeStepAssociations._array.length > 0) {
-            console.log("FB: recipeStepAssociations: " + JSON.stringify(recipeStepAssociations._array))
+            // console.log("FB: recipeStepAssociations: " + JSON.stringify(recipeStepAssociations._array))
             recipeStepAssociations._array.forEach(function (assoc) {
                 if (assoc && assoc.si && assoc.sDesc) {
                     if (!associationsObj) {
@@ -271,12 +271,12 @@ export default class CookingScreen extends React.Component {
                                         >
                                             <Icon
                                                 name={ association.type === "Material" ? "local-dining" : "local-florist" }
-                                                size={12}
+                                                size={10}
                                                 color={association.type === "Material" ? "#ccf5ff" : "#e6ffcc"}
                                             />
                                             <Text style={{
                                                 color: association.type === "Material" ? "#ccf5ff" : "#e6ffcc",
-                                                fontSize: 12,
+                                                fontSize: 10,
                                                 marginLeft: 5,
                                             }}>{ association.desc }</Text>
                                         </View>

@@ -60,7 +60,8 @@ export default class CollectionScreen extends React.Component {
         // console.log("collectionRecipes: " + JSON.stringify(collectionRecipes))
         if (collectionRecipes) {
             this.setState({
-                list: this._translate(collectionRecipes._array)
+                list: this._translate(collectionRecipes._array),
+                isOpen: false,
             })
         }
     }
