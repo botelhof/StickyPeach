@@ -371,6 +371,22 @@ export function deleteRecipe(recipe_id) {
     })
 }
 
+export function deleteCategory(category_id) {
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            tx => {
+                tx.executeSql('delete from category where id = ?', 
+                                [category_id],
+                )
+                tx.executeSql('delete from recipe_category where category_id = ?', 
+                    [category_id],
+                )
+                resolve()
+            }
+        )
+    })
+}
+
 function _getRandomText(totalChars) {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

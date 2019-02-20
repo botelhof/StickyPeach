@@ -10,6 +10,7 @@ import {
     ScrollView,
     TouchableOpacity,
     TouchableHighlight,
+    Alert,
 } from 'react-native'
 import { 
     Header,
@@ -56,7 +57,7 @@ export default class CategoriesScreen extends React.Component {
 
     enterScreen = async () => {
         const original = await stickyPeachDB.selectAllCategories()
-
+        
         if (original) {
             this.setState({
                 list: this._translate(original._array),
@@ -104,6 +105,7 @@ export default class CategoriesScreen extends React.Component {
     render() {
         const menu = <MenuSideView navigator={this.props.navigation}/>
         const moduleDescription = "Categories"
+        
         return (
             <SideMenu 
                 menu={menu}
@@ -174,40 +176,42 @@ export default class CategoriesScreen extends React.Component {
                                     return (
                                         <Swipeable 
                                             key={index}
-                                            // leftContent={
-                                            //     <Text>Pull to activate</Text>
-                                            // } 
-                                            rightButtons={
-                                                [
-                                                <TouchableHighlight style={{
+                                            leftContent={
+                                                <View style={{
                                                     flex: 1,
-                                                    backgroundColor: "#0077b3",
-                                                    alignContent: "center",
-                                                    // alignItems: "center",
-                                                    justifyContent: "center",
-                                                    // alignSelf: "center",
+                                                    backgroundColor: "red",
+                                                    alignItems: 'flex-end',
+                                                    justifyContent: 'center',
+                                                    padding: 10,
                                                 }}>
                                                     <Text style={{
+                                                        fontSize: 14,
                                                         color: "#FFF",
-                                                        fontSize: 12,
-                                                        marginLeft: 10,
-                                                    }}>Edit</Text>
-                                                </TouchableHighlight>,
-                                                <TouchableHighlight style={{
-                                                    backgroundColor: "#b30000",
-                                                    flex: 1,
-                                                    alignContent: "center",
-                                                    // alignItems: "center",
-                                                    justifyContent: "center",
-                                                }}>
-                                                    <Text style={{
-                                                        color: "#FFF",
-                                                        fontSize: 12,
-                                                        marginLeft: 10,
-                                                    }}>Delete</Text>
-                                                </TouchableHighlight>,
-                                                ]
-                                            }
+                                                    }}>Pull to delete</Text>
+                                                </View>
+                                            } 
+                                            onLeftActionRelease={() => {
+                                                Alert.alert(
+                                                    'Delete Category?',
+                                                    'Do you want to delete this category?',
+                                                    [
+                                                        {
+                                                            text: 'Delete', onPress: async () => {
+                                                                await stickyPeachDB.deleteCategory(category.id)
+                                                                this.enterScreen()
+
+                                                                this.props.navigation.goBack()
+                                                            }
+                                                        },
+                                                        {
+                                                        text: 'Cancel',
+                                                            onPress: () => console.log('Cancel Pressed'),
+                                                            style: 'cancel',
+                                                        },
+                                                    ],
+                                                    {cancelable: false},
+                                                )
+                                            }}
                                             style={{
                                                 borderBottomColor: "#CCC",
                                                 borderBottomWidth: 0.5,
