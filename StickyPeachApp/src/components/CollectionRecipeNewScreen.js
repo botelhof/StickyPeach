@@ -1153,10 +1153,16 @@ export default class CollectionRecipeNewScreen extends React.Component {
                                     {text: 'Clear', onPress: () => {
                                         RecipeStepsStore.clearSteps()
                                         RecipeStepsStore.clearStepAssociations()
+                                        
                                         this.setState({
                                             name: "",
                                             description: "",
+                                            time_preparation: "",
+                                            time_cook: "",
+                                            serves: "",
                                             picture: null,
+                                            selectedItemsCategories: [],
+                                            selectedItemsCategoriesObj: [],
                                         })
                                     }},
                                 ],
