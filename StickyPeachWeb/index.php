@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
     <header>
-        <title>Wisk Web</title>
+        <title>Stick App Web</title>
     </header>
     <body>
 
     <?php
-        echo "Whisk Web";
+        echo "Stick App Web - Nothing to see here...";
     ?>
 
     </body>

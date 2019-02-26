@@ -90,9 +90,17 @@ const AppContainer = createAppContainer(createBottomTabNavigator(
     initialRouteName: 'Collections',
     /* The header config from HomeScreen is now here */
     defaultNavigationOptions: {
-      headerStyle: {
-        backgroundColor: Constants.COLORS.SYSTEM.PRIMARY,
-      },
+      // headerStyle: {
+      //   backgroundColor: Constants.COLORS.SYSTEM.PRIMARY,
+      //   shadowOpacity: 0.9,
+      //   shadowColor : Constants.COLORS.SYSTEM.PRIMARY,
+      //   shadowOffset: {
+      //       height: 5
+      //   },
+      //   shadowRadius: 10,
+      //   borderBottomWidth: 0,
+      //   elevation: 0,
+      // },
       headerTintColor: Constants.COLORS.SYSTEM.SECONDARY,
       headerTitleStyle: {
         fontWeight: 'bold',
@@ -107,6 +115,15 @@ const AppContainer = createAppContainer(createBottomTabNavigator(
         },
         style: {
           backgroundColor: Constants.COLORS.SYSTEM.PRIMARY,
+          shadowOpacity: 0.5,
+          shadowColor : "#333",
+          shadowOffset: {
+              height: 5
+          },
+          shadowRadius: 10,
+          borderBottomWidth: 0,
+          borderTopWidth: 0,
+          elevation: 0,
         },
       },
     },

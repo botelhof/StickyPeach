@@ -1,13 +1,13 @@
 <?php
  
     //Define your host here.
-    $HostName = "whisk.000webhostapp.com";
+    $HostName = "stickypeach.000webhostapp.com";
     
     //Define your database name here.
-    $DatabaseName = "id8381067_stickyPeachDB";
+    $DatabaseName = "id8836583_stickypeachdb";
     
     //Define your database username here.
-    $HostUser = "id8381067_whiskuser1";
+    $HostUser = "id8836583_stickyuser1";
     
     //Define your database password here.
     $HostPass = "tCzZr69f7WF4pnx";
