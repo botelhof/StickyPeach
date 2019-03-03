@@ -15,6 +15,7 @@ import {
 } from 'react-navigation'
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view'
 import SideMenu from 'react-native-side-menu'
+import * as DropDownHolder from '../utils/DropDownHolder.js'
 import FloatLabelTextInput from './FloatLabelTextField'
 import {
     Icon,
@@ -215,8 +216,14 @@ export default class SettingsScreen extends React.Component {
                                             .then((response) => response._bodyText)
                                             .then((responseJson) => {
 
-                                                alert(JSON.stringify(responseJson))
-
+                                                if (responseJson == Constants.API_CODES.SUCCESS) {
+                                                    this.setState({
+                                                        userStatus: USER_STATUS.LOGGED_IN,
+                                                    })
+                                                    DropDownHolder.getDropDown().alertWithType('success', 'Success', "User created with success");
+                                                } else {
+                                                    DropDownHolder.getDropDown().alertWithType('error', 'Error', responseJson);
+                                                }
                                             })
                                             .catch((error) =>{
                                                 alert(JSON.stringify(error))

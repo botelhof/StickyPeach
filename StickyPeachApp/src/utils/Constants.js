@@ -59,3 +59,7 @@ export const COLORS = {
         }
     }
 }
+
+export const API_CODES = {
+    SUCCESS: 'ok',
+}
