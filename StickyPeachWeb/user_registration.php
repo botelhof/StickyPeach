@@ -1,4 +1,8 @@
 <?php
+    function writeMsg($code, $id, $error) {
+        echo '{ "code":"' . $code . '", "id":' . $id . ', "error":"'. $error . '"}';
+    }
+
     if (isset($_POST)) {
         require "./config.php";
     
@@ -16,7 +20,7 @@
             $result = $statement->fetchAll();
 
             if (count($result) > 0) {
-                echo "Email already exists";
+                writeMsg("error", -1, "Email already exists");
             } else {
                 $new_user = array(
                     "email" => $_POST['email'],
@@ -32,14 +36,16 @@
     
                 $statement = $connection->prepare($sql);
                 $statement->execute($new_user);
-                
-                echo "ok";
+
+                $last_id = $connection->lastInsertId(); 
+
+                writeMsg("ok", $last_id, '');
             }
 
             $connection = null;
     
         } catch(PDOException $error) {
-            echo $error->getMessage();
+            writeMsg("error", -2, $error->getMessage());
         }
         
     }

@@ -33,6 +33,8 @@ import * as Animatable from 'react-native-animatable'
 import * as stickyPeachDB from '../database/db.js'
 import * as Constants from '../utils/Constants.js'
 
+import * as Storage from '../utils/Storage.js'
+
 const { width, height } = Dimensions.get('window')
 
 const IMG_HEIGHT = height / 1.5
@@ -81,15 +83,31 @@ export default class SettingsScreen extends React.Component {
         this.props.navigation.addListener('willFocus', this.enterScreen)
     }
 
-    enterScreen = async () => {
-        // const original = await stickyPeachDB.selectAllCollections()
+    componentDidMount() {
 
-        // if (original) {
-            this.setState({
-                // list: this._translate(original._array),
-                isOpen: false,
-            })
-        // }
+    }
+
+    componentWillUnmount() {
+
+    }
+
+    enterScreen = async () => {
+        const authUser = await Storage.retrieveData(Constants.STORAGE_CODES.AUTH_USER)
+
+        let userStatus = null
+        let email = null
+        if (authUser && JSON.parse(authUser)) {
+            userStatus = USER_STATUS.LOGGED_IN
+            email = JSON.parse(authUser).email
+        } else {
+            userStatus = USER_STATUS.NO_AUTH
+        }
+
+        this.setState({
+            isOpen: false,
+            userStatus: userStatus,
+            email: email,
+        })
     }
 
     render() {
@@ -188,8 +206,43 @@ export default class SettingsScreen extends React.Component {
                                         containerStyle={{
                                             marginRight: 10,
                                         }}
-                                        onPress={() => {
-                                            
+                                        onPress={async () => {
+                                            if (!this.state.email || !this.state.password) {
+                                                DropDownHolder.getDropDown().alertWithType('error', 'Error', "Please fill the both fields")
+                                            } else {
+                                                let formData = new FormData();
+                                                formData.append("email", this.state.email);
+                                                formData.append("password", this.state.password);
+
+                                                fetch(Constants.API_ENDPOINTS.BASE + Constants.API_ENDPOINTS.SIGN_IN, {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'multipart/form-data',
+                                                    },
+                                                    body: formData
+                                                })
+                                                .then((response) => response._bodyText)
+                                                .then(async (responseJson) => {
+
+                                                    // if (responseJson == Constants.API_CODES.SUCCESS) {
+
+                                                    //     await Storage.storeData(Constants.STORAGE_CODES.AUTH_USER, JSON.stringify({
+                                                    //         email: this.state.email,
+                                                    //         password: this.state.password,
+                                                    //     }))
+                                                        
+                                                    //     this.setState({
+                                                    //         userStatus: USER_STATUS.LOGGED_IN,
+                                                    //     })
+                                                    //     DropDownHolder.getDropDown().alertWithType('success', 'Success', "User created with success");
+                                                    // } else {
+                                                    //     DropDownHolder.getDropDown().alertWithType('error', 'Error', responseJson);
+                                                    // }
+                                                })
+                                                .catch((error) =>{
+                                                    alert(JSON.stringify(error))
+                                                })
+                                            }
                                         }}
                                     />
                                     <Button 
@@ -202,32 +255,9 @@ export default class SettingsScreen extends React.Component {
                                         containerStyle={{
                                         }}
                                         onPress={() => {
-                                            let formData = new FormData();
-                                            formData.append("email", this.state.email);
-                                            formData.append("password", this.state.password);
-
-                                            fetch('https://stickypeach.000webhostapp.com/user_registration.php', {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'multipart/form-data',
-                                                },
-                                                body: formData
+                                            this.setState({
+                                                userStatus: USER_STATUS.REGISTER,
                                             })
-                                            .then((response) => response._bodyText)
-                                            .then((responseJson) => {
-
-                                                if (responseJson == Constants.API_CODES.SUCCESS) {
-                                                    this.setState({
-                                                        userStatus: USER_STATUS.LOGGED_IN,
-                                                    })
-                                                    DropDownHolder.getDropDown().alertWithType('success', 'Success', "User created with success");
-                                                } else {
-                                                    DropDownHolder.getDropDown().alertWithType('error', 'Error', responseJson);
-                                                }
-                                            })
-                                            .catch((error) =>{
-                                                alert(JSON.stringify(error))
-                                            });
                                         }}
                                     />
                                 </View>
@@ -266,8 +296,14 @@ export default class SettingsScreen extends React.Component {
                                         }}
                                         containerStyle={{
                                         }}
-                                        onPress={() => {
-                                            
+                                        onPress={async () => {
+                                            await Storage.removeData(Constants.STORAGE_CODES.AUTH_USER)
+                                            this.setState({
+                                                email: null,
+                                                password: null,
+                                                password_confirm: null,
+                                                userStatus: USER_STATUS.NO_AUTH,
+                                            })
                                         }}
                                     />
                                 </View>
@@ -370,8 +406,70 @@ export default class SettingsScreen extends React.Component {
                                         containerStyle={{
                                             marginRight: 10,
                                         }}
+                                        onPress={async () => {
+                                            if (!this.state.email || !this.state.password || !this.state.password_confirm) {
+                                                DropDownHolder.getDropDown().alertWithType('error', 'Error', "Invalid credentials")
+                                            } else if (this.state.password != this.state.password_confirm) {
+                                                DropDownHolder.getDropDown().alertWithType('error', 'Error', "Password does not match")
+                                            } else {
+                                                let formData = new FormData();
+                                                formData.append("email", this.state.email);
+                                                formData.append("password", this.state.password);
+
+                                                fetch(Constants.API_ENDPOINTS.BASE + Constants.API_ENDPOINTS.USER_REGISTRATION, {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'multipart/form-data',
+                                                    },
+                                                    body: formData
+                                                })
+                                                .then((response) => response._bodyText)
+                                                .then(async (responseJsonStringify) => {
+                                                    let responseJson = null
+                                                    
+                                                    if (responseJsonStringify) {
+                                                        
+                                                        try {
+                                                            responseJson = JSON.parse(responseJsonStringify)
+                                                        } catch(e1) {
+                                                            console.log('responseJsonStringify... e: ' + JSON.stringify(e1))
+                                                        }
+                                                        
+                                                    }
+                                                    if (responseJson && (responseJson.code == Constants.API_CODES.SUCCESS)) {
+                                                        await Storage.storeData(Constants.STORAGE_CODES.AUTH_USER, JSON.stringify({
+                                                            email: this.state.email,
+                                                            password: this.state.password,
+                                                            user_id: responseJson.id,
+                                                        }))
+                                                        
+                                                        this.setState({
+                                                            userStatus: USER_STATUS.LOGGED_IN,
+                                                        })
+                                                        DropDownHolder.getDropDown().alertWithType('success', 'Success', "User created with success");
+                                                    } else {
+                                                        DropDownHolder.getDropDown().alertWithType('error', 'Error', responseJson.error);
+                                                    }
+                                                })
+                                                .catch((error) =>{
+                                                    alert(JSON.stringify(error))
+                                                })
+                                            }
+                                        }}
+                                    />
+                                    <Button 
+                                        icon={{name: "undo", color: "#444", size: 14,}} 
+                                        title={"Cancel"} 
+                                        titleStyle={{color: "#444", fontSize: 14, }}
+                                        buttonStyle={{
+                                            backgroundColor: "#CCC",
+                                        }}
+                                        containerStyle={{
+                                        }}
                                         onPress={() => {
-                                            
+                                            this.setState({
+                                                userStatus: USER_STATUS.NO_AUTH,
+                                            })
                                         }}
                                     />
                                 </View>

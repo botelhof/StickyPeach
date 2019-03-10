@@ -63,3 +63,13 @@ export const COLORS = {
 export const API_CODES = {
     SUCCESS: 'ok',
 }
+
+export const STORAGE_CODES = {
+    AUTH_USER: 'AUTH_USER',
+}
+
+export const API_ENDPOINTS = {
+    BASE: 'https://stickypeach.000webhostapp.com/',
+    USER_REGISTRATION: 'user_registration.php',
+    SIGN_IN: 'user_signin.php',
+}
