@@ -222,22 +222,31 @@ export default class SettingsScreen extends React.Component {
                                                     body: formData
                                                 })
                                                 .then((response) => response._bodyText)
-                                                .then(async (responseJson) => {
-
-                                                    // if (responseJson == Constants.API_CODES.SUCCESS) {
-
-                                                    //     await Storage.storeData(Constants.STORAGE_CODES.AUTH_USER, JSON.stringify({
-                                                    //         email: this.state.email,
-                                                    //         password: this.state.password,
-                                                    //     }))
+                                                .then(async (responseJsonStringify) => {
+                                                    let responseJson = null
+                                                    
+                                                    if (responseJsonStringify) {
+                                                        try {
+                                                            responseJson = JSON.parse(responseJsonStringify)
+                                                        } catch(e1) {
+                                                            console.log('responseJsonStringify... e: ' + JSON.stringify(e1))
+                                                        }
                                                         
-                                                    //     this.setState({
-                                                    //         userStatus: USER_STATUS.LOGGED_IN,
-                                                    //     })
-                                                    //     DropDownHolder.getDropDown().alertWithType('success', 'Success', "User created with success");
-                                                    // } else {
-                                                    //     DropDownHolder.getDropDown().alertWithType('error', 'Error', responseJson);
-                                                    // }
+                                                    }
+                                                    if (responseJson && (responseJson.code == Constants.API_CODES.SUCCESS)) {
+                                                        await Storage.storeData(Constants.STORAGE_CODES.AUTH_USER, JSON.stringify({
+                                                            email: this.state.email,
+                                                            password: this.state.password,
+                                                            user_id: responseJson.id,
+                                                        }))
+                                                        
+                                                        this.setState({
+                                                            userStatus: USER_STATUS.LOGGED_IN,
+                                                        })
+                                                        DropDownHolder.getDropDown().alertWithType('info', 'Signed in', "Welcome back " + this.state.email);
+                                                    } else {
+                                                        DropDownHolder.getDropDown().alertWithType('error', 'Error', responseJson.error);
+                                                    }
                                                 })
                                                 .catch((error) =>{
                                                     alert(JSON.stringify(error))

@@ -1,9 +1,6 @@
 <?php
-    function writeMsg($code, $id, $error) {
-        echo '{ "code":"' . $code . '", "id":' . $id . ', "error":"'. $error . '"}';
-    }
-
     if (isset($_POST)) {
+        require "./utils.php";
         require "./config.php";
     
         try {
