@@ -72,4 +72,6 @@ export const API_ENDPOINTS = {
     BASE: 'https://stickypeach.000webhostapp.com/',
     USER_REGISTRATION: 'user_registration.php',
     SIGN_IN: 'user_signin.php',
+    SYNC_REMOTE_TO_LOCAL: 'sync_remote_to_local.php',
+    SYNC_LOCAL_TO_REMOTE: 'sync_local_to_remote.php'
 }

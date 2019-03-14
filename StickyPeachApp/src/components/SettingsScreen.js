@@ -78,6 +78,7 @@ export default class SettingsScreen extends React.Component {
             showNavTitle: false,
             isOpen: false,
             userStatus: USER_STATUS.NO_AUTH,
+            synchronizingAccount: false,
         }
 
         this.props.navigation.addListener('willFocus', this.enterScreen)
@@ -141,11 +142,7 @@ export default class SettingsScreen extends React.Component {
                                 height: 150,
                                 flexDirection: "column",
                             }}>
-                                <Text style={{
-                                    fontSize: 14,
-                                    fontWeight: 'bold',
-                                    color: "#333",
-                                }}>Login Account</Text>
+                                <Text style={styles.headerLine}>Login Account</Text>
                                 <FloatLabelTextInput
                                     placeholder={"email"}
                                     value={this.state.email}
@@ -281,11 +278,7 @@ export default class SettingsScreen extends React.Component {
                                 height: 150,
                                 flexDirection: "column",
                             }}>
-                                <Text style={{
-                                    fontSize: 14,
-                                    fontWeight: 'bold',
-                                    color: "#333",
-                                }}>Account</Text>
+                                <Text style={styles.headerLine}>Account</Text>
                                 <Text style={{
                                     fontSize: 12,
                                     fontWeight: 'normal',
@@ -295,6 +288,7 @@ export default class SettingsScreen extends React.Component {
                                     flexDirection: "row",
                                     alignSelf: "flex-start", 
                                     marginTop: 10,
+                                    marginBottom: 20,
                                 }}>
                                     <Button 
                                         icon={{name: "exit-to-app", color: "#fff", size: 14,}} 
@@ -316,6 +310,161 @@ export default class SettingsScreen extends React.Component {
                                         }}
                                     />
                                 </View>
+
+                                <Text style={styles.headerLine}>Sync Account</Text>
+                                <Button
+                                    title="Synchronize Account"
+                                    titleStyle={{
+                                        fontSize: 14,
+                                        color: "#FFF",
+                                    }}
+                                    buttonStyle={{
+                                        backgroundColor: "#004d99",
+                                    }}
+                                    containerStyle={{
+                                        alignSelf: 'flex-start',
+                                    }}
+                                    icon={{
+                                        name: "sync",
+                                        size: 14,
+                                        color: "#FFF",
+                                    }}
+                                    loading={this.state.synchronizingAccount}
+                                    disabled={this.state.synchronizingAccount}
+                                    disabledStyle={{
+                                        backgroundColor: "#333",
+                                        padding: 10,
+                                    }}
+                                    disabledTextStyle={{
+                                        fontSize: 14,
+                                        color: "#333",
+                                    }}
+                                    // activityIndicatorStyle={{
+                                    //     color: "#333"
+                                    // }}
+                                    onPress={() => {
+                                        this.setState({
+                                            synchronizingAccount: true,
+                                            synchronizingAccountStatus: "Starting to synchronize account " + this.state.email + "..."
+                                        })
+
+                                        //phase 1 - get remote to local
+                                        let formData = new FormData();
+                                        formData.append("email", this.state.email);
+                                        formData.append("password", this.state.password);
+
+                                        fetch(Constants.API_ENDPOINTS.BASE + Constants.API_ENDPOINTS.SYNC_REMOTE_TO_LOCAL, {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'multipart/form-data',
+                                            },
+                                            body: formData
+                                        })
+                                        .then((response) => response._bodyText)
+                                        .then(async (responseJsonStringify) => {
+                                            console.log(responseJsonStringify)
+                                            let responseJson = null
+                                            
+                                            if (responseJsonStringify) {
+                                                try {
+                                                    responseJson = JSON.parse(responseJsonStringify)
+                                                } catch(e1) {
+                                                    console.log('responseJsonStringify... e: ' + JSON.stringify(e1))
+                                                }
+                                                
+                                            }
+                                            if (responseJson && (responseJson.code == Constants.API_CODES.SUCCESS)) {
+                                                //phase 2 - send local to remote
+                                                this.setState({
+                                                    synchronizingAccountStatus: "Remote sync complete. Sync local to remote...",
+                                                })
+
+                                                let formData = new FormData();
+                                                formData.append("email", this.state.email);
+                                                formData.append("password", this.state.password);
+
+                                                fetch(Constants.API_ENDPOINTS.BASE + Constants.API_ENDPOINTS.SYNC_LOCAL_TO_REMOTE, {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'multipart/form-data',
+                                                    },
+                                                    body: formData
+                                                })
+                                                .then((response) => response._bodyText)
+                                                .then(async (responseJsonStringify) => {
+                                                    console.log(responseJsonStringify)
+                                                    let responseJson = null
+                                                    
+                                                    if (responseJsonStringify) {
+                                                        try {
+                                                            responseJson = JSON.parse(responseJsonStringify)
+                                                        } catch(e1) {
+                                                            console.log('responseJsonStringify... e: ' + JSON.stringify(e1))
+                                                        }
+                                                        
+                                                    }
+                                                    if (responseJson && (responseJson.code == Constants.API_CODES.SUCCESS)) {
+                                                        this.setState({
+                                                            synchronizingAccount: false,
+                                                            synchronizingAccountStatus: null,
+                                                        })
+
+                                                        DropDownHolder.getDropDown().alertWithType('success', 'Success', "Synchronization completed");
+                                                        
+                                                    } else {
+                                                        DropDownHolder.getDropDown().alertWithType('error', 'Error', responseJson.error);
+                                                        this.setState({
+                                                            synchronizingAccount: false,
+                                                            synchronizingAccountStatus: null,
+                                                        })
+                                                    }
+                                                })
+                                                .catch((error) =>{
+                                                    alert(JSON.stringify(error))
+                                                    this.setState({
+                                                        synchronizingAccount: false,
+                                                        synchronizingAccountStatus: null,
+                                                    })
+                                                })
+                                                
+                                            } else {
+                                                DropDownHolder.getDropDown().alertWithType('error', 'Error', responseJson.error);
+                                                this.setState({
+                                                    synchronizingAccount: false,
+                                                    synchronizingAccountStatus: null,
+                                                })
+                                            }
+                                        })
+                                        .catch((error) =>{
+                                            alert(JSON.stringify(error))
+                                            this.setState({
+                                                synchronizingAccount: false,
+                                                synchronizingAccountStatus: null,
+                                            })
+                                        })
+                                    }}
+                                />
+                                {
+                                    this.state.synchronizingAccountStatus
+                                    &&
+                                    <View style={{
+                                        marginTop: 5,
+                                        flexDirection: 'row',
+                                        backgroundColor: "#b3d9ff",
+                                        padding: 10,
+                                    }}>
+                                        <Icon
+                                            name="sync"
+                                            size={14}
+                                            color="#004d99"
+                                        />
+                                        <Text style={{
+                                            fontSize: 14,
+                                            color: "#004d99",
+                                            marginLeft: 5,
+                                        }}>{ this.state.synchronizingAccountStatus }</Text>
+                                    </View>
+                                }
                             </View>
                         }
                         {
@@ -327,11 +476,7 @@ export default class SettingsScreen extends React.Component {
                                 height: 200,
                                 flexDirection: "column",
                             }}>
-                                <Text style={{
-                                    fontSize: 14,
-                                    fontWeight: 'bold',
-                                    color: "#333",
-                                }}>New Account</Text>
+                                <Text style={styles.headerLine}>New Account</Text>
                                 <FloatLabelTextInput
                                     placeholder={"email"}
                                     value={this.state.email}
@@ -496,3 +641,17 @@ export default class SettingsScreen extends React.Component {
         )
     }
 }
+
+
+const styles = StyleSheet.create({
+    headerLine: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: "#333",
+        // borderBottomWidth: 0.5,
+        textDecorationLine: "underline",
+        textDecorationColor: "#AAA",
+        textDecorationStyle: "solid",
+        marginBottom: 5,
+    }
+})
